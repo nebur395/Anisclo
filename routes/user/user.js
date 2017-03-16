@@ -53,7 +53,7 @@ module.exports = function (app) {
             }
             res.json(response);
         });
-    })
+    });
     router.put("/:id", function(req,res){
         var response = {};
         // first find out record exists or not
@@ -83,7 +83,7 @@ module.exports = function (app) {
                 })
             }
         });
-    })
+    });
     router.delete("/:id", function(req,res){
         var response = {};
         // find the data
@@ -106,4 +106,4 @@ module.exports = function (app) {
     
     return router;
 
-}
+};

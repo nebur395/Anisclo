@@ -7,10 +7,10 @@ var app = express();
 
 app.use(express.static('./public'));
 
-require('./routes')(app);
-
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({"extended" : false}));
+app.use(bodyParser.urlencoded({extended : true}));
+
+require('./routes')(app);
 
 app.use('/', function(req, res) {
 	console.log("Hello World");
@@ -18,3 +18,5 @@ app.use('/', function(req, res) {
 
 app.listen(3000);
 console.log("Listening to PORT 3000");
+
+module.exports = app;
