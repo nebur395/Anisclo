@@ -27,6 +27,7 @@ var options = {
 var swaggerSpec = swaggerJSDoc(options);
 
 app.use(express.static('./public'));
+app.use(express.static('./public-swagger'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
