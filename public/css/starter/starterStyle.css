@@ -1,0 +1,51 @@
+@media only screen and (min-width: 768px){
+  #starterStyle #firstView {
+    padding-top: 70px;
+  }
+}
+
+/* Full-width input fields */
+#starterStyle input[type=text],#starterStyle  input[type=email], #starterStyle textarea {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+#starterStyle textarea {
+  max-width: 100%;
+}
+
+/* Set a style for all buttons */
+#starterStyle button {
+  font-weight: 600;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+#starterStyle button:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+#starterStyle .inputDisabled {
+  cursor: not-allowed;
+}
+
+.sC-fade-in {
+  animation: sC-appear 0.5s linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes sC-appear {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.sC-hide {
+  opacity: 0;
+}
