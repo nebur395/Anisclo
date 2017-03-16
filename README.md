@@ -11,6 +11,7 @@ In order to run this project you have to have installed
   2. Open a terminal on the root folder of this project.
   3. Run the command `npm install`. This must be done the first time only, in order to
   install the dependencies of the project.
+  4. Use the following command to start mongod: `sudo service mongod start`
   4. Run `npm start` in order to launch the server on port 3000.
   Alternatively, you can also use `node server.js`.
 
