@@ -1,6 +1,6 @@
 var express = require("express"),
 	bodyParser = require("body-parser"),
-	mongoOp = require(".models/mongo");
+	mongoOp = require("./models/mongo");
 
 var app = express();
 

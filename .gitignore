@@ -3,6 +3,7 @@
 *.out
 out/*
 build/*
+*.log
 logs/*
 
 # npm ignores
