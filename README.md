@@ -1,5 +1,6 @@
 # Anisclo
 
+[![Build Status](https://travis-ci.com/nebur395/Anisclo.svg?token=TeQnRfV979qCVxB8pdn2&branch=master)](https://travis-ci.com/nebur395/Anisclo)
 
 ## Start using this App!
 
