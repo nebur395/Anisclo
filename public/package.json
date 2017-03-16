@@ -1,8 +1,8 @@
 {
-  "name": "anisclo",
+  "name": "anisclo_public",
   "version": "1.0.0",
   "description": "Project responsive map social network over the MEAN stack",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,11 +17,6 @@
   },
   "homepage": "https://github.com/nebur395/Anisclo#readme",
   "dependencies": {
-    "body-parser": "^1.17.1",
-    "express": "^4.15.2",
-    "mongoose": "^4.9.0"
-  },
-  "scripts": {
-    "postinstall": "cd public ; npm install;"
+    "angular-base64": "^2.0.5"
   }
 }
