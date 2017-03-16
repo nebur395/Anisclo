@@ -1,8 +1,7 @@
 # Anisclo
 
 
-##Start using this App!
------------------
+## Start using this App!
 
 In order to run this project you have to have installed
 [node.js](http://nodejs.org) and npm. Once you have them, follow these steps:
