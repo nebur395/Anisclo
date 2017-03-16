@@ -1,0 +1,24 @@
+{
+  "name": "anisclo",
+  "version": "1.0.0",
+  "description": "Project responsive map social network over the MEAN stack",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nebur395/Anisclo.git"
+  },
+  "author": "Ruben Moreno, Inigo Gascon, Dario Sanchez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nebur395/Anisclo/issues"
+  },
+  "homepage": "https://github.com/nebur395/Anisclo#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mongoose": "^4.9.0"
+  }
+}
