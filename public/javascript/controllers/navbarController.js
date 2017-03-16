@@ -3,7 +3,7 @@ angular.module('pirineoPOIApp')
     .controller('navbarCtrl', ['$scope', 'auth', function ($scope, auth) {
 
         $scope.logged = function () {
-            return auth.isAuthenticated();
+            return false;
         };
 
         $scope.logout = function () {
