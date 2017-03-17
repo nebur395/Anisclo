@@ -4,9 +4,11 @@ var express = require('express');
 module.exports = function (app) {
 	var router = express.Router();
 
+    var User = app.models.User;
+
 	router.get("/", function(req,res){
         var response = {};
-        mongoOp.find({},function(err,data){
+        User.find({},function(err,data){
         // Mongo command to fetch all data from collection.
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
@@ -19,7 +21,7 @@ module.exports = function (app) {
 
 
 	router.post("/", function(req,res){
-        var db = new mongoOp();
+        var db = new User();
         var response = {};
         // fetch email and password from REST request.
         // Add strict validation when you use this in Production.
@@ -44,7 +46,7 @@ module.exports = function (app) {
 
     router.get("/:id", function(req,res){
         var response = {};
-        mongoOp.findById(req.params.id,function(err,data){
+        User.findById(req.params.id,function(err,data){
         // This will run Mongo Query to fetch data based on ID.
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
@@ -58,7 +60,7 @@ module.exports = function (app) {
         var response = {};
         // first find out record exists or not
         // if it does then update the record
-        mongoOp.findById(req.params.id,function(err,data){
+        User.findById(req.params.id,function(err,data){
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
             } else {
@@ -87,12 +89,12 @@ module.exports = function (app) {
     router.delete("/:id", function(req,res){
         var response = {};
         // find the data
-        mongoOp.findById(req.params.id,function(err,data){
+        User.findById(req.params.id,function(err,data){
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
             } else {
                 // data exists, remove it.
-                mongoOp.remove({_id : req.params.id},function(err){
+                User.remove({_id : req.params.id},function(err){
                     if(err) {
                         response = {"error" : true,"message" : "Error deleting data"};
                     } else {
