@@ -1,7 +1,8 @@
 var express = require("express"),
 	bodyParser = require("body-parser"),
+    mongoose = require('mongoose'),
     swaggerJSDoc = require("swagger-jsdoc");
-	mongoOp = require("./models/mongo");
+
 
 var app = express();
 // Swagger definition
@@ -32,10 +33,12 @@ app.use(express.static('./public-swagger'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
+app.models = require('./models');
+
 require('./routes')(app);
 
 app.use('/', function(req, res) {
-	console.log("Hello World");
+	console.log("Bienvenido");
 });
 
 // Serve swagger
@@ -44,7 +47,14 @@ app.get('/swagger.json', function(req, res) {
     res.send(swaggerSpec);
 });
 
-app.listen(3000);
-console.log("Listening to PORT 3000");
+// Database connection and server launching
+var dbUri = 'mongodb://localhost:27017/aniscloDb';
+mongoose.connect(dbUri);
+mongoose.connection.once('open', function(){
 
-module.exports = app;
+    console.log("MongoDB connection created in "+dbUri);
+    app.listen(3000, function(){
+        console.log("Server listening to PORT 3000");
+    });
+
+});

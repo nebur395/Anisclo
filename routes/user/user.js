@@ -1,8 +1,13 @@
 var http = require("http");
 var express = require('express');
+var base64 = require('base-64');
+var utf8 = require('utf8');
 
 module.exports = function (app) {
+
 	var router = express.Router();
+
+    var User = app.models.User;
 
     /**
      * @swagger
@@ -30,13 +35,19 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/User'
      */
+
+     /**
+      * Returns all registered users of the system
+      */
 	router.get("/", function(req,res){
         var response = {};
-        mongoOp.find({},function(err,data){
+        User.find({},function(err,data){
         // Mongo command to fetch all data from collection.
             if(err) {
+                res.status(500);
                 response = {"error" : true,"message" : "Error fetching data"};
             } else {
+                res.status(200);
                 response = {"error" : false,"message" : data};
             }
             res.json(response);
@@ -63,27 +74,39 @@ module.exports = function (app) {
      *       200:
      *         description: Successfully created
      */
+
+    /**
+     * Creates a new user in the system
+     */
 	router.post("/", function(req,res){
-        var db = new mongoOp();
-        var response = {};
-        // fetch email and password from REST request.
-        // Add strict validation when you use this in Production.
-        db.userEmail = req.body.email;
- 
-        // Hash the password using SHA1 algorithm.
-        db.userPassword =  require('crypto')
-                          .createHash('sha1')
-                          .update(req.body.password)
-                          .digest('base64');
-        db.save(function(err){
-        // save() will run insert() command of MongoDB.
-        // it will add new data in collection.
-            if(err) {
-                response = {"error" : true,"message" : "Error adding data"};
-            } else {
-                response = {"error" : false,"message" : "Data added"};
+
+        // Checks all body fields
+        if(!req.body.name || !req.body.lastname || !req.body.email){
+            res.status(404).send("\"Nombre, apellido o email incorrectos\"");
+        }
+
+        var hashPass = require('crypto')
+            .createHash('sha1')
+            .update("pass")
+            .digest('base64');
+
+        console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
+        User.create({
+
+            email: req.body.email,
+            password: hashPass,
+            name: req.body.name,
+            lastname: req.body.lastname,
+            admin: false
+
+        }, function (err, result){
+
+            if(err){
+                res.status(500).send("\"Error guardando datos\"");
             }
-            res.json(response);
+            else{
+                res.status(200).send("\"Usuario creado correctamente\"");
+            }
         });
     });
 
@@ -110,7 +133,7 @@ module.exports = function (app) {
      */
     router.get("/:id", function(req,res){
         var response = {};
-        mongoOp.findById(req.params.id,function(err,data){
+        User.findById(req.params.id,function(err,data){
         // This will run Mongo Query to fetch data based on ID.
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
@@ -150,7 +173,7 @@ module.exports = function (app) {
         var response = {};
         // first find out record exists or not
         // if it does then update the record
-        mongoOp.findById(req.params.id,function(err,data){
+        User.findById(req.params.id,function(err,data){
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
             } else {
@@ -199,12 +222,12 @@ module.exports = function (app) {
     router.delete("/:id", function(req,res){
         var response = {};
         // find the data
-        mongoOp.findById(req.params.id,function(err,data){
+        User.findById(req.params.id,function(err,data){
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
             } else {
                 // data exists, remove it.
-                mongoOp.remove({_id : req.params.id},function(err){
+                User.remove({_id : req.params.id},function(err){
                     if(err) {
                         response = {"error" : true,"message" : "Error deleting data"};
                     } else {
@@ -212,6 +235,59 @@ module.exports = function (app) {
                     }
                     res.json(response);
                 });
+            }
+        });
+    });
+
+
+    /**
+     * Logs the user in if it's registered.
+     */
+    router.post("/login", function(req, res){
+
+        // Gets the Authorization header and retrieves and decodes the credentials.
+        var auth = req.headers["authorization"];
+        var bytes = base64.decode(auth.substring(6));
+        var credentials = utf8.decode(bytes);
+        var index = credentials.indexOf(":");
+        var email = credentials.substring(0, index);
+        var pass = credentials.substring(index+1);
+        console.log("Usuario: "+email+" Pass: "+pass);
+
+        // Looks for the user
+        User.findOne({email: email}, function(err, result){
+
+            if (err){
+                res.status(500).send("\"Error recuperando datos\"");
+                return;
+            }
+            // If there's a user with that email
+            if(result){
+
+                // Hashes the password in order to compare it with the stored one
+                var hashPass = require('crypto')
+                    .createHash('sha1')
+                    .update(pass)
+                    .digest('base64');
+
+                // If the password is correct, it sends back the user info
+                if(hashPass === result.password){
+                    res.status(200).send({
+                        "email": result.email,
+                        "name": result.name,
+                        "lastname": result.lastname
+                    });
+                }
+                // If password is wrong
+                else{
+                    console.log("Contraseña incorrecta");
+                    res.status(404).send("\"Email o contraseña incorrectos\"");
+                }
+            }
+            // If there's no user with that email
+            else{
+                console.log("No usuario");
+                res.status(404).send("\"Email o contraseña incorrectos\"");
             }
         });
     });

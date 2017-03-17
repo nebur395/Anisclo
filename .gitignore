@@ -9,6 +9,9 @@ logs/*
 # npm ignores
 node_modules/
 
+#mongo database ignore
+db/
+
 # eclipse specific
 .metadata
 jrebel.lic

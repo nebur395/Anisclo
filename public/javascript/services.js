@@ -57,15 +57,15 @@ angular.module('pirineoPOIApp')
             login: function (user, password, callback) {
                 var that = this;
                 $http({
-                    method: 'GET',
-                    url: 'user/login',
+                    method: 'POST',
+                    url: 'users/login',
                     headers: {
                         'Authorization': 'Basic ' +
                         $base64.encode(user + ":" + password)
                     }
                 }).success(function (data) {
                     that.authenticate(data);
-                    $state.go('home');
+                    $state.go('starter');
 
                 }).error(function (data) {
                     callback(data);
@@ -77,7 +77,7 @@ angular.module('pirineoPOIApp')
                 var that = this;
                 $http({
                     method: 'POST',
-                    url: 'user/signUp',
+                    url: 'users',
                     data: JSON.stringify(userObject),
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8'
