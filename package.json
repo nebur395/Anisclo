@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/nebur395/Anisclo#readme",
   "dependencies": {
+    "base-64": "^0.1.0",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "js-base64": "^2.1.9",
     "mongoose": "^4.9.0",
-    "swagger-jsdoc": "^1.9.2"
+    "swagger-jsdoc": "^1.9.2",
+    "utf8": "^2.1.2"
   }
 }

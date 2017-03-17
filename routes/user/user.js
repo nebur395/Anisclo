@@ -1,6 +1,7 @@
 var http = require("http");
 var express = require('express');
-var Base64 = require('./base64.js').Base64;
+var base64 = require('base-64');
+var utf8 = require('utf8');
 
 module.exports = function (app) {
 
@@ -73,27 +74,39 @@ module.exports = function (app) {
      *       200:
      *         description: Successfully created
      */
+
+    /**
+     * Creates a new user in the system
+     */
 	router.post("/", function(req,res){
-        var db = new User();
-        var response = {};
-        // fetch email and password from REST request.
-        // Add strict validation when you use this in Production.
-        db.userEmail = req.body.email;
- 
-        // Hash the password using SHA1 algorithm.
-        db.userPassword =  require('crypto')
-                          .createHash('sha1')
-                          .update(req.body.password)
-                          .digest('base64');
-        db.save(function(err){
-        // save() will run insert() command of MongoDB.
-        // it will add new data in collection.
-            if(err) {
-                response = {"error" : true,"message" : "Error adding data"};
-            } else {
-                response = {"error" : false,"message" : "Data added"};
+
+        // Checks all body fields
+        if(!req.body.name || !req.body.lastname || !req.body.email){
+            res.status(404).send("\"Nombre, apellido o email incorrectos\"");
+        }
+
+        var hashPass = require('crypto')
+            .createHash('sha1')
+            .update("pass")
+            .digest('base64');
+
+        console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
+        User.create({
+
+            email: req.body.email,
+            password: hashPass,
+            name: req.body.name,
+            lastname: req.body.lastname,
+            admin: false
+
+        }, function (err, result){
+
+            if(err){
+                res.status(500).send("\"Error guardando datos\"");
             }
-            res.json(response);
+            else{
+                res.status(200).send("\"Usuario creado correctamente\"");
+            }
         });
     });
 
@@ -230,15 +243,16 @@ module.exports = function (app) {
     /**
      * Logs the user in if it's registered.
      */
-    router.get("/login", function(req, res){
+    router.post("/login", function(req, res){
 
         // Gets the Authorization header and retrieves and decodes the credentials.
-        var auth = request.headers["Authorization"];
-        var credentials = Base64.decode(auth.substring(6));
+        var auth = req.headers["authorization"];
+        var bytes = base64.decode(auth.substring(6));
+        var credentials = utf8.decode(bytes);
         var index = credentials.indexOf(":");
         var email = credentials.substring(0, index);
         var pass = credentials.substring(index+1);
-        Console.log("Usuario: "+email+" Pass: "+pass);
+        console.log("Usuario: "+email+" Pass: "+pass);
 
         // Looks for the user
         User.findOne({email: email}, function(err, result){
@@ -247,7 +261,6 @@ module.exports = function (app) {
                 res.status(500).send("\"Error recuperando datos\"");
                 return;
             }
-
             // If there's a user with that email
             if(result){
 
@@ -267,12 +280,14 @@ module.exports = function (app) {
                 }
                 // If password is wrong
                 else{
-                    res.status(404).send("\"Usuario o contraseña incorrectos\"");
+                    console.log("Contraseña incorrecta");
+                    res.status(404).send("\"Email o contraseña incorrectos\"");
                 }
             }
             // If there's no user with that email
             else{
-                res.status(404).send("\"Usuario o contraseña incorrectos\"");
+                console.log("No usuario");
+                res.status(404).send("\"Email o contraseña incorrectos\"");
             }
         });
     });

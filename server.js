@@ -48,7 +48,7 @@ app.get('/swagger.json', function(req, res) {
 });
 
 // Database connection and server launching
-var dbUri = 'mongodb://localhost:27017/demoDb';
+var dbUri = 'mongodb://localhost:27017/aniscloDb';
 mongoose.connect(dbUri);
 mongoose.connection.once('open', function(){
 

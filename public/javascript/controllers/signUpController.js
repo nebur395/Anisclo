@@ -41,7 +41,7 @@ angular.module('pirineoPOIApp')
             // send the register form to the auth service
             $scope.signUp = function () {
                 var userObject = {
-                    user: $scope.name,
+                    name: $scope.name,
                     lastname: $scope.lastname,
                     email: $scope.email
                 };
