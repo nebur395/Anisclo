@@ -1,18 +1,25 @@
 var http = require("http");
 var express = require('express');
+var Base64 = require('./base64.js').Base64;
 
 module.exports = function (app) {
+
 	var router = express.Router();
 
     var User = app.models.User;
 
+    /**
+     * Returns all registered users of the system
+     */
 	router.get("/", function(req,res){
         var response = {};
         User.find({},function(err,data){
         // Mongo command to fetch all data from collection.
             if(err) {
+                res.status(500);
                 response = {"error" : true,"message" : "Error fetching data"};
             } else {
+                res.status(200);
                 response = {"error" : false,"message" : data};
             }
             res.json(response);
@@ -105,7 +112,59 @@ module.exports = function (app) {
             }
         });
     });
-    
+
+
+    /**
+     * Logs the user in if it's registered.
+     */
+
+    router.get("/login", function(req, res){
+
+        // Gets the Authorization header and retrieves and decodes the credentials.
+        var auth = request.headers["Authorization"];
+        var credentials = Base64.decode(auth.substring(6));
+        var index = credentials.indexOf(":");
+        var email = credentials.substring(0, index);
+        var pass = credentials.substring(index+1);
+        Console.log("Usuario: "+email+" Pass: "+pass);
+
+        // Looks for the user
+        User.findOne({email: email}, function(err, result){
+
+            if (err){
+                res.status(500).send("\"Error recuperando datos\"");
+                return;
+            }
+
+            // If there's a user with that email
+            if(result){
+
+                // Hashes the password in order to compare it with the stored one
+                var hashPass = require('crypto')
+                    .createHash('sha1')
+                    .update(pass)
+                    .digest('base64');
+
+                // If the password is correct, it sends back the user info
+                if(hashPass === result.password){
+                    res.status(200).send({
+                        "email": result.email,
+                        "name": result.name,
+                        "lastname": result.lastname
+                    });
+                }
+                // If password is wrong
+                else{
+                    res.status(404).send("\"Usuario o contraseña incorrectos\"");
+                }
+            }
+            // If there's no user with that email
+            else{
+                res.status(404).send("\"Usuario o contraseña incorrectos\"");
+            }
+        });
+    });
+
     return router;
 
 };
