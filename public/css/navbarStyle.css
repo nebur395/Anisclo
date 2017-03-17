@@ -1,5 +1,6 @@
 #appLogo {
   cursor: default;
+  color:#fff;
 }
 
 /* navbar buttons */
@@ -9,43 +10,22 @@
 
 /* navbar buttons hover */
 .navbar-inverse .navbar-nav>li>a:focus, .navbar-inverse .navbar-nav>li>a:hover {
-  color:#fff !important; background-color:#00c08d !important;
+  color:#fff !important; background-color:#8ea6c5 !important; /* w3-theme-l2 */
   cursor: pointer;
 }
 
 /* collapsed button focus */
 .navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {
-  background-color: #00c08d;
+  background-color: #8ea6c5; /* w3-theme-l2 */
 }
 
 /* collapsed button border */
 .navbar-inverse .navbar-toggle {
-  border-color: #004f3a
+  border-color: #354b68; /* w3-theme-d3 */
 }
 
 /* font family of the home button */
 .navbar {
   font-family: 'Noto Serif', serif;
   font-weight: 600;
-}
-
-@media only screen and (min-width: 768px) {
-  #appLogo img{
-    max-height: 40px;
-  }
-
-  .navbar {
-    min-height: 70px;
-  }
-
-  .navbar-nav>li>a {
-    padding-top: 25px;
-    padding-bottom: 25px;
-  }
-}
-
-@media only screen and (max-width: 767px) {
-  #appLogo img{
-    max-height: 20px;
-  }
 }
