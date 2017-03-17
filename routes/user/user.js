@@ -2,6 +2,8 @@ var http = require("http");
 var express = require('express');
 var base64 = require('base-64');
 var utf8 = require('utf8');
+var randomstring = require('randomstring');
+var sendmail = require('sendmail')();
 
 module.exports = function (app) {
 
@@ -19,40 +21,6 @@ module.exports = function (app) {
      *       userPassword:
      *         type: string
      */
-
-    /**
-     * @swagger
-     * /users/:
-     *   get:
-     *     tags:
-     *       - Users
-     *     description: Returns all users
-     *     produces:
-     *       - application/json
-     *     responses:
-     *       200:
-     *         description: An array of users
-     *         schema:
-     *           $ref: '#/definitions/User'
-     */
-
-     /**
-      * Returns all registered users of the system
-      */
-	router.get("/", function(req,res){
-        var response = {};
-        User.find({},function(err,data){
-        // Mongo command to fetch all data from collection.
-            if(err) {
-                res.status(500);
-                response = {"error" : true,"message" : "Error fetching data"};
-            } else {
-                res.status(200);
-                response = {"error" : false,"message" : data};
-            }
-            res.json(response);
-        });
-    });
 
     /**
      * @swagger
@@ -165,6 +133,44 @@ module.exports = function (app) {
     });
 
     /**
+     * Confirms a new user account creating a new random pass for it
+     * and sending it by email.
+     *
+     * NOTE: E-mail sending is not yet working
+     */
+    router.put("/confirm", function(req, res){
+
+        var randomPass = randomstring.generate(8);
+        var hashPass = require('crypto')
+            .createHash('sha1')
+            .update(randomPass)
+            .digest('base64');
+
+        User.findOneAndUpdate({email: req.body.email}, {password: hashPass}, function(err, result){
+           if(err){
+               res.status(500).send("\"Error borrando usuario\"");
+               return;
+           }
+            if(result===null){
+                res.status(404).send("\"El usuario no existe\"");
+            }
+            else{
+                sendmail({
+                    from: 'no-reply@pirineosPOIs.com',
+                    to: req.body.email,
+                    subject: 'Pirineos POI\' account confirmation',
+                    html: 'Tu contraseña es: '+randomPass
+                }, function(err, reply) {
+                    console.log(err & err.stack);
+                    console.log(reply);
+                });
+                res.status(200).send("\"Contraseña generada correctamente\"");
+            }
+        });
+
+    });
+
+    /**
      * @swagger
      * /users/{id}:
      *   get:
@@ -220,6 +226,10 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Successfully updated
+     */
+
+    /**
+     * Updates the user's password
      */
     router.put("/:email", function(req,res){
 
