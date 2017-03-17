@@ -7,7 +7,12 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
         .state('starter', {
             url: "/starter",
             templateUrl: "templates/starter.html",
-            controller: "starterCtrl"
+            controller: "starterCtrl",
+            onEnter: function($state, auth){
+                if(!auth.isAuthenticated()){
+                    $state.go('login');
+                }
+            }
         })
 
         //login screen
