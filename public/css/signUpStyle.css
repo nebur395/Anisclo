@@ -1,0 +1,13 @@
+#signUpStyle .form-group {
+  margin: 3% 0;
+}
+
+#signUpStyle h1 {
+  font-size: 200%;
+  text-align: center;
+}
+
+#starterStyle .feedbackMessages {
+  text-align: center;
+  margin: 1%;
+}

@@ -1,0 +1,17 @@
+#signInStyle input {
+  margin: 5% 0;
+}
+
+#signInStyle h1 {
+  font-size: 200%;
+  text-align: center;
+}
+
+#signInStyle .feedbackMessages {
+  text-align: center;
+  margin: 1%;
+}
+
+#signInStyle .form-group {
+  margin: 3% 0;
+}
