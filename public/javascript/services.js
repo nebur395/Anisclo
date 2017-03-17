@@ -42,7 +42,7 @@ angular.module('pirineoPOIApp')
             },
 
             getUsername: function () {
-                return _identity.user;
+                return _identity.name;
             },
 
             getEmail: function () {
