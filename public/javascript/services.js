@@ -57,7 +57,7 @@ angular.module('pirineoPOIApp')
             login: function (user, password, callback) {
                 var that = this;
                 $http({
-                    method: 'POST',
+                    method: 'GET',
                     url: 'users/login',
                     headers: {
                         'Authorization': 'Basic ' +

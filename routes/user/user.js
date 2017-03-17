@@ -83,6 +83,7 @@ module.exports = function (app) {
         // Checks all body fields
         if(!req.body.name || !req.body.lastname || !req.body.email){
             res.status(404).send("\"Nombre, apellido o email incorrectos\"");
+            return;
         }
 
         var hashPass = require('crypto')
@@ -110,143 +111,11 @@ module.exports = function (app) {
         });
     });
 
-    /**
-     * @swagger
-     * /users/{id}:
-     *   get:
-     *     tags:
-     *       - Users
-     *     description: Returns a single user
-     *     produces:
-     *       - application/json
-     *     parameters:
-     *       - name: id
-     *         description: User's id
-     *         in: path
-     *         required: true
-     *         type: integer
-     *     responses:
-     *       200:
-     *         description: A single user
-     *         schema:
-     *           $ref: '#/definitions/User'
-     */
-    router.get("/:id", function(req,res){
-        var response = {};
-        User.findById(req.params.id,function(err,data){
-        // This will run Mongo Query to fetch data based on ID.
-            if(err) {
-                response = {"error" : true,"message" : "Error fetching data"};
-            } else {
-                response = {"error" : false,"message" : data};
-            }
-            res.json(response);
-        });
-    });
-
-    /**
-     * @swagger
-     * /users/{id}:
-     *   put:
-     *     tags:
-     *       - Users
-     *     description: Updates a single user
-     *     produces:
-     *       - application/json
-     *     parameters:
-     *       - name: id
-     *         description: Users's id
-     *         in: path
-     *         required: true
-     *         type: integer
-     *       - name: user
-     *         in: body
-     *         description: Fields for the User resource
-     *         schema:
-     *           type: array
-     *           $ref: '#/definitions/User'
-     *     responses:
-     *       200:
-     *         description: Successfully updated
-     */
-    router.put("/:id", function(req,res){
-        var response = {};
-        // first find out record exists or not
-        // if it does then update the record
-        User.findById(req.params.id,function(err,data){
-            if(err) {
-                response = {"error" : true,"message" : "Error fetching data"};
-            } else {
-            // we got data from Mongo.
-            // change it accordingly.
-                if(req.body.userEmail !== undefined) {
-                    // case where email needs to be updated.
-                    data.userEmail = req.body.userEmail;
-                }
-                if(req.body.userPassword !== undefined) {
-                    // case where password needs to be updated
-                    data.userPassword = req.body.userPassword;
-                }
-                // save the data
-                data.save(function(err){
-                    if(err) {
-                        response = {"error" : true,"message" : "Error updating data"};
-                    } else {
-                        response = {"error" : false,"message" : "Data is updated for "+req.params.id};
-                    }
-                    res.json(response);
-                })
-            }
-        });
-    });
-
-    /**
-     * @swagger
-     * /users/{id}:
-     *   delete:
-     *     tags:
-     *       - Users
-     *     description: Deletes a single user
-     *     produces:
-     *       - application/json
-     *     parameters:
-     *       - name: id
-     *         description: Users's id
-     *         in: path
-     *         required: true
-     *         type: integer
-     *     responses:
-     *       200:
-     *         description: Successfully deleted
-     */
-
-    /**
-     * Removes the user with the corresponding email from the system
-     */
-    router.delete("/:email", function(req,res){
-        console.log("Email: "+req.params.email);
-
-        User.remove({email: req.params.email},function(err,result){
-            if(err) {
-                res.status(500).send("\"Error borrando usuario\"");
-                return;
-            }
-            // If there's no user with that email
-            if(result.result.n === 0){
-                res.status(404).send("\"El usuario que desea borrar no existe\"");
-            }
-            // If the user is found and successfully removed
-            else{
-                res.status(200).send("\"Usuario eliminado correctamente\"");
-            }
-        });
-    });
-
 
     /**
      * Logs the user in if it's registered.
      */
-    router.post("/login", function(req, res){
+    router.get("/login", function(req, res){
 
         // Gets the Authorization header and retrieves and decodes the credentials.
         var auth = req.headers["authorization"];
@@ -291,6 +160,132 @@ module.exports = function (app) {
             else{
                 console.log("No usuario");
                 res.status(404).send("\"Email o contraseña incorrectos\"");
+            }
+        });
+    });
+
+    /**
+     * @swagger
+     * /users/{id}:
+     *   get:
+     *     tags:
+     *       - Users
+     *     description: Returns a single user
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: User's id
+     *         in: path
+     *         required: true
+     *         type: integer
+     *     responses:
+     *       200:
+     *         description: A single user
+     *         schema:
+     *           $ref: '#/definitions/User'
+     */
+    router.get("/:email", function(req,res){
+        User.findOne({email: req.params.email},function(err,data){
+            if(err) {
+                res.status(500).send("\"Error recuperando datos\"");
+            }
+            else {
+                res.status(200).send(data);
+            }
+        });
+    });
+
+    /**
+     * @swagger
+     * /users/{id}:
+     *   put:
+     *     tags:
+     *       - Users
+     *     description: Updates a single user
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: Users's id
+     *         in: path
+     *         required: true
+     *         type: integer
+     *       - name: user
+     *         in: body
+     *         description: Fields for the User resource
+     *         schema:
+     *           type: array
+     *           $ref: '#/definitions/User'
+     *     responses:
+     *       200:
+     *         description: Successfully updated
+     */
+    router.put("/:email", function(req,res){
+
+        if(!req.body.pass){
+            res.status(404).send("\"Contraseña incorrecta\"");
+            return;
+        }
+
+        var hashPass = require('crypto')
+            .createHash('sha1')
+            .update(req.body.pass)
+            .digest('base64');
+
+        User.findOneAndUpdate({email: req.params.email}, {password:hashPass},function(err,data){
+            if(err) {
+                res.status(500).send("\"Error borrando usuario\"");
+                return;
+            }
+
+            if(data===null){
+                res.status(404).send("\"El usuario no existe\"");
+            }
+            else{
+                res.status(200).send("\"Usuario actualizado correctamente\"");
+            }
+        });
+    });
+
+    /**
+     * @swagger
+     * /users/{id}:
+     *   delete:
+     *     tags:
+     *       - Users
+     *     description: Deletes a single user
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: Users's id
+     *         in: path
+     *         required: true
+     *         type: integer
+     *     responses:
+     *       200:
+     *         description: Successfully deleted
+     */
+
+    /**
+     * Removes the user with the corresponding email from the system
+     */
+    router.delete("/:email", function(req,res){
+        console.log("Email: "+req.params.email);
+
+        User.remove({email: req.params.email},function(err,result){
+            if(err) {
+                res.status(500).send("\"Error borrando usuario\"");
+                return;
+            }
+            // If there's no user with that email
+            if(result.result.n === 0){
+                res.status(404).send("\"El usuario que desea borrar no existe\"");
+            }
+            // If the user is found and successfully removed
+            else{
+                res.status(200).send("\"Usuario eliminado correctamente\"");
             }
         });
     });
