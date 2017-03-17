@@ -1,47 +1,55 @@
 <div id="signUpStyle">
   <div class="container">
 
-    <h1 id="firstContent">¡Regístrate en Pirineo's POI!</h1>
+    <div class="col-xs-8 col-xs-offset-2">
+      <h1 id="firstContent" class="text-center">¡Regístrate en Pirineo's POI!</h1>
 
-    <form role="form" ng-submit="signUp()">
-      <!-- this div will show only when an error occurs -->
-      <div ng-if="error" class="alert alert-danger feedbackMessages">
-        <strong>&#10008</strong> {{errorMsg}}
-      </div>
-      <!-- this div will show only when the operation has been a success -->
-      <div ng-if="success" class="alert alert-success feedbackMessages">
-        <strong>&#10004</strong> {{successMsg}}
-      </div>
+      <form role="form" ng-submit="signUp()">
+        <!-- this div will show only when an error occurs -->
+        <div ng-if="error" class="alert alert-danger feedbackMessages">
+          <strong>&#10008</strong> {{errorMsg}}
+        </div>
+        <!-- this div will show only when the operation has been a success -->
+        <div ng-if="success" class="alert alert-success feedbackMessages">
+          <strong>&#10004</strong> {{successMsg}}
+        </div>
 
-      <!-- user name input form -->
-      <div class="form-group">
-        <input ng-click="hideError();hideSuccess()" type="text" ng-model="userName"
-               class="form-control" placeholder="Enter the user name" required />
-      </div>
+        <!-- name input form -->
+        <div class="form-group">
+          <input ng-click="hideError();hideSuccess()" type="text" ng-model="name"
+                 class="form-control" placeholder="Introduce tu nombre" required />
+        </div>
 
-      <!-- email input form -->
-      <div class="form-group">
-        <input ng-click="hideError();hideSuccess()" type="email" ng-model="email"
-               class="form-control" placeholder="Enter the email" required />
-      </div>
+        <!-- lastname input form -->
+        <div class="form-group">
+          <input ng-click="hideError();hideSuccess()" type="text" ng-model="lastname"
+                 class="form-control" placeholder="Introduce tu apellido" required />
+        </div>
 
-      <!-- password input form-->
-      <div class="form-group">
-        <input ng-click="hideError();hideSuccess()" type="password" ng-model="password"
-               class="form-control" placeholder="Enter the password" required />
-      </div>
+        <!-- email input form -->
+        <div class="form-group">
+          <input ng-click="hideError();hideSuccess()" type="email" ng-model="email"
+                 class="form-control" placeholder="Introduce tu correo electrónico" required />
+        </div>
 
-      <!-- repassword input form -->
-      <div class="form-group">
-        <input ng-click="hideError();hideSuccess()" type="password" ng-model="rePassword"
-               class="form-control" placeholder="Repeat password" required />
-      </div>
+        <!-- password input form-->
+        <div class="form-group">
+          <input ng-click="hideError();hideSuccess()" type="password" ng-model="password"
+                 class="form-control" placeholder="Introduce tu contraseña" required />
+        </div>
 
-      <!-- submit button form-->
-      <p style="text-align:center">
-        <button type="submit" class="btn btn-default theme-accent">Sign up</button>
-      </p>
+        <!-- repassword input form -->
+        <div class="form-group">
+          <input ng-click="hideError();hideSuccess()" type="password" ng-model="rePassword"
+                 class="form-control" placeholder="Repite tu contraseña" required />
+        </div>
 
-    </form>
+        <!-- submit button form-->
+        <p class="text-center">
+          <button type="submit" class="btn btn-default w3-theme-action">Registrarse</button>
+        </p>
+
+      </form>
+    </div>
   </div>
 </div>
