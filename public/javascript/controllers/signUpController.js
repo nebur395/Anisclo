@@ -5,8 +5,6 @@ angular.module('pirineoPOIApp')
             // inputs visual variables
             $scope.name = "";
             $scope.lastname = "";
-            $scope.password = "";
-            $scope.rePassword = "";
             $scope.email = "";
 
             // FEEDBACK MESSAGES
@@ -42,19 +40,11 @@ angular.module('pirineoPOIApp')
 
             // send the register form to the auth service
             $scope.signUp = function () {
-                // check if the both passwords match
-                if ($scope.password !== $scope.rePassword) {
-                    showError('Las contraseñas no coinciden');
-                } else {
-                    var userObject = {
-                        user: $scope.name,
-                        lastname: $scope.lastname,
-                        email: $scope.email,
-                        pass: $scope.password,
-                        repass: $scope.rePassword
-
-                    };
-                    auth.signUp(userObject, showSuccess, showError);
-                }
+                var userObject = {
+                    user: $scope.name,
+                    lastname: $scope.lastname,
+                    email: $scope.email
+                };
+                auth.signUp(userObject, showSuccess, showError);
             }
         }]);
