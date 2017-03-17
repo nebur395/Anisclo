@@ -58,7 +58,7 @@ angular.module('pirineoPOIApp')
                 var that = this;
                 $http({
                     method: 'GET',
-                    url: 'login',
+                    url: 'user/login',
                     headers: {
                         'Authorization': 'Basic ' +
                         $base64.encode(user + ":" + password)
@@ -77,7 +77,7 @@ angular.module('pirineoPOIApp')
                 var that = this;
                 $http({
                     method: 'POST',
-                    url: 'signUp',
+                    url: 'user/signUp',
                     data: JSON.stringify(userObject),
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8'
