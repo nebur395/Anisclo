@@ -3,7 +3,7 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  background-color: #ffffff;
+  background-color: #f1f1f1f1;
   font-family: 'Noto Sans', sans-serif;
 }
 
@@ -28,6 +28,15 @@ h1 {
   font-size: 200%;
 }
 
+button {
+  font-weight: 600 !important;
+  padding: 10px 20px !important;
+  transition: background-color .25s,color .15s, box-shadow .15s, opacity .25s, filter .25s, border .15s;
+}
+button:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
 .divider {
   margin-top: 15px;
   margin-bottom: 15px;
@@ -49,6 +58,11 @@ h1 {
 #leaftletMapSection {
   padding: 50px 0 0 0;
   height: 100%;
+}
+
+.feedbackMessages {
+  text-align: center;
+  margin: 1%;
 }
 
 @media only screen and (min-width: 768px){

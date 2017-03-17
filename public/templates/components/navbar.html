@@ -1,5 +1,5 @@
 <!--menu -->
-<nav class="navbar navbar-inverse navbar-fixed-top sC-navbar-theme">
+<nav class="navbar navbar-inverse navbar-fixed-top w3-navbar-theme">
   <div class="container-fluid">
     <!-- collapsed NavBar-->
     <div class="navbar-header">
@@ -13,19 +13,19 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" rel="home" id="appLogo">
-        <img src="../../img/logo.png" alt="Smart CampUZ Logo">
+        Pirineo's POI
       </a>
     </div>
     <!-- NavBar buttons-->
     <div  class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
+        <!-- login button -->
+        <li ng-if="!logged()"><a href="#/login">Iniciar Sesión</a></li>
         <!-- sign up button -->
-        <li ng-if="!logged()"><a ng-click="openLoginForm()">Iniciar Sesión</a></li>
+        <li ng-if="!logged()"><a href="#/signUp">Registrarse</a></li>
         <!-- log out button -->
         <li ng-if="logged()"><a ng-click="logout()">Salir</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-<login-form></login-form>

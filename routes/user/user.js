@@ -9,8 +9,35 @@ module.exports = function (app) {
     var User = app.models.User;
 
     /**
-     * Returns all registered users of the system
+     * @swagger
+     * definition:
+     *   User:
+     *     properties:
+     *       userEmail:
+     *         type: string
+     *       userPassword:
+     *         type: string
      */
+
+    /**
+     * @swagger
+     * /users/:
+     *   get:
+     *     tags:
+     *       - Users
+     *     description: Returns all users
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: An array of users
+     *         schema:
+     *           $ref: '#/definitions/User'
+     */
+
+     /**
+      * Returns all registered users of the system
+      */
 	router.get("/", function(req,res){
         var response = {};
         User.find({},function(err,data){
@@ -26,7 +53,26 @@ module.exports = function (app) {
         });
     });
 
-
+    /**
+     * @swagger
+     * /users/:
+     *   post:
+     *     tags:
+     *       - Users
+     *     description: Creates a new user
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: userInfo
+     *         description: User's email and password
+     *         in: body
+     *         required: true
+     *         schema:
+     *           $ref: '#/definitions/User'
+     *     responses:
+     *       200:
+     *         description: Successfully created
+     */
 	router.post("/", function(req,res){
         var db = new User();
         var response = {};
@@ -51,6 +97,27 @@ module.exports = function (app) {
         });
     });
 
+    /**
+     * @swagger
+     * /users/{id}:
+     *   get:
+     *     tags:
+     *       - Users
+     *     description: Returns a single user
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: User's id
+     *         in: path
+     *         required: true
+     *         type: integer
+     *     responses:
+     *       200:
+     *         description: A single user
+     *         schema:
+     *           $ref: '#/definitions/User'
+     */
     router.get("/:id", function(req,res){
         var response = {};
         User.findById(req.params.id,function(err,data){
@@ -63,6 +130,32 @@ module.exports = function (app) {
             res.json(response);
         });
     });
+
+    /**
+     * @swagger
+     * /users/{id}:
+     *   put:
+     *     tags:
+     *       - Users
+     *     description: Updates a single user
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: Users's id
+     *         in: path
+     *         required: true
+     *         type: integer
+     *       - name: user
+     *         in: body
+     *         description: Fields for the User resource
+     *         schema:
+     *           type: array
+     *           $ref: '#/definitions/User'
+     *     responses:
+     *       200:
+     *         description: Successfully updated
+     */
     router.put("/:id", function(req,res){
         var response = {};
         // first find out record exists or not
@@ -93,6 +186,26 @@ module.exports = function (app) {
             }
         });
     });
+
+    /**
+     * @swagger
+     * /users/{id}:
+     *   delete:
+     *     tags:
+     *       - Users
+     *     description: Deletes a single user
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: Users's id
+     *         in: path
+     *         required: true
+     *         type: integer
+     *     responses:
+     *       200:
+     *         description: Successfully deleted
+     */
     router.delete("/:id", function(req,res){
         var response = {};
         // find the data
@@ -117,7 +230,6 @@ module.exports = function (app) {
     /**
      * Logs the user in if it's registered.
      */
-
     router.get("/login", function(req, res){
 
         // Gets the Authorization header and retrieves and decodes the credentials.
