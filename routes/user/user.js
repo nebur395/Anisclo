@@ -219,22 +219,25 @@ module.exports = function (app) {
      *       200:
      *         description: Successfully deleted
      */
-    router.delete("/:id", function(req,res){
-        var response = {};
-        // find the data
-        User.findById(req.params.id,function(err,data){
+
+    /**
+     * Removes the user with the corresponding email from the system
+     */
+    router.delete("/:email", function(req,res){
+        console.log("Email: "+req.params.email);
+
+        User.remove({email: req.params.email},function(err,result){
             if(err) {
-                response = {"error" : true,"message" : "Error fetching data"};
-            } else {
-                // data exists, remove it.
-                User.remove({_id : req.params.id},function(err){
-                    if(err) {
-                        response = {"error" : true,"message" : "Error deleting data"};
-                    } else {
-                        response = {"error" : true,"message" : "Data associated with "+req.params.id+"is deleted"};
-                    }
-                    res.json(response);
-                });
+                res.status(500).send("\"Error borrando usuario\"");
+                return;
+            }
+            // If there's no user with that email
+            if(result.result.n === 0){
+                res.status(404).send("\"El usuario que desea borrar no existe\"");
+            }
+            // If the user is found and successfully removed
+            else{
+                res.status(200).send("\"Usuario eliminado correctamente\"");
             }
         });
     });
