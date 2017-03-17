@@ -29,7 +29,7 @@ h1 {
 }
 
 button {
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   padding: 10px 20px !important;
   transition: background-color .25s,color .15s, box-shadow .15s, opacity .25s, filter .25s, border .15s;
 }

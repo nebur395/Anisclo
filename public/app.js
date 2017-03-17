@@ -34,5 +34,5 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             }
         });
 
-        $urlRouterProvider.otherwise('starter');
+        $urlRouterProvider.otherwise('login');
     });
