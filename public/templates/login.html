@@ -1,10 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div id="loginStyle">
+  <div class="container">
+
+    <!-- used for right align the form -->
+    <div class="col-md-6 col-md-offset-3">
+      <h1 id="firstContent">¡Inicia sesión en Pirineo's POI</h1>
+
+      <form role="form" ng-submit="login()">
+        <!-- this div will show only when an error occurs -->
+        <div ng-if="error" class="alert alert-danger feedbackMessages">
+          <strong>&#10008</strong> {{errorMsg}}
+        </div>
+
+        <!-- user name input form -->
+        <div class="form-group">
+          <input ng-click="hideError()" type="text" ng-model="email" class="form-control"
+                 placeholder="Introduce el correo electrónico" required />
+        </div>
+
+        <!-- password input form-->
+        <div class="form-group">
+          <input ng-click="hideError()" type="password" ng-model="password" class="form-control"
+                 placeholder="Introduce la contraseña" required />
+        </div>
+
+        <!-- submit button form-->
+        <p style="text-align:center">
+          <button type="submit" class="btn btn-default theme-accent">Iniciar sesión</button>
+        </p>
+
+      </form>
+    </div>
+  </div>
+</div>
