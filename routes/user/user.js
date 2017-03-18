@@ -50,7 +50,7 @@ module.exports = function (app) {
 
         // Checks all body fields
         if(!req.body.name || !req.body.lastname || !req.body.email){
-            res.status(404).send("\"Nombre, apellido o email incorrectos\"");
+            res.status(404).send("Nombre, apellido o email incorrectos");
             return;
         }
 
@@ -71,10 +71,10 @@ module.exports = function (app) {
         }, function (err, result){
 
             if(err){
-                res.status(500).send("\"Error guardando datos\"");
+                res.status(500).send("Error guardando datos");
             }
             else{
-                res.status(200).send("\"Usuario creado correctamente\"");
+                res.status(200).send("Usuario creado correctamente");
             }
         });
     });
@@ -98,7 +98,7 @@ module.exports = function (app) {
         User.findOne({email: email}, function(err, result){
 
             if (err){
-                res.status(500).send("\"Error recuperando datos\"");
+                res.status(500).send("Error recuperando datos");
                 return;
             }
             // If there's a user with that email
@@ -121,13 +121,13 @@ module.exports = function (app) {
                 // If password is wrong
                 else{
                     console.log("Contraseña incorrecta");
-                    res.status(404).send("\"Email o contraseña incorrectos\"");
+                    res.status(404).send("Email o contraseña incorrectos");
                 }
             }
             // If there's no user with that email
             else{
                 console.log("No usuario");
-                res.status(404).send("\"Email o contraseña incorrectos\"");
+                res.status(404).send("Email o contraseña incorrectos");
             }
         });
     });
@@ -148,11 +148,11 @@ module.exports = function (app) {
 
         User.findOneAndUpdate({email: req.body.email}, {password: hashPass}, function(err, result){
            if(err){
-               res.status(500).send("\"Error borrando usuario\"");
+               res.status(500).send("Error borrando usuario");
                return;
            }
             if(result===null){
-                res.status(404).send("\"El usuario no existe\"");
+                res.status(404).send("El usuario no existe");
             }
             else{
                 sendmail({
@@ -164,7 +164,7 @@ module.exports = function (app) {
                     console.log(err & err.stack);
                     console.log(reply);
                 });
-                res.status(200).send("\"Contraseña generada correctamente\"");
+                res.status(200).send("Contraseña generada correctamente");
             }
         });
 
@@ -194,7 +194,7 @@ module.exports = function (app) {
     router.get("/:email", function(req,res){
         User.findOne({email: req.params.email},function(err,data){
             if(err) {
-                res.status(500).send("\"Error recuperando datos\"");
+                res.status(500).send("Error recuperando datos");
             }
             else {
                 res.status(200).send(data);
@@ -234,7 +234,7 @@ module.exports = function (app) {
     router.put("/:email", function(req,res){
 
         if(!req.body.pass){
-            res.status(404).send("\"Contraseña incorrecta\"");
+            res.status(404).send("Contraseña incorrecta");
             return;
         }
 
@@ -245,15 +245,15 @@ module.exports = function (app) {
 
         User.findOneAndUpdate({email: req.params.email}, {password:hashPass},function(err,data){
             if(err) {
-                res.status(500).send("\"Error borrando usuario\"");
+                res.status(500).send("Error borrando usuario");
                 return;
             }
 
             if(data===null){
-                res.status(404).send("\"El usuario no existe\"");
+                res.status(404).send("El usuario no existe");
             }
             else{
-                res.status(200).send("\"Usuario actualizado correctamente\"");
+                res.status(200).send("Usuario actualizado correctamente");
             }
         });
     });
@@ -286,16 +286,16 @@ module.exports = function (app) {
 
         User.remove({email: req.params.email},function(err,result){
             if(err) {
-                res.status(500).send("\"Error borrando usuario\"");
+                res.status(500).send("Error borrando usuario");
                 return;
             }
             // If there's no user with that email
             if(result.result.n === 0){
-                res.status(404).send("\"El usuario que desea borrar no existe\"");
+                res.status(404).send("El usuario que desea borrar no existe");
             }
             // If the user is found and successfully removed
             else{
-                res.status(200).send("\"Usuario eliminado correctamente\"");
+                res.status(200).send("Usuario eliminado correctamente");
             }
         });
     });
