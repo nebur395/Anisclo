@@ -3,7 +3,9 @@
 
     <!-- used for right align the form -->
     <div class="col-xs-8 col-xs-offset-2">
-      <h1 id="firstContent" class="text-center">Bienvenido a tu cuenta <span class="">{{name}}</span></h1>
+      <h1 id="firstContent" class="text-center">Bienvenido a tu cuenta <span class="w3-text-theme">{{name}}</span></h1>
+      <p>Apellido: <span class="w3-text-theme">{{lastname}}</span></p>
+      <p>Correo electrónico: <span class="w3-text-theme">{{email}}</span></p>
 
       <form role="form" ng-submit="settings()">
         <!-- this div will show only when an error occurs -->
@@ -17,19 +19,22 @@
 
         <!-- user name input form -->
         <div class="form-group">
-          <input ng-click="hideError()" type="text" ng-model="email" class="form-control"
-                 placeholder="Introduce tu correo electrónico" required />
+          <input ng-click="hideError();hideSuccess()" type="password" ng-model="currentPass" class="form-control"
+                 placeholder="Introduce tu contraseña actual" required />
         </div>
 
         <!-- password input form-->
         <div class="form-group">
-          <input ng-click="hideError()" type="password" ng-model="password" class="form-control"
-                 placeholder="Introduce tu contraseña" required />
+          <input ng-click="hideError();hideSuccess()" type="password" ng-model="newPass" class="form-control"
+                 placeholder="Introduce tu nueva contraseña" />
         </div>
 
         <!-- submit button form-->
         <p class="text-center">
-          <button type="submit" class="btn btn-default w3-theme-action">Iniciar sesión</button>
+          <button ng-click="delete=false" type="submit" class="btn btn-default w3-theme-action">
+            Cambiar contraseña</button>
+          <button ng-click="delete=true" type="submit" class="btn btn-default w3-theme-action">
+            Borrar cuenta</button>
         </p>
 
       </form>
