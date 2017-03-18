@@ -15,6 +15,18 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             }
         })
 
+        //starter screen
+        .state('profile', {
+            url: "/profile",
+            templateUrl: "templates/profile.html",
+            controller: "profileCtrl",
+            onEnter: function($state, auth){
+                if(!auth.isAuthenticated()){
+                    $state.go('login');
+                }
+            }
+        })
+
         //login screen
         .state('login', {
             url: "/login",
