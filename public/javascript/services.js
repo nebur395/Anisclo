@@ -34,7 +34,7 @@ angular.module('pirineoPOIApp')
                 _identity = undefined;
                 _authenticated = false;
                 localStorage.removeItem('userIdentity');
-                $state.go('starter');
+                $state.go('login');
             },
 
             getUserObject: function () {
@@ -89,5 +89,16 @@ angular.module('pirineoPOIApp')
                 });
             }
         };
+    })
+
+    // 'settings' service manage the profile settings function of the page with the server
+    .factory('settings', function ($state, $http, $base64) {
+
+        return {
+
+
+        };
     });
+
+
 
