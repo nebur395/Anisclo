@@ -3,7 +3,7 @@ var express = require('express');
 var base64 = require('base-64');
 var utf8 = require('utf8');
 var randomstring = require('randomstring');
-var sendmail = require('sendmail')();
+var nodemailer = require('nodemailer');
 
 module.exports = function (app) {
 
@@ -179,8 +179,16 @@ module.exports = function (app) {
                 res.status(404).send("El usuario no existe");
             }
             else{
-                // TODO: Enviar el correo con la nueva contraseña
-                res.status(200).send("Contraseña generada correctamente");
+                var mailOptions = {
+                    from: 'No-Reply <verif.anisclo@gmail.com>',
+                    to: req.body.email,
+                    subject: 'Pirineo POI password retrieving',
+                    html: 'Whoop! It seems you have lost your password.</p>' +
+                    '<p>Your new password is \"'+randomPass+'\".</p>' +
+                    '<p>You will be forced to change this password in your next Login.</p>' +
+                    '<p>The Pirineos POI team.</p>'
+                };
+                sendEmail(mailOptions, res);
             }
         });
 
@@ -347,8 +355,28 @@ module.exports = function (app) {
             }
         });
 
-
     });
+
+    function sendEmail(mailOptions, res){
+
+        var smtpTransport = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+                user: "verif.anisclo@gmail.com",
+                pass: "AniscloPOI"
+            }
+        });
+        smtpTransport.sendMail(mailOptions,function(error,response){
+            if(error){
+                console.log(error);
+            }
+            else{
+                res.status(200).send("\"Email enviado correctamente\"");
+            }
+        });
+
+
+    }
 
     return router;
 
