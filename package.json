@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Project responsive map social network over the MEAN stack",
   "main": "server.js",
-  "scripts": {
-    "postinstall": "cd public ; npm install;"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nebur395/Anisclo.git"
@@ -21,9 +18,14 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "mongoose": "^4.9.0",
+    "protractor": "^5.1.1",
     "randomstring": "^1.1.5",
     "sendmail": "^1.1.1",
     "swagger-jsdoc": "^1.9.2",
     "utf8": "^2.1.2"
+  },
+  "scripts": {
+    "postinstall": "cd public ; npm install;",
+    "install": "node node_modules/protractor/bin/webdriver-manager update"
   }
 }
