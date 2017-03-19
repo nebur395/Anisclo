@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/nebur395/Anisclo#readme",
   "dependencies": {
-    "angular-base64": "^2.0.5"
+    "angular-base64": "^2.0.5",
+    "nodemailer": "^3.1.7"
   }
 }

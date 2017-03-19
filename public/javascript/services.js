@@ -34,7 +34,7 @@ angular.module('pirineoPOIApp')
                 _identity = undefined;
                 _authenticated = false;
                 localStorage.removeItem('userIdentity');
-                $state.go('login');
+                $state.go('starter');
             },
 
             getUserObject: function () {
@@ -87,51 +87,8 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data);
                 });
+
             }
-        };
-    })
-
-    // 'settings' service manage the profile settings function of the page with the server
-    .factory('settings', function ($state, $http, auth) {
-
-        return {
-            // change the current user password
-            changePassword: function (email, passwords, callbackSuccess, callbackError) {
-                var that = this;
-                $http({
-                    method: 'PUT',
-                    url: 'users/' + email,
-                    data: JSON.stringify(passwords),
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    }
-                }).success(function (data) {
-                    callbackSuccess(data);
-                }).error(function (data) {
-                    callbackError(data);
-                });
-            },
-
-            // change the current user password
-            deleteAccount: function (email, password, callbackError) {
-                var that = this;
-                var temp = {current: password};
-                $http({
-                    method: 'DELETE',
-                    url: 'users/' + email,
-                    data: JSON.stringify(temp),
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    }
-                }).success(function (data) {
-                    auth.logout();
-                }).error(function (data) {
-                    callbackError(data);
-                });
-            }
-
         };
     });
-
-
 
