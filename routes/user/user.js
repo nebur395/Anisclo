@@ -158,7 +158,7 @@ module.exports = function (app) {
                 sendmail({
                     from: 'no-reply@pirineosPOIs.com',
                     to: req.body.email,
-                    subject: 'Pirineos POI\' account confirmation',
+                    subject: 'Pirineos POI\'s account confirmation',
                     html: 'Tu contraseña es: '+randomPass
                 }, function(err, reply) {
                     console.log(err & err.stack);
