@@ -18,9 +18,9 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "mongoose": "^4.9.0",
+    "nodemailer": "^3.1.7",
     "protractor": "^5.1.1",
     "randomstring": "^1.1.5",
-    "sendmail": "^1.1.1",
     "swagger-jsdoc": "^1.9.2",
     "utf8": "^2.1.2"
   },
