@@ -14,6 +14,11 @@ In order to run this project you have to have installed
   4. Use the following command to start mongod: `sudo service mongod start`
   5. Run `npm start` in order to launch the server on port 3000.
   Alternatively, you can also use `node server.js`.
+  
+## Test
+In order to run the [Protractor](http://www.protractortest.org/#/) tests of this project you have to follow these steps:
+  1. Check that Protractor is working by running `node_modules/protractor/bin/protractor --version`.
+  2. Now start up a Selenium Server: `node node_modules/protractor/bin/webdriver-manager start`. This will output a bunch of info logs. You can see information about the status of the server at `http://localhost:4444/wd/hub`.
 
 ## EditorConfig 
 [EditorConfig](http://editorconfig.org/) helps developers maintain consistent coding styles between different editors and IDEs. It is a file format for defining coding styles and a collection of text editor plugins that enable editors to read the file format and adhere to defined styles.

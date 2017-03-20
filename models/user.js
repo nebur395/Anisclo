@@ -7,6 +7,7 @@ var userSchema = mongoose.Schema({
     name: {type: String, required: true},
     lastname: {type: String, required: true},
     admin: {type: Boolean, required: true},
+    firstLogin: {type: Boolean, required: true},
     registerDate: {type: Date, default: Date.now}
 });
 
