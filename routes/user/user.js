@@ -45,6 +45,8 @@ module.exports = function (app) {
      */
 
     /**
+     * SignUp
+     *
      * Creates a new user in the system
      */
 	router.post("/", function(req,res){
@@ -88,6 +90,8 @@ module.exports = function (app) {
 
 
     /**
+     * LogIn
+     *
      * Logs the user in if it's registered.
      */
     router.get("/login", function(req, res){
@@ -134,6 +138,8 @@ module.exports = function (app) {
     });
 
     /**
+     * Retrieve Password
+     *
      * Creates a new random password for a user and sends it
      * by email in order to allow him/her to access the system
      * if it's previous password was forgotten.
@@ -161,7 +167,7 @@ module.exports = function (app) {
                     from: 'No-Reply <verif.anisclo@gmail.com>',
                     to: req.body.email,
                     subject: 'Pirineo\'s POI password retrieving',
-                    html: 'Whoop! It seems you have lost your password.</p>' +
+                    html: 'Whoops! It seems you have lost your password.</p>' +
                     '<p>Your new password is \"'+randomPass+'\".</p>' +
                     '<p>For your own security, you will be forced to change it after your first login.</p>' +
                     '<p>The Pirineo\'s POI team.</p>'
@@ -172,6 +178,8 @@ module.exports = function (app) {
     });
 
     /**
+     * Confirm account
+     *
      * Confirms a new user account creating a new random pass for it
      * and sending it by email.
      *
@@ -233,6 +241,12 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/User'
      */
+
+    /*
+     * Get user info.
+     *
+     * Returns the profile of the user with email [email]
+     */
     router.get("/:email", function(req,res){
         User.findOne({email: req.params.email},function(err,data){
             if(err) {
@@ -271,6 +285,8 @@ module.exports = function (app) {
      */
 
     /**
+     * Change password
+     *
      * Updates the user's password
      */
     router.put("/:email", function(req,res){
@@ -337,6 +353,8 @@ module.exports = function (app) {
      */
 
     /**
+     * Delete account
+     *
      * Removes the user with the corresponding email from the system
      */
     router.delete("/:email", function(req,res){
@@ -375,6 +393,10 @@ module.exports = function (app) {
 
     });
 
+    /**
+     * Sets up the SMTP server and sends an email
+     * with [mailOptions].
+     */
     function sendEmail(mailOptions, res, message){
 
         var smtpTransport = nodemailer.createTransport({
@@ -392,7 +414,6 @@ module.exports = function (app) {
                 res.status(200).send(message);
             }
         });
-
 
     }
 
