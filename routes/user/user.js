@@ -71,6 +71,7 @@ module.exports = function (app) {
             }
             else{
                 var url = "http://"+ip.address()+":3000/users/confirm/"+req.body.email;
+                var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
                 var mailOptions = {
                     from: 'No-Reply <verif.anisclo@gmail.com>',
                     to: req.body.email,
@@ -80,7 +81,7 @@ module.exports = function (app) {
                     '<a href='+url+' target="_blank">'+url+'</a>'+
                     '<p>The Pirineo\'s POI team.</p>'
                 };
-                sendEmail(mailOptions, res);
+                sendEmail(mailOptions, res, message);
             }
         });
     });
@@ -155,6 +156,7 @@ module.exports = function (app) {
                 res.status(404).send("El usuario no existe");
             }
             else{
+                var message = "Nueva contraseña generada. Comprueba tu correo para inciar sesión con ella.";
                 var mailOptions = {
                     from: 'No-Reply <verif.anisclo@gmail.com>',
                     to: req.body.email,
@@ -164,7 +166,7 @@ module.exports = function (app) {
                     '<p>For your own security, you will be forced to change it after your first login.</p>' +
                     '<p>The Pirineo\'s POI team.</p>'
                 };
-                sendEmail(mailOptions, res);
+                sendEmail(mailOptions, res, message);
             }
         });
     });
@@ -193,7 +195,7 @@ module.exports = function (app) {
                 res.status(404).send("El usuario no existe");
             }
             else{
-                var url = "http://"+ip.address()+":3000/users/confirm/"+req.params.email;
+                var message = "Confirmación completada. Comprueba tu correo para iniciar sesión con tu contraseña.";
                 var mailOptions = {
                     from: 'No-Reply <verif.anisclo@gmail.com>',
                     to: req.params.email,
@@ -204,7 +206,7 @@ module.exports = function (app) {
                     '<p>For your own security, you will be forced to change it after your first login.</p>'+
                     '<p>The Pirineo\'s POI team.</p>'
                 };
-                sendEmail(mailOptions, res);
+                sendEmail(mailOptions, res, message);
             }
         });
 
@@ -373,7 +375,7 @@ module.exports = function (app) {
 
     });
 
-    function sendEmail(mailOptions, res){
+    function sendEmail(mailOptions, res, message){
 
         var smtpTransport = nodemailer.createTransport({
             service: "Gmail",
@@ -387,7 +389,7 @@ module.exports = function (app) {
                 console.log(error);
             }
             else{
-                res.status(200).send("\"Email enviado correctamente\"");
+                res.status(200).send(message);
             }
         });
 
