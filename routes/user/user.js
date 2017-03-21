@@ -4,6 +4,7 @@ var base64 = require('base-64');
 var utf8 = require('utf8');
 var randomstring = require('randomstring');
 var nodemailer = require('nodemailer');
+var ip = require('ip');
 
 module.exports = function (app) {
 
@@ -54,16 +55,10 @@ module.exports = function (app) {
             return;
         }
 
-        var hashPass = require('crypto')
-            .createHash('sha1')
-            .update("pass")
-            .digest('base64');
-
         console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
         User.create({
 
             email: req.body.email,
-            password: hashPass,
             name: req.body.name,
             lastname: req.body.lastname,
             firstLogin: true,
@@ -75,7 +70,17 @@ module.exports = function (app) {
                 res.status(500).send("Error guardando datos");
             }
             else{
-                res.status(200).send("Usuario creado correctamente");
+                var url = "http://"+ip.address()+":3000/users/confirm/"+req.body.email;
+                var mailOptions = {
+                    from: 'No-Reply <verif.anisclo@gmail.com>',
+                    to: req.body.email,
+                    subject: 'Pirineo\'s POI account confirmation',
+                    html: 'Hello there! Wellcome to Pirineo\'s POI.</p>' +
+                    '<p>Click on the link below to confim you account and get your password :)</p>' +
+                    '<a href='+url+' target="_blank">'+url+'</a>'+
+                    '<p>The Pirineo\'s POI team.</p>'
+                };
+                sendEmail(mailOptions, res);
             }
         });
     });
@@ -128,35 +133,6 @@ module.exports = function (app) {
     });
 
     /**
-     * Confirms a new user account creating a new random pass for it
-     * and sending it by email.
-     *
-     * NOTE: E-mail sending is not yet working
-     */
-    router.put("/confirm", function(req, res){
-
-        var randomPass = randomstring.generate(8);
-        var hashPass = require('crypto')
-            .createHash('sha1')
-            .update(randomPass)
-            .digest('base64');
-
-        User.findOneAndUpdate({email: req.body.email}, {password: hashPass}, function(err, result){
-           if(err){
-               res.status(500).send("Error borrando usuario");
-               return;
-           }
-            if(result===null){
-                res.status(404).send("El usuario no existe");
-            }
-            else{
-                res.status(200).send("Contraseña generada correctamente");
-            }
-        });
-
-    });
-
-    /**
      * Creates a new random password for a user and sends it
      * by email in order to allow him/her to access the system
      * if it's previous password was forgotten.
@@ -182,11 +158,51 @@ module.exports = function (app) {
                 var mailOptions = {
                     from: 'No-Reply <verif.anisclo@gmail.com>',
                     to: req.body.email,
-                    subject: 'Pirineo POI password retrieving',
+                    subject: 'Pirineo\'s POI password retrieving',
                     html: 'Whoop! It seems you have lost your password.</p>' +
                     '<p>Your new password is \"'+randomPass+'\".</p>' +
-                    '<p>You will be forced to change this password in your next Login.</p>' +
-                    '<p>The Pirineos POI team.</p>'
+                    '<p>For your own security, you will be forced to change it after your first login.</p>' +
+                    '<p>The Pirineo\'s POI team.</p>'
+                };
+                sendEmail(mailOptions, res);
+            }
+        });
+    });
+
+    /**
+     * Confirms a new user account creating a new random pass for it
+     * and sending it by email.
+     *
+     * NOTE: E-mail sending is not yet working
+     */
+    router.get("/confirm/:email", function(req, res){
+
+        var randomPass = randomstring.generate(8);
+        var hashPass = require('crypto')
+            .createHash('sha1')
+            .update(randomPass)
+            .digest('base64');
+        console.log("RandomPass: "+randomPass);
+        console.log(req.params.email);
+        User.findOneAndUpdate({email: req.params.email}, {password: hashPass}, function(err, result){
+            if(err){
+                res.status(500).send("Error borrando usuario");
+                return;
+            }
+            if(result===null){
+                res.status(404).send("El usuario no existe");
+            }
+            else{
+                var url = "http://"+ip.address()+":3000/users/confirm/"+req.params.email;
+                var mailOptions = {
+                    from: 'No-Reply <verif.anisclo@gmail.com>',
+                    to: req.params.email,
+                    subject: 'Pirineo\'s POI account password',
+                    html: 'Hello there!</p>' +
+                    '<p>This is your password for your Pirineo\'s POI account:</p>' +
+                    '<p>'+randomPass+'</p>'+
+                    '<p>For your own security, you will be forced to change it after your first login.</p>'+
+                    '<p>The Pirineo\'s POI team.</p>'
                 };
                 sendEmail(mailOptions, res);
             }
