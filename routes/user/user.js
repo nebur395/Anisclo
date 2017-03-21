@@ -3,7 +3,8 @@ var express = require('express');
 var base64 = require('base-64');
 var utf8 = require('utf8');
 var randomstring = require('randomstring');
-var sendmail = require('sendmail')();
+var nodemailer = require('nodemailer');
+var ip = require('ip');
 
 module.exports = function (app) {
 
@@ -54,18 +55,13 @@ module.exports = function (app) {
             return;
         }
 
-        var hashPass = require('crypto')
-            .createHash('sha1')
-            .update("pass")
-            .digest('base64');
-
         console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
         User.create({
 
             email: req.body.email,
-            password: hashPass,
             name: req.body.name,
             lastname: req.body.lastname,
+            firstLogin: true,
             admin: false
 
         }, function (err, result){
@@ -74,7 +70,18 @@ module.exports = function (app) {
                 res.status(500).send("Error guardando datos");
             }
             else{
-                res.status(200).send("Usuario creado correctamente");
+                var url = "http://"+ip.address()+":3000/users/confirm/"+req.body.email;
+                var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
+                var mailOptions = {
+                    from: 'No-Reply <verif.anisclo@gmail.com>',
+                    to: req.body.email,
+                    subject: 'Pirineo\'s POI account confirmation',
+                    html: 'Hello there! Wellcome to Pirineo\'s POI.</p>' +
+                    '<p>Click on the link below to confim you account and get your password :)</p>' +
+                    '<a href='+url+' target="_blank">'+url+'</a>'+
+                    '<p>The Pirineo\'s POI team.</p>'
+                };
+                sendEmail(mailOptions, res, message);
             }
         });
     });
@@ -101,33 +108,65 @@ module.exports = function (app) {
                 res.status(500).send("Error recuperando datos");
                 return;
             }
-            // If there's a user with that email
-            if(result){
 
-                // Hashes the password in order to compare it with the stored one
-                var hashPass = require('crypto')
-                    .createHash('sha1')
-                    .update(pass)
-                    .digest('base64');
+            // Hashes the password in order to compare it with the stored one
+            var hashPass = require('crypto')
+                .createHash('sha1')
+                .update(pass)
+                .digest('base64');
 
-                // If the password is correct, it sends back the user info
-                if(hashPass === result.password){
-                    res.status(200).send({
+            // If there's a user with that email and the password is correct
+            if(result && hashPass===result.password){
+
+                res.status(200).send({
                         "email": result.email,
                         "name": result.name,
-                        "lastname": result.lastname
-                    });
-                }
-                // If password is wrong
-                else{
-                    console.log("Contraseña incorrecta");
-                    res.status(404).send("Email o contraseña incorrectos");
-                }
+                        "lastname": result.lastname,
+                        "firstLogin": result.firstLogin,
+                        "admin": result.admin
+                });
             }
-            // If there's no user with that email
+            // If there's no user with that email or the password is incorrect
             else{
-                console.log("No usuario");
                 res.status(404).send("Email o contraseña incorrectos");
+            }
+        });
+    });
+
+    /**
+     * Creates a new random password for a user and sends it
+     * by email in order to allow him/her to access the system
+     * if it's previous password was forgotten.
+     *
+     */
+    router.put("/retrievePass", function(req, res){
+
+        var randomPass = randomstring.generate(8);
+        var hashPass = require('crypto')
+            .createHash('sha1')
+            .update(randomPass)
+            .digest('base64');
+
+        User.findOneAndUpdate({email: req.body.email}, {password: hashPass, firstLogin: true}, function(err, result){
+            if(err){
+                res.status(500).send("Error borrando usuario");
+                return;
+            }
+            if(result===null){
+                res.status(404).send("El usuario no existe");
+            }
+            else{
+                var message = "Nueva contraseña generada. Comprueba tu correo para inciar sesión con ella.";
+                var mailOptions = {
+                    from: 'No-Reply <verif.anisclo@gmail.com>',
+                    to: req.body.email,
+                    subject: 'Pirineo\'s POI password retrieving',
+                    html: 'Whoop! It seems you have lost your password.</p>' +
+                    '<p>Your new password is \"'+randomPass+'\".</p>' +
+                    '<p>For your own security, you will be forced to change it after your first login.</p>' +
+                    '<p>The Pirineo\'s POI team.</p>'
+                };
+                sendEmail(mailOptions, res, message);
             }
         });
     });
@@ -138,33 +177,36 @@ module.exports = function (app) {
      *
      * NOTE: E-mail sending is not yet working
      */
-    router.put("/confirm", function(req, res){
+    router.get("/confirm/:email", function(req, res){
 
         var randomPass = randomstring.generate(8);
         var hashPass = require('crypto')
             .createHash('sha1')
             .update(randomPass)
             .digest('base64');
-
-        User.findOneAndUpdate({email: req.body.email}, {password: hashPass}, function(err, result){
-           if(err){
-               res.status(500).send("Error borrando usuario");
-               return;
-           }
+        console.log("RandomPass: "+randomPass);
+        console.log(req.params.email);
+        User.findOneAndUpdate({email: req.params.email}, {password: hashPass}, function(err, result){
+            if(err){
+                res.status(500).send("Error borrando usuario");
+                return;
+            }
             if(result===null){
                 res.status(404).send("El usuario no existe");
             }
             else{
-                sendmail({
-                    from: 'no-reply@pirineosPOIs.com',
-                    to: req.body.email,
-                    subject: 'Pirineos POI\' account confirmation',
-                    html: 'Tu contraseña es: '+randomPass
-                }, function(err, reply) {
-                    console.log(err & err.stack);
-                    console.log(reply);
-                });
-                res.status(200).send("Contraseña generada correctamente");
+                var message = "Confirmación completada. Comprueba tu correo para iniciar sesión con tu contraseña.";
+                var mailOptions = {
+                    from: 'No-Reply <verif.anisclo@gmail.com>',
+                    to: req.params.email,
+                    subject: 'Pirineo\'s POI account password',
+                    html: 'Hello there!</p>' +
+                    '<p>This is your password for your Pirineo\'s POI account:</p>' +
+                    '<p>'+randomPass+'</p>'+
+                    '<p>For your own security, you will be forced to change it after your first login.</p>'+
+                    '<p>The Pirineo\'s POI team.</p>'
+                };
+                sendEmail(mailOptions, res, message);
             }
         });
 
@@ -233,27 +275,43 @@ module.exports = function (app) {
      */
     router.put("/:email", function(req,res){
 
-        if(!req.body.pass){
+        if(!req.body.current || !req.body.new){
             res.status(404).send("Contraseña incorrecta");
             return;
         }
 
-        var hashPass = require('crypto')
-            .createHash('sha1')
-            .update(req.body.pass)
-            .digest('base64');
+        User.findOne({email: req.params.email}, function(err, result){
 
-        User.findOneAndUpdate({email: req.params.email}, {password:hashPass},function(err,data){
-            if(err) {
-                res.status(500).send("Error borrando usuario");
+            if (err){
+                res.status(500).send("Error recuperando datos");
                 return;
             }
 
-            if(data===null){
-                res.status(404).send("El usuario no existe");
+            var hashPass = require('crypto')
+                .createHash('sha1')
+                .update(req.body.current)
+                .digest('base64');
+            console.log(result);
+            if(result && hashPass===result.password){
+
+                var hashPass = require('crypto')
+                    .createHash('sha1')
+                    .update(req.body.new)
+                    .digest('base64');
+
+                User.update({email: req.params.email}, {password:hashPass, firstLogin: false},function(err,data){
+
+                    if(err) {
+                        res.status(500).send("Error borrando usuario");
+                        return;
+                    }
+
+                    res.status(200).send("Usuario actualizado correctamente");
+
+                });
             }
             else{
-                res.status(200).send("Usuario actualizado correctamente");
+                res.status(404).send("Email o contraseña incorrectos");
             }
         });
     });
@@ -284,21 +342,59 @@ module.exports = function (app) {
     router.delete("/:email", function(req,res){
         console.log("Email: "+req.params.email);
 
-        User.remove({email: req.params.email},function(err,result){
-            if(err) {
-                res.status(500).send("Error borrando usuario");
+        User.findOne({email: req.params.email}, function(err, result){
+
+            if (err){
+                res.status(500).send("Error recuperando datos");
                 return;
             }
-            // If there's no user with that email
-            if(result.result.n === 0){
-                res.status(404).send("El usuario que desea borrar no existe");
+            // Hashes the password in order to compare it with the stored one
+            var hashPass = require('crypto')
+                .createHash('sha1')
+                .update(req.body.current)
+                .digest('base64');
+
+            // If the user exists and the password is correct
+            if(result && hashPass===result.password){
+
+                User.remove({email: req.params.email},function(err,result){
+
+                    if(err) {
+                        res.status(500).send("Error borrando usuario");
+                        return;
+                    }
+
+                    res.status(200).send("Usuario eliminado correctamente");
+                });
             }
-            // If the user is found and successfully removed
+            // If the user doesn't exists or the password is incorrect
             else{
-                res.status(200).send("Usuario eliminado correctamente");
+                res.status(404).send("Email o contraseña incorrectos");
             }
         });
+
     });
+
+    function sendEmail(mailOptions, res, message){
+
+        var smtpTransport = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+                user: "verif.anisclo@gmail.com",
+                pass: "AniscloPOI"
+            }
+        });
+        smtpTransport.sendMail(mailOptions,function(error,response){
+            if(error){
+                console.log(error);
+            }
+            else{
+                res.status(200).send(message);
+            }
+        });
+
+
+    }
 
     return router;
 
