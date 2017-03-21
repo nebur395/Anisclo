@@ -26,6 +26,7 @@
   },
   "scripts": {
     "postinstall": "cd public ; npm install;",
-    "install": "node node_modules/protractor/bin/webdriver-manager update"
+    "install": "node_modules/protractor/bin/webdriver-manager update",
+    "test": "node_modules/protractor/bin/protractor test/protractor/conf.js"
   }
 }
