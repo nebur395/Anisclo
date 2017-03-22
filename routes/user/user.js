@@ -103,7 +103,7 @@ module.exports = function (app) {
         var index = credentials.indexOf(":");
         var email = credentials.substring(0, index);
         var pass = credentials.substring(index+1);
-        console.log("Usuario: "+email+" Pass: "+pass);
+        console.log("Email: "+email+" Pass: "+pass);
 
         // Looks for the user
         User.findOne({email: email}, function(err, result){
@@ -155,7 +155,7 @@ module.exports = function (app) {
 
         User.findOneAndUpdate({email: req.body.email}, {password: hashPass, firstLogin: true}, function(err, result){
             if(err){
-                res.status(500).send("Error borrando usuario");
+                res.status(500).send("Error recuperando y actualizando datos");
                 return;
             }
             if(result===null){
@@ -251,9 +251,14 @@ module.exports = function (app) {
         User.findOne({email: req.params.email},function(err,data){
             if(err) {
                 res.status(500).send("Error recuperando datos");
+                return;
+            }
+
+            if(data){
+                res.status(200).send(data);
             }
             else {
-                res.status(200).send(data);
+                res.status(404).send("El usuario no existe");
             }
         });
     });
@@ -307,7 +312,7 @@ module.exports = function (app) {
                 .createHash('sha1')
                 .update(req.body.current)
                 .digest('base64');
-            console.log(result);
+
             if(result && hashPass===result.password){
 
                 var hashPass = require('crypto')
@@ -353,12 +358,17 @@ module.exports = function (app) {
      */
 
     /**
-     * Delete account
+     * Delete user
      *
      * Removes the user with the corresponding email from the system
      */
     router.delete("/:email", function(req,res){
         console.log("Email: "+req.params.email);
+
+        if(!req.body.current){
+            res.status(404).send("Contraseña incorrecta");
+            return;
+        }
 
         User.findOne({email: req.params.email}, function(err, result){
 
@@ -418,5 +428,4 @@ module.exports = function (app) {
     }
 
     return router;
-
 };
