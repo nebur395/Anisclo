@@ -1,32 +1,33 @@
+'use strict';
+
+var LoginPageObject = require('./pageObjects/login.js');
+
 // spec.js
-describe('Protractor Demo App', function() {
-    var firstNumber = element(by.model('first'));
-    var secondNumber = element(by.model('second'));
-    var goButton = element(by.id('gobutton'));
-    var latestResult = element(by.binding('latest'));
+describe('Login Page', function() {
+    var loginPage;
 
     beforeEach(function() {
-        browser.get('http://juliemr.github.io/protractor-demo/');
+       loginPage = new LoginPageObject();
     });
 
-    it('should have a title', function() {
-        expect(browser.getTitle()).toEqual('Super Calculator');
+    it('should show an error with incorrect credentials', function() {
+        loginPage.get();
+
+        loginPage.setEmail('nebur395@hotmail.com');
+        loginPage.setPassword('pass23');
+        loginPage.loginClick();
+
+        expect(browser.getTitle()).toEqual("Pirineo's POI");
+        expect(loginPage.getError()).toContain("Email o contraseña incorrectos");
     });
 
-    it('should add one and two', function() {
-        firstNumber.sendKeys(1);
-        secondNumber.sendKeys(2);
+    it('should login', function() {
+        loginPage.get();
 
-        goButton.click();
+        loginPage.setEmail('nebur395@hotmail.com');
+        loginPage.setPassword('pass');
+        loginPage.loginClick();
 
-        expect(latestResult.getText()).toEqual('3');
-    });
-
-    it('should add four and six', function() {
-        firstNumber.sendKeys(4);
-        secondNumber.sendKeys(6);
-
-        goButton.click();
-        expect(latestResult.getText()).toEqual('10');
+        expect(browser.getCurrentUrl()).toBe('http://localhost:8080/#/starter');
     });
 });
