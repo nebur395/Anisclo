@@ -34,7 +34,7 @@ angular.module('pirineoPOIApp')
                 _identity = undefined;
                 _authenticated = false;
                 localStorage.removeItem('userIdentity');
-                $state.go('starter');
+                $state.go('login');
             },
 
             getUserObject: function () {
@@ -53,6 +53,14 @@ angular.module('pirineoPOIApp')
                 return _identity.lastname;
             },
 
+            getAdmin: function () {
+                return _identity.admin;
+            },
+
+            getFirstLogin: function () {
+                return _identity.firstLogin;
+            },
+
             //send the login info to the server
             login: function (user, password, callback) {
                 var that = this;
@@ -65,8 +73,13 @@ angular.module('pirineoPOIApp')
                     }
                 }).success(function (data) {
                     that.authenticate(data);
-                    $state.go('starter');
-
+                    if (data.firstLogin) {
+                        $state.go('changePassword');
+                    } else if (data.admin) {
+                        $state.go('admin');
+                    } else {
+                        $state.go('starter');
+                    }
                 }).error(function (data) {
                     callback(data);
                 });
@@ -87,8 +100,121 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data);
                 });
+            },
 
+            // Change password user service
+            changePassword: function (userObject, email, callbackError) {
+                var that = this;
+                $http({
+                    method: 'PUT',
+                    url: 'users/' + email,
+                    data: JSON.stringify(userObject),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    var tmp = angular.fromJson(localStorage.userIdentity);
+                    tmp.firstLogin = false;
+                    that.authenticate(tmp);
+                    $state.go('starter');
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            },
+
+            // Retrieve password user service
+            retrievePassword: function (email, callbackSuccess, callbackError) {
+                var that = this;
+                $http({
+                    method: 'PUT',
+                    url: 'users/retrievePass',
+                    data: JSON.stringify(email),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
             }
         };
+    })
+
+    // 'manageState' service manage the control access to the different states of the page
+    .factory('manageState', function (auth) {
+        return {
+            // manage access privileges of any logged state
+            manageLoggedState: function (state) {
+                if (!auth.isAuthenticated()){
+                    return "login";
+                } else if(auth.getAdmin()) {
+                    return "admin";
+                } else if(auth.getFirstLogin()) {
+                    return "changePassword";
+                } else {
+                    if (state == "changePassword") {
+                        return "starter";
+                    } else {
+                        return state;
+                    }
+                }
+            },
+            // manage access privileges of any not logged state
+            manageNotLoggedState: function (state) {
+                if (!auth.isAuthenticated()) {
+                    return state;
+                } else if(auth.getAdmin()) {
+                    return "admin";
+                } else if(auth.getFirstLogin()) {
+                    return "changePassword";
+                } else {
+                    return "starter";
+                }
+            }
+        };
+    })
+
+    // 'settings' service manage the profile settings function of the page with the server
+    .factory('settings', function ($state, $http, auth) {
+        return {
+            // change the current user password
+            changePassword: function (email, passwords, callbackSuccess, callbackError) {
+                var that = this;
+                $http({
+                    method: 'PUT',
+                    url: 'users/' + email,
+                    data: JSON.stringify(passwords),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            },
+
+            // change the current user password
+            deleteAccount: function (email, password, callbackError) {
+                var that = this;
+                var temp = {current: password};
+                $http({
+                    method: 'DELETE',
+                    url: 'users/' + email,
+                    data: JSON.stringify(temp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    auth.logout();
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            }
+
+        };
     });
+
+
 
