@@ -95,6 +95,23 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data);
                 });
+            },
+
+            // Change password user service
+            changePassword: function (userObject, email, callbackError) {
+                var that = this;
+                $http({
+                    method: 'PUT',
+                    url: 'users/' + email,
+                    data: JSON.stringify(userObject),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    $state.go('starter');
+                }).error(function (data) {
+                    callbackError(data);
+                });
             }
         };
     })
