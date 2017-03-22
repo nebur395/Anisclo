@@ -45,6 +45,8 @@ module.exports = function (app) {
      */
 
     /**
+     * SignUp
+     *
      * Creates a new user in the system
      */
 	router.post("/", function(req,res){
@@ -70,7 +72,7 @@ module.exports = function (app) {
                 res.status(500).send("Error guardando datos");
             }
             else{
-                var url = "http://"+ip.address()+":3000/users/confirm/"+req.body.email;
+                var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
                 var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
                 var mailOptions = {
                     from: 'No-Reply <verif.anisclo@gmail.com>',
@@ -88,6 +90,8 @@ module.exports = function (app) {
 
 
     /**
+     * LogIn
+     *
      * Logs the user in if it's registered.
      */
     router.get("/login", function(req, res){
@@ -99,7 +103,7 @@ module.exports = function (app) {
         var index = credentials.indexOf(":");
         var email = credentials.substring(0, index);
         var pass = credentials.substring(index+1);
-        console.log("Usuario: "+email+" Pass: "+pass);
+        console.log("Email: "+email+" Pass: "+pass);
 
         // Looks for the user
         User.findOne({email: email}, function(err, result){
@@ -134,6 +138,8 @@ module.exports = function (app) {
     });
 
     /**
+     * Retrieve Password
+     *
      * Creates a new random password for a user and sends it
      * by email in order to allow him/her to access the system
      * if it's previous password was forgotten.
@@ -149,7 +155,7 @@ module.exports = function (app) {
 
         User.findOneAndUpdate({email: req.body.email}, {password: hashPass, firstLogin: true}, function(err, result){
             if(err){
-                res.status(500).send("Error borrando usuario");
+                res.status(500).send("Error recuperando y actualizando datos");
                 return;
             }
             if(result===null){
@@ -161,7 +167,7 @@ module.exports = function (app) {
                     from: 'No-Reply <verif.anisclo@gmail.com>',
                     to: req.body.email,
                     subject: 'Pirineo\'s POI password retrieving',
-                    html: 'Whoop! It seems you have lost your password.</p>' +
+                    html: 'Whoops! It seems you have lost your password.</p>' +
                     '<p>Your new password is \"'+randomPass+'\".</p>' +
                     '<p>For your own security, you will be forced to change it after your first login.</p>' +
                     '<p>The Pirineo\'s POI team.</p>'
@@ -172,6 +178,8 @@ module.exports = function (app) {
     });
 
     /**
+     * Confirm account
+     *
      * Confirms a new user account creating a new random pass for it
      * and sending it by email.
      *
@@ -233,13 +241,24 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/User'
      */
+
+    /*
+     * Get user info.
+     *
+     * Returns the profile of the user with email [email]
+     */
     router.get("/:email", function(req,res){
         User.findOne({email: req.params.email},function(err,data){
             if(err) {
                 res.status(500).send("Error recuperando datos");
+                return;
+            }
+
+            if(data){
+                res.status(200).send(data);
             }
             else {
-                res.status(200).send(data);
+                res.status(404).send("El usuario no existe");
             }
         });
     });
@@ -271,6 +290,8 @@ module.exports = function (app) {
      */
 
     /**
+     * Change password
+     *
      * Updates the user's password
      */
     router.put("/:email", function(req,res){
@@ -291,7 +312,7 @@ module.exports = function (app) {
                 .createHash('sha1')
                 .update(req.body.current)
                 .digest('base64');
-            console.log(result);
+
             if(result && hashPass===result.password){
 
                 var hashPass = require('crypto')
@@ -337,10 +358,17 @@ module.exports = function (app) {
      */
 
     /**
+     * Delete user
+     *
      * Removes the user with the corresponding email from the system
      */
     router.delete("/:email", function(req,res){
         console.log("Email: "+req.params.email);
+
+        if(!req.body.current){
+            res.status(404).send("Contraseña incorrecta");
+            return;
+        }
 
         User.findOne({email: req.params.email}, function(err, result){
 
@@ -375,6 +403,10 @@ module.exports = function (app) {
 
     });
 
+    /**
+     * Sets up the SMTP server and sends an email
+     * with [mailOptions].
+     */
     function sendEmail(mailOptions, res, message){
 
         var smtpTransport = nodemailer.createTransport({
@@ -393,9 +425,7 @@ module.exports = function (app) {
             }
         });
 
-
     }
 
     return router;
-
 };
