@@ -11,9 +11,9 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             onEnter: function($state, auth){
                 if(!auth.isAuthenticated()){
                     $state.go('login');
-                } else if(auth.getAdmin()) {
+                } else if(auth.isAuthenticated() && auth.getAdmin()) {
                     $state.go('admin');
-                } else if(auth.getFirstLogin()) {
+                } else if(auth.isAuthenticated() && auth.getFirstLogin()) {
                     $state.go('changePassword');
                 }
             }
@@ -27,9 +27,9 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             onEnter: function($state, auth){
                 if(!auth.isAuthenticated()){
                     $state.go('login');
-                } else if(auth.getAdmin()) {
+                } else if(auth.isAuthenticated() && auth.getAdmin()) {
                     $state.go('admin');
-                } else if(auth.getFirstLogin()) {
+                } else if(auth.isAuthenticated() && auth.getFirstLogin()) {
                     $state.go('changePassword');
                 }
             }
@@ -43,9 +43,9 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             onEnter: function($state, auth){
                 if(!auth.isAuthenticated()){
                     $state.go('login');
-                } else if(auth.getAdmin()) {
+                } else if(auth.isAuthenticated() && auth.getAdmin()) {
                     $state.go('admin');
-                } else if(!auth.getFirstLogin()) {
+                } else if(auth.isAuthenticated() && !auth.getFirstLogin()) {
                     $state.go('starter');
                 }
             }
