@@ -75,6 +75,8 @@ angular.module('pirineoPOIApp')
                     that.authenticate(data);
                     if (data.firstLogin) {
                         $state.go('changePassword');
+                    } else if (data.admin) {
+                        $state.go('admin');
                     } else {
                         $state.go('starter');
                     }
@@ -139,9 +141,42 @@ angular.module('pirineoPOIApp')
         };
     })
 
+    // 'manageState' service manage the control access to the different states of the page
+    .factory('manageState', function (auth) {
+        return {
+            // manage access privileges of any logged state
+            manageLoggedState: function (state) {
+                if (!auth.isAuthenticated()){
+                    return "login";
+                } else if(auth.getAdmin()) {
+                    return "admin";
+                } else if(auth.getFirstLogin()) {
+                    return "changePassword";
+                } else {
+                    if (state == "changePassword") {
+                        return "starter";
+                    } else {
+                        return state;
+                    }
+                }
+            },
+            // manage access privileges of any not logged state
+            manageNotLoggedState: function (state) {
+                if (!auth.isAuthenticated()) {
+                    return state;
+                } else if(auth.getAdmin()) {
+                    return "admin";
+                } else if(auth.getFirstLogin()) {
+                    return "changePassword";
+                } else {
+                    return "starter";
+                }
+            }
+        };
+    })
+
     // 'settings' service manage the profile settings function of the page with the server
     .factory('settings', function ($state, $http, auth) {
-
         return {
             // change the current user password
             changePassword: function (email, passwords, callbackSuccess, callbackError) {

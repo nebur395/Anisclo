@@ -8,13 +8,10 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             url: "/starter",
             templateUrl: "templates/starter.html",
             controller: "starterCtrl",
-            onEnter: function($state, auth){
-                if(!auth.isAuthenticated()){
-                    $state.go('login');
-                } else if(auth.isAuthenticated() && auth.getAdmin()) {
-                    $state.go('admin');
-                } else if(auth.isAuthenticated() && auth.getFirstLogin()) {
-                    $state.go('changePassword');
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageLoggedState("starter");
+                if (correctState != "starter") {
+                    $state.go(correctState);
                 }
             }
         })
@@ -24,13 +21,10 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             url: "/profile",
             templateUrl: "templates/profile.html",
             controller: "profileCtrl",
-            onEnter: function($state, auth){
-                if(!auth.isAuthenticated()){
-                    $state.go('login');
-                } else if(auth.isAuthenticated() && auth.getAdmin()) {
-                    $state.go('admin');
-                } else if(auth.isAuthenticated() && auth.getFirstLogin()) {
-                    $state.go('changePassword');
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageLoggedState("profile");
+                if (correctState != "profile") {
+                    $state.go(correctState);
                 }
             }
         })
@@ -40,13 +34,10 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             url: "/changePassword",
             templateUrl: "templates/changePassword.html",
             controller: "changePasswordCtrl",
-            onEnter: function($state, auth){
-                if(!auth.isAuthenticated()){
-                    $state.go('login');
-                } else if(auth.isAuthenticated() && auth.getAdmin()) {
-                    $state.go('admin');
-                } else if(auth.isAuthenticated() && !auth.getFirstLogin()) {
-                    $state.go('starter');
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageLoggedState("changePassword");
+                if (correctState != "changePassword") {
+                    $state.go(correctState);
                 }
             }
         })
@@ -56,9 +47,10 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             url: "/retrievePassword",
             templateUrl: "templates/retrievePassword.html",
             controller: "retrievePasswordCtrl",
-            onEnter: function($state, auth){
-                if(auth.isAuthenticated()){
-                    $state.go('starter');
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageNotLoggedState("retrievePassword");
+                if (correctState != "retrievePassword") {
+                    $state.go(correctState);
                 }
             }
         })
@@ -68,9 +60,10 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             url: "/login",
             templateUrl: "templates/login.html",
             controller: "loginCtrl",
-            onEnter: function($state, auth){
-                if(auth.isAuthenticated()){
-                    $state.go('starter');
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageNotLoggedState("login");
+                if (correctState != "login") {
+                    $state.go(correctState);
                 }
             }
         })
@@ -80,9 +73,10 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             url: "/signUp",
             templateUrl: "templates/signUp.html",
             controller: "signUpCtrl",
-            onEnter: function($state, auth){
-                if(auth.isAuthenticated()){
-                    $state.go('starter');
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageNotLoggedState("signUp");
+                if (correctState != "signUp") {
+                    $state.go(correctState);
                 }
             }
         });
