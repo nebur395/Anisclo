@@ -58,6 +58,7 @@ var httpsServer = https.createServer(credentials,app);
 
 
 // Database connection and server launching
+
 var dbUri = 'mongodb://localhost:27017/aniscloDb';
 mongoose.connect(dbUri);
 mongoose.connection.once('open', function(){
