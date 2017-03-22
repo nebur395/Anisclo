@@ -53,6 +53,14 @@ angular.module('pirineoPOIApp')
                 return _identity.lastname;
             },
 
+            getAdmin: function () {
+                return _identity.admin;
+            },
+
+            getFirstLogin: function () {
+                return _identity.firstLogin;
+            },
+
             //send the login info to the server
             login: function (user, password, callback) {
                 var that = this;

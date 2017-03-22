@@ -11,6 +11,10 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             onEnter: function($state, auth){
                 if(!auth.isAuthenticated()){
                     $state.go('login');
+                } else if(auth.getAdmin()) {
+                    $state.go('admin');
+                } else if(auth.getFirstLogin()) {
+                    $state.go('changePassword');
                 }
             }
         })
@@ -23,6 +27,26 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             onEnter: function($state, auth){
                 if(!auth.isAuthenticated()){
                     $state.go('login');
+                } else if(auth.getAdmin()) {
+                    $state.go('admin');
+                } else if(auth.getFirstLogin()) {
+                    $state.go('changePassword');
+                }
+            }
+        })
+
+        //login screen
+        .state('changePassword', {
+            url: "/changePassword",
+            templateUrl: "templates/changePassword.html",
+            controller: "changePasswordCtrl",
+            onEnter: function($state, auth){
+                if(!auth.isAuthenticated()){
+                    $state.go('login');
+                } else if(auth.getAdmin()) {
+                    $state.go('admin');
+                } else if(!auth.getFirstLogin()) {
+                    $state.go('starter');
                 }
             }
         })
