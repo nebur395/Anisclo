@@ -1,9 +1,9 @@
 language: node_js
 node_js:
 - 6.9.5
-#before_script:
-# - "node_modules/protractor/bin/webdriver-manager start &"
-# - sleep 3
+before_script:
+ - "node_modules/protractor/bin/webdriver-manager start &"
+ - sleep 3
 services: mongodb
 #script:
 # - "node_modules/protractor/bin/protractor test/protractor/conf.js"
