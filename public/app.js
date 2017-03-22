@@ -35,7 +35,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
             }
         })
 
-        //login screen
+        // change password screen
         .state('changePassword', {
             url: "/changePassword",
             templateUrl: "templates/changePassword.html",
@@ -46,6 +46,18 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64'])
                 } else if(auth.getAdmin()) {
                     $state.go('admin');
                 } else if(!auth.getFirstLogin()) {
+                    $state.go('starter');
+                }
+            }
+        })
+
+        //login screen
+        .state('retrievePassword', {
+            url: "/retrievePassword",
+            templateUrl: "templates/retrievePassword.html",
+            controller: "retrievePasswordCtrl",
+            onEnter: function($state, auth){
+                if(auth.isAuthenticated()){
                     $state.go('starter');
                 }
             }

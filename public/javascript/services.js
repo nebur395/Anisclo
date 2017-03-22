@@ -112,6 +112,23 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data);
                 });
+            },
+
+            // Retrieve password user service
+            retrievePassword: function (email, callbackSuccess, callbackError) {
+                var that = this;
+                $http({
+                    method: 'PUT',
+                    url: 'users/retrievePass',
+                    data: JSON.stringify(email),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
             }
         };
     })
