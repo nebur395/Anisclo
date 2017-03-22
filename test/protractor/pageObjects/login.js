@@ -24,7 +24,7 @@ var LoginPageObject = function() {
 
     this.getError = function() {
         return errorMsg.getText();
-    }
+    };
 };
 
 module.exports = LoginPageObject;

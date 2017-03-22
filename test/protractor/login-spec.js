@@ -2,7 +2,7 @@
 
 var LoginPageObject = require('./pageObjects/login.js');
 
-// spec.js
+// login-spec.js
 describe('Login Page', function() {
     var loginPage;
 
@@ -17,7 +17,6 @@ describe('Login Page', function() {
         loginPage.setPassword('pass23');
         loginPage.loginClick();
 
-        expect(browser.getTitle()).toEqual("Pirineo's POI");
         expect(loginPage.getError()).toContain("Email o contraseña incorrectos");
     });
 
