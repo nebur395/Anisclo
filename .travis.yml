@@ -1,11 +1,4 @@
 language: node_js
 node_js:
 - 6.9.5
-before_script:
- - "export DISPLAY=:99.0"
- - "sh -e /etc/init.d/xvfb start"
- - "node_modules/protractor/bin/webdriver-manager start 2>&1 &"
- - sleep 3
 services: mongodb
-script:
- - "node_modules/protractor/bin/protractor test/protractor/conf.js"
