@@ -16,7 +16,10 @@
   "dependencies": {
     "base-64": "^0.1.0",
     "body-parser": "^1.17.1",
+    "crypto": "0.0.3",
     "express": "^4.15.2",
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
     "ip": "^1.1.5",
     "mongoose": "^4.9.0",
     "nodemailer": "^3.1.7",

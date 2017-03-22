@@ -3,7 +3,7 @@ var express = require("express"),
     mongoose = require('mongoose'),
     swaggerJSDoc = require("swagger-jsdoc"),
     crypto = require("crypto"),
-    fs = require("fs")
+    fs = require("fs"),
     https = require("https");
 
 
