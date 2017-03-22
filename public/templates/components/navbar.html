@@ -12,7 +12,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" rel="home" id="appLogo" href="#/starter">
+      <a class="navbar-brand" rel="home" id="appLogo" ng-href="#/{{home}}">
         Pirineo's POI
       </a>
     </div>
@@ -20,16 +20,16 @@
     <div  class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
         <!-- login button -->
-        <li ng-if="!logged()"><a href="#/login"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>
+        <li ng-if="!logged"><a href="#/login"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>
           Iniciar Sesión</a></li>
         <!-- sign up button -->
-        <li ng-if="!logged()"><a href="#/signUp"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>
+        <li ng-if="!logged"><a href="#/signUp"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>
           Registrarse</a></li>
         <!-- log out button -->
-        <li ng-if="logged()"><a href="#/profile"><i class="fa fa-cogs fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged"><a href="#/profile"><i class="fa fa-cogs fa-lg" aria-hidden="true"></i>
           Cuenta</a></li>
         <!-- log out button -->
-        <li ng-if="logged()"><a ng-click="logout()"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged"><a ng-click="logout()"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
           Salir</a></li>
       </ul>
     </div>

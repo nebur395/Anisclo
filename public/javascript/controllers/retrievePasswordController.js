@@ -40,7 +40,7 @@ angular.module('pirineoPOIApp')
             $scope.retrievePassword = function () {
                 var aux = {
                     email: $scope.email
-                }
+                };
                 auth.retrievePassword(aux, showSuccess, showError);
             }
         }]);

@@ -73,8 +73,11 @@ angular.module('pirineoPOIApp')
                     }
                 }).success(function (data) {
                     that.authenticate(data);
-                    $state.go('starter');
-
+                    if (data.firstLogin) {
+                        $state.go('changePassword');
+                    } else {
+                        $state.go('starter');
+                    }
                 }).error(function (data) {
                     callback(data);
                 });
@@ -108,6 +111,9 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
+                    var tmp = angular.fromJson(localStorage.userIdentity);
+                    tmp.firstLogin = false;
+                    that.authenticate(tmp);
                     $state.go('starter');
                 }).error(function (data) {
                     callbackError(data);
