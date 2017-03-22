@@ -12,7 +12,7 @@ var swaggerDefinition = {
         version: '1.0.0',
         description: 'Descripción del API del servicio de usuarios'
     },
-    host: 'localhost:3000',
+    host: 'localhost:8080',
     basePath: '/'
 };
 
@@ -53,8 +53,8 @@ mongoose.connect(dbUri);
 mongoose.connection.once('open', function(){
 
     console.log("MongoDB connection created in "+dbUri);
-    app.listen(3000, function(){
-        console.log("Server listening to PORT 3000");
+    app.listen(8080, function(){
+        console.log("Server listening to PORT 8080");
     });
 
 });

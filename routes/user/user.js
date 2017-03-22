@@ -72,7 +72,7 @@ module.exports = function (app) {
                 res.status(500).send("Error guardando datos");
             }
             else{
-                var url = "http://"+ip.address()+":3000/users/confirm/"+req.body.email;
+                var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
                 var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
                 var mailOptions = {
                     from: 'No-Reply <verif.anisclo@gmail.com>',
