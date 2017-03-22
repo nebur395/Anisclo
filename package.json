@@ -28,6 +28,11 @@
   "scripts": {
     "postinstall": "cd public ; npm install;",
     "install": "node_modules/protractor/bin/webdriver-manager update",
-    "test": "node_modules/protractor/bin/protractor test/protractor/conf.js"
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0"
   }
 }
