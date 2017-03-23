@@ -1,4 +1,4 @@
-angular.module('pirineoPOIApp', ['ui.router', 'base64'])
+angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha'])
 
     .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
