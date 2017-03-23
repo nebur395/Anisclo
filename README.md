@@ -12,13 +12,17 @@ In order to run this project you have to have installed
   3. Run the command `npm install`. This must be done the first time only, in order to
   install the dependencies of the project.
   4. Use the following command to start mongod: `sudo service mongod start`
-  5. Run `npm start` in order to launch the server on port 3000.
+  5. Run `npm start` in order to launch two instances of the server on port 8080 (HTTP) and 8443 (HTTPS).
   Alternatively, you can also use `node server.js`.
+  6. Open a web browser (Preferably Mozilla Firefox or Chrome >55.X) and type http://localhost:8080 for the HTTP page, or https://localhost:8443 for the HTTPS equivalent.
   
 ## Test
 In order to run the [Protractor](http://www.protractortest.org/#/) tests of this project you have to follow these steps:
   1. Check that Protractor is working by running `node_modules/protractor/bin/protractor --version`.
-  2. Now start up a Selenium Server: `node node_modules/protractor/bin/webdriver-manager start`. This will output a bunch of info logs. You can see information about the status of the server at `http://localhost:4444/wd/hub`.
+  2. Now start up a Selenium Server: `node_modules/protractor/bin/webdriver-manager start`. This will output a bunch of info logs. You can see information about the status of the server at `http://localhost:4444/wd/hub`.
+  3. Finally, execute `node_modules/protractor/bin/protractor test/protractor/conf.js`.
+  
+In order to run the [Mocha](https://mochajs.org/) tests of this project you only have to execute the following command: `npm test`
 
 ## EditorConfig 
 [EditorConfig](http://editorconfig.org/) helps developers maintain consistent coding styles between different editors and IDEs. It is a file format for defining coding styles and a collection of text editor plugins that enable editors to read the file format and adhere to defined styles.
