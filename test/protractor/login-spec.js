@@ -2,15 +2,18 @@
 
 var LoginPageObject = require('./pageObjects/login.js');
 var StarterPageOject = require('./pageObjects/starter');
+var NavbarPageOject = require('./pageObjects/components/navbar.js');
 
 // login-spec.js
 describe('Login Page', function() {
     var loginPage,
-        starterPage;
+        starterPage,
+        navbar;
 
     beforeEach(function() {
        loginPage = new LoginPageObject();
        starterPage = new StarterPageOject();
+       navbar = new NavbarPageOject();
     });
 
     it('should show an error with incorrect credentials', function() {
@@ -36,7 +39,7 @@ describe('Login Page', function() {
     it('should logout', function() {
         loginPage.get();
 
-        starterPage.goLogout();
+        navbar.goLogout();
 
         expect(browser.getCurrentUrl()).toBe(loginPage.getUrl());
     });
