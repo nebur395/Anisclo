@@ -323,7 +323,7 @@ module.exports = function (app) {
                 User.update({email: req.params.email}, {password:hashPass, firstLogin: false},function(err,data){
 
                     if(err) {
-                        res.status(500).send("Error borrando usuario");
+                        res.status(500).send("Error actualizando usuario");
                         return;
                     }
 
@@ -332,7 +332,7 @@ module.exports = function (app) {
                 });
             }
             else{
-                res.status(404).send("Email o contraseña incorrectos");
+                res.status(404).send("Contraseña actual incorrecta");
             }
         });
     });
