@@ -421,7 +421,7 @@ describe('User', function(){
     describe("#changePass()", function(){
 
         var updateSuccessMessage = "Usuario actualizado correctamente";
-        var updateWrongPassOrUserMessage = "Email o contraseña incorrectos";
+        var updateWrongPass = "Contraseña actual incorrecta";
         var missingPasswordsMessage = "Contraseña incorrecta";
 
         /*
@@ -465,7 +465,7 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(updateWrongPassOrUserMessage);
+                    result.text.should.equal(updateWrongPass);
 
                     done();
                 });
@@ -480,7 +480,7 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(updateWrongPassOrUserMessage);
+                    result.text.should.equal(updateWrongPass);
 
                     done();
                 });
