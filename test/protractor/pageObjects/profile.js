@@ -5,6 +5,7 @@ var ProfilePageOject = function() {
     var newPasswordInput = element(by.model('newPass'));
     var changePasswordButton = element(by.buttonText('Cambiar contraseña'));
     var deleteAccountButton = element(by.buttonText('Borrar cuenta'));
+    var successMsg = element(by.binding('successMsg'));
     var errorMsg = element(by.binding('errorMsg'));
 
     this.getUrl = function() {
@@ -25,6 +26,10 @@ var ProfilePageOject = function() {
 
     this.deleteAccountClick = function() {
         deleteAccountButton.click()
+    };
+
+    this.getSuccess = function() {
+        return successMsg.getText();
     };
 
     this.getError = function() {
