@@ -7,6 +7,10 @@ var ProfilePageOject = function() {
     var deleteAccountButton = element(by.buttonText('Borrar cuenta'));
     var errorMsg = element(by.binding('errorMsg'));
 
+    this.getUrl = function() {
+        return "http://localhost:8080/#/profile";
+    };
+
     this.setCurrentPassword = function(password) {
         currentPasswordInput.sendKeys(password)
     };

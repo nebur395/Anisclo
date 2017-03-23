@@ -10,6 +10,10 @@ var LoginPageObject = function() {
         browser.get('http://localhost:8080/#/login');
     };
 
+    this.getUrl = function() {
+        return "http://localhost:8080/#/login";
+    };
+
     this.setEmail = function(email) {
         emailInput.sendKeys(email)
     };
