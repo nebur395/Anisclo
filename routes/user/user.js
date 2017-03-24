@@ -53,15 +53,15 @@ module.exports = function (app) {
 	router.post("/", function(req,res){
 
         // Checks all body fields
-        if(!req.body.name || !req.body.lastname || !req.body.email || !req.body.captcha){
+        if(!req.body.name || !req.body.lastname || !req.body.email){ //|| !req.body.captcha
             res.status(404).send("Nombre, apellido o email incorrectos");
             return;
         }
 
-        request.post(
+        /*request.post(
             'https://www.google.com/recaptcha/api/siteverify',
             { json: {
-                "secret": '--PRIVATE KEY',
+                "secret": '<PRIVATE KEY>',
                 "response": req.body.captcha
             } },
             function (error, response, body) {
@@ -69,7 +69,7 @@ module.exports = function (app) {
                     console.log(body)
                 }
             }
-        );
+        );*/
 
         console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
         User.create({
