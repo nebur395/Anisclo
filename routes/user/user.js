@@ -7,6 +7,7 @@ var nodemailer = require('nodemailer');
 var ip = require('ip');
 var request = require('request');
 
+
 module.exports = function (app) {
 
 	var router = express.Router();
@@ -53,23 +54,21 @@ module.exports = function (app) {
 	router.post("/", function(req,res){
 
         // Checks all body fields
-        if(!req.body.name || !req.body.lastname || !req.body.email){ //|| !req.body.captcha
+        if(!req.body.name || !req.body.lastname || !req.body.email){
             res.status(404).send("Nombre, apellido o email incorrectos");
             return;
         }
 
-        /*request.post(
-            'https://www.google.com/recaptcha/api/siteverify',
-            { json: {
-                "secret": '<PRIVATE KEY>',
-                "response": req.body.captcha
-            } },
-            function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    console.log(body)
+        /*
+        request.post({url:'https://www.google.com/recaptcha/api/siteverify',
+                form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
+                function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+                        console.log(body)
+                    }
                 }
-            }
-        );*/
+        );
+        */
 
         console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
         User.create({
