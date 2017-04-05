@@ -328,7 +328,7 @@ module.exports = function (app) {
 
             if(result && hashPass===result.password){
 
-                var hashPass = require('crypto')
+                hashPass = require('crypto')
                     .createHash('sha1')
                     .update(req.body.new)
                     .digest('base64');
@@ -345,7 +345,7 @@ module.exports = function (app) {
                 });
             }
             else{
-                res.status(404).send("Contraseña actual incorrecta");
+                res.status(404).send("Email o contraseña actual incorrectos");
             }
         });
     });
