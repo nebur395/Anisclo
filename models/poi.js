@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 
+mongoose.Promise = global.Promise;
 // Create the Schema
 var poiSchema = mongoose.Schema({
 
