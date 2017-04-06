@@ -18,6 +18,13 @@ var poiSchema = mongoose.Schema({
 
 });
 
+/**
+* Creates a JSON object with all the fields of the POI
+* excluding the rating, creation date and __v fields.
+* It also sets the image attached to the POI, changing the 
+* ObjectID for a string in base-64 enconding
+* or the null for a blank string if there's no image.
+*/
 poiSchema.methods.createResponse = function(imageData){
     var poi = this.toJSON();
     delete poi.rating;
