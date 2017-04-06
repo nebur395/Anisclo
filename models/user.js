@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-// Create Schema
+// Create the Schema
 var userSchema = mongoose.Schema({
     email : {type: String, required: true, unique: true},
     password: {type: String},
@@ -11,5 +11,5 @@ var userSchema = mongoose.Schema({
     registerDate: {type: Date, default: Date.now}
 });
 
-// Create model if not exists
+// Create the model if it does not exists
 module.exports = mongoose.model('User', userSchema);
