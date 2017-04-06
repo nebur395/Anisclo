@@ -5,6 +5,8 @@ var utf8 = require('utf8');
 var randomstring = require('randomstring');
 var nodemailer = require('nodemailer');
 var ip = require('ip');
+var request = require('request');
+
 
 module.exports = function (app) {
 
@@ -56,6 +58,17 @@ module.exports = function (app) {
             res.status(404).send("Nombre, apellido o email incorrectos");
             return;
         }
+
+        /*
+        request.post({url:'https://www.google.com/recaptcha/api/siteverify',
+                form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
+                function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+                        console.log(body)
+                    }
+                }
+        );
+        */
 
         console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
         User.create({
@@ -323,7 +336,7 @@ module.exports = function (app) {
                 User.update({email: req.params.email}, {password:hashPass, firstLogin: false},function(err,data){
 
                     if(err) {
-                        res.status(500).send("Error borrando usuario");
+                        res.status(500).send("Error actualizando usuario");
                         return;
                     }
 
@@ -332,7 +345,7 @@ module.exports = function (app) {
                 });
             }
             else{
-                res.status(404).send("Email o contraseña incorrectos");
+                res.status(404).send("Contraseña actual incorrecta");
             }
         });
     });

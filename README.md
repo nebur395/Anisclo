@@ -14,7 +14,7 @@ In order to run this project you have to have installed
   4. Use the following command to start mongod: `sudo service mongod start`
   5. Run `npm start` in order to launch two instances of the server on port 8080 (HTTP) and 8443 (HTTPS).
   Alternatively, you can also use `node server.js`.
-  6. Open a web browser (Preferably Mozilla Firefox or Chrome >55.X) and type http://localhost:8080 for the HTTP page, or https://localhost:8443 to go the HTTPS equivalent..
+  6. Open a web browser (Preferably Mozilla Firefox or Chrome >55.X) and type http://localhost:8080 for the HTTP page, or https://localhost:8443 for the HTTPS equivalent.
   
 ## Test
 In order to run the [Protractor](http://www.protractortest.org/#/) tests of this project you have to follow these steps:

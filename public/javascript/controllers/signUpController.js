@@ -6,6 +6,7 @@ angular.module('pirineoPOIApp')
             $scope.name = "";
             $scope.lastname = "";
             $scope.email = "";
+            $scope.recaptchaResponse;
 
             // FEEDBACK MESSAGES
 
@@ -43,7 +44,8 @@ angular.module('pirineoPOIApp')
                 var userObject = {
                     name: $scope.name,
                     lastname: $scope.lastname,
-                    email: $scope.email
+                    email: $scope.email,
+                    captcha: $scope.recaptchaResponse
                 };
                 auth.signUp(userObject, showSuccess, showError);
             }
