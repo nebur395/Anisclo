@@ -421,7 +421,7 @@ describe('User', function(){
     describe("#changePass()", function(){
 
         var updateSuccessMessage = "Usuario actualizado correctamente";
-        var updateWrongPass = "Contraseña actual incorrecta";
+        var updateWrongPass = "Email o contraseña actual incorrectos";
         var missingPasswordsMessage = "Contraseña incorrecta";
 
         /*
