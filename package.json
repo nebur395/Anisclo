@@ -19,6 +19,7 @@
     "crypto": "0.0.3",
     "express": "^4.15.2",
     "fs": "0.0.1-security",
+    "gridfs-stream": "^1.1.1",
     "https": "^1.0.0",
     "ip": "^1.1.5",
     "mongoose": "^4.9.0",
@@ -26,6 +27,7 @@
     "protractor": "^5.1.1",
     "randomstring": "^1.1.5",
     "request": "^2.81.0",
+    "semaphore": "^1.0.5",
     "swagger-jsdoc": "^1.9.2",
     "utf8": "^2.1.2"
   },

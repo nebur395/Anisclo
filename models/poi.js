@@ -11,17 +11,18 @@ var poiSchema = mongoose.Schema({
     owner: {type: String, required: true},
     fav: {type: Boolean, default: false},
     rating: {type: [Number], default: []},
-    url: {type: String},
+    url: {type: String, default: ""},
     image: {type:mongoose.Schema.Types.ObjectId, default: null},
     creationDate: {type: Date, default: Date.now}
 
 });
 
-poiSchema.methods.createResponse = function(){
+poiSchema.methods.createResponse = function(imageData){
     var poi = this.toJSON();
     delete poi.rating;
     delete poi.creationDate;
     delete poi.__v;
+    poi.image = imageData;
     return poi;
 };
 
