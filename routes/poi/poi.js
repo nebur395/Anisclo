@@ -2,6 +2,7 @@ var express = require('express');
 var grid = require("gridfs-stream");
 var semaphore = require("semaphore")(1);
 var mongoose = require("mongoose");
+var fs = require("fs");
 grid.mongo = mongoose.mongo;
 
 
@@ -16,6 +17,8 @@ module.exports = function (app) {
      * Returns a list of the existing POIs in the system.
      */
     router.get("/", function(req, res){
+
+        gfs = grid(mongoose.connection.db);
 
         POI.find({}, function(err, result){
 
@@ -37,7 +40,7 @@ module.exports = function (app) {
                     if(poi.image!=null){
                         retrieveImage(poi.image, function(data){
 
-                            pois.push(poi.createResponse(""));
+                            pois.push(poi.createResponse(data));
 
                             if(index == result.length - 1){
                                 res.status(200).send({
@@ -66,8 +69,10 @@ module.exports = function (app) {
      */
     router.post("/", function(req, res){
 
+        gfs = grid(mongoose.connection.db);
+
         // Checks all body fields
-        if(!req.body.userID || !req.body.poi){
+        if(!req.body.email || !req.body.poi){
             res.status(404).send("Usuario o POI incorrecto");
             return;
         }
@@ -79,7 +84,7 @@ module.exports = function (app) {
         }
 
         // It searches for the user.
-        User.findOne({"email": req.body.userID}, function(err, user){
+        User.findOne({"email": req.body.email}, function(err, user){
 
             if(err) {
                 res.status(500).send("Error recuperando datos");
@@ -97,21 +102,22 @@ module.exports = function (app) {
                     tags: req.body.poi.tags,
                     lat: req.body.poi.lat,
                     lng: req.body.poi.lng,
-                    owner: req.body.userID
+                    owner: req.body.email
 
                 });
 
                 // Checks if there's an image attached to the POI.
-                if(req.body.image){
-                    var name = "";
-                    var path = "";
+                if(req.body.poi.image){
+                    // TODO: Extraer nombre y path de la request
+                    var name = "imagen";
+                    var path = "./image.jpg";
                     // Stores the image in the system and adds it to the POI
                     storeImage(name, path, function(imageId){
                         newPoi.image = imageId;
                         // Checks if there's an URL attached to the POI
-                        if(req.body.url){
+                        if(req.body.poi.url){
                             // It shorts and stores the URL in the system and adds it to the POI
-                            urlShortener(url, function(shortUrl){
+                            urlShortener(req.body.poi.url, function(shortUrl){
                                 newPoi.url = shortUrl;
                                 // Stores the POI in the system
                                 newPoi.save(function(err, result){
@@ -139,8 +145,8 @@ module.exports = function (app) {
                     });
                 }
                 // If there's no image attached to the POI, it checks if there's an URL attached.
-                else if(req.body.url){
-                    urlShortener(url, function(shortUrl){
+                else if(req.body.poi.url){
+                    urlShortener(req.body.poi.url, function(shortUrl){
                         newPoi.url = shortUrl;
                         // Stores the POI in the system.
                         newPoi.save(function(err, result){
@@ -178,7 +184,6 @@ module.exports = function (app) {
      *  Stores a new image in the system.
      */
     function storeImage(name, path, callback){
-        gfs = grid(mongoose.connection.db);
         var writestream = gfs.createWriteStream({
             filename: name
         });
