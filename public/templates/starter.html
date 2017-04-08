@@ -1,8 +1,12 @@
 <div id="starterStyle">
   <div class="container-fluid">
 
-    <ui-gmap-google-map center="map.center" options="options" zoom="map.zoom"
-                        style="height: 100%"></ui-gmap-google-map>
+    <ui-gmap-google-map center="map.center" options="options" zoom="map.zoom" events="map.events"
+                        style="height: 100%">
+      <ui-gmap-marker idKey="'marker'" ng-repeat="m in map.markers" coords="m.coords" icon="m.icon">
+
+      </ui-gmap-marker>
+    </ui-gmap-google-map>
 
   </div>
  </div>
