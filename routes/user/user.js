@@ -20,25 +20,40 @@ module.exports = function (app) {
      *   post:
      *     tags:
      *       - Users
-     *     description: Creates a new user
+     *     summary: Crear usuario (Sign Up)
+     *     description: Crea un nuevo usuario en el sistema, comprueba que no se trate de un bot
+     *       con el recaptcha de google y manda un correo electrónico al parámetro [email] con un
+     *       link para confirmar la creación de la cuenta.
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: userInfo
-     *         description: User's email and password
+     *       - name: name
+     *         description: Nombre del usuario.
      *         in: body
      *         required: true
-     *         schema:
-     *           $ref: '#/definitions/User'
+     *         type: string
+     *       - name: lastname
+     *         description: Apellido del usuario.
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: captcha
+     *         description: Key del recaptcha de google.
+     *         in: body
+     *         required: true
+     *         type: string
      *     responses:
      *       200:
-     *         description: Successfully created
-     */
-
-    /**
-     * SignUp
-     *
-     * Creates a new user in the system
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
 	router.post("/", function(req,res){
 
@@ -90,11 +105,34 @@ module.exports = function (app) {
         });
     });
 
-
     /**
-     * LogIn
-     *
-     * Logs the user in if it's registered.
+     * @swagger
+     * /users/login:
+     *   get:
+     *     tags:
+     *       - Users
+     *     summary: Iniciar sesión
+     *     description: End-point para iniciar sesión en el sistema. El usuario pasa los
+     *       credenciales de la cuenta siguiendo el estándar de base64.
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           Base64 estándar: `Authorization: Basic + base64.encode(user:password)`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
+     *     responses:
+     *       200:
+     *         description: Información de perfil del usuario.
+     *         schema:
+     *           $ref: '#/definitions/User'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.get("/login", function(req, res){
 
@@ -140,12 +178,30 @@ module.exports = function (app) {
     });
 
     /**
-     * Retrieve Password
-     *
-     * Creates a new random password for a user and sends it
-     * by email in order to allow him/her to access the system
-     * if it's previous password was forgotten.
-     *
+     * @swagger
+     * /users/retrievePass:
+     *   put:
+     *     tags:
+     *       - Users
+     *     summary: Recuperar contraseña
+     *     description: Genera una nueva contraseña aleatoria para el usuario y la manda por
+     *       correo electrónico para que el usuario pueda acceder al sistema si se ha olvidado de
+     *       su contraseña anterior.
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.put("/retrievePass", function(req, res){
 
