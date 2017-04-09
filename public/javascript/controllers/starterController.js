@@ -24,7 +24,6 @@ angular.module('pirineoPOIApp')
                 }
             };
             $scope.options = { scrollwheel: false, streetViewControl:false, mapTypeControl:false};
-            //$scope.map = {        };
             uiGmapGoogleMapApi.then(function(maps) {
 
 
