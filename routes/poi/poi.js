@@ -298,6 +298,73 @@ module.exports = function (app) {
         });
     });
 
+
+    router.put("/:id", function(req, res){
+
+        // Checks all body fields
+        if(!req.body.userEmail || !req.body.poi){
+            res.status(404).send("Usuario o POI incorrecto");
+            return;
+        }
+        // Checks all POI fields
+        if(!req.body.poi.name || !req.body.poi.description || !req.body.poi.tags ||
+            !req.body.poi.lat || !req.body.poi.lng){
+            res.status(404).send("Uno o más campos del POI son incorrectos");
+            return;
+        }
+
+        User.findOne({"email": req.body.userEmail}, function(err, user){
+
+            if(err) {
+                res.status(500).send("Error recuperando datos");
+                return;
+            }
+
+            if(user){
+
+                POI.findOne({"_id":req.params.id, "owner":req.body.userEmail}, function(err, poi){
+
+                    if(err) {
+                        res.status(500).send("Error recuperando datos");
+                        return;
+                    }
+
+                    if(poi){
+
+                        poi.name = req.body.poi.name;
+                        poi.description = req.body.poi.description;
+                        poi.tags = req.body.poi.tags;
+                        poi.lat = req.body.poi.lat;
+                        poi.lng = req.body.poi.lng;
+
+                        if(req.body.poi.url){
+                            poi.url = req.body.poi.url;
+                        }
+
+                        poi.save(function(err, result){
+
+                            if(err) {
+                                res.status(500).send("Error actualizando POI");
+                            }
+                            else{
+                                res.status(200).send("POI actualizado correctamente");
+                            }
+                        });
+                    }
+                    else{
+                        res.status(404).send("El POI no existe");
+                    }
+                });
+            }
+            // If the user doesn't exists.
+            else{
+                res.status(404).send("El usuario no existe");
+            }
+
+        });
+
+    });
+
     /**
      *  Stores a new image in the system.
      */
@@ -402,6 +469,7 @@ module.exports = function (app) {
                 return callback();
             });
         }
+        // If there's nothing attached to the POI.
         else{
             return callback();
         }
