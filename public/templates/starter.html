@@ -3,6 +3,7 @@
 
     <ui-gmap-google-map center="map.center" options="options" zoom="map.zoom" events="map.events"
                         style="height: 100%">
+
       <ui-gmap-marker idKey="'marker'" ng-repeat="m in map.markers" coords="m.coords" icon="m.icon">
 
       </ui-gmap-marker>
