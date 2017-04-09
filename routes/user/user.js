@@ -418,28 +418,32 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /users/{id}:
+     * /users/{email}:
      *   delete:
      *     tags:
      *       - Users
-     *     description: Deletes a single user
+     *     summary: Borrar usuario
+     *     description: Borra la cuenta de usuario.
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: id
-     *         description: Users's id
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
      *         in: path
      *         required: true
-     *         type: integer
+     *         type: string
+     *       - name: current
+     *         description: Contraseña actual del usuario.
+     *         in: body
+     *         required: true
+     *         type: string
      *     responses:
      *       200:
-     *         description: Successfully deleted
-     */
-
-    /**
-     * Delete user
-     *
-     * Removes the user with the corresponding email from the system
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.delete("/:email", function(req,res){
         console.log("Email: "+req.params.email);
