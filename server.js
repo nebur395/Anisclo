@@ -8,33 +8,39 @@ var express = require("express"),
 
 
 var app = express();
-// Swagger definition
+
+// swagger definition
 var swaggerDefinition = {
     info: {
-        title: 'API de gestión de usuarios',
+        title: 'Añisclo API ',
         version: '1.0.0',
-        description: 'Descripción del API del servicio de usuarios'
+        description: 'Descripción de la API pública del Team Añisclo'
     },
     host: 'localhost:8080',
     basePath: '/'
 };
 
-// Options for the swagger docs
+// options for the swagger docs
 var options = {
-  // Import swaggerDefinitions
+    // import swaggerDefinitions
     swaggerDefinition: swaggerDefinition,
-    // Path to the API docs
-    apis: ['*.js']
+    // path to the API docs
+    apis: ['./routes/user/*.js']
 };
 
-// Initialize swagger-jsdoc
+// initialize swagger-jsdoc
 var swaggerSpec = swaggerJSDoc(options);
 
 app.use(express.static('./public'));
-app.use(express.static('./public-swagger'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
+
+// serve swagger
+app.get('/swagger.json', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
 
 app.models = require('./models');
 
@@ -42,12 +48,6 @@ require('./routes')(app);
 
 app.use('/', function(req, res) {
 	console.log("Bienvenido");
-});
-
-// Serve swagger
-app.get('/swagger.json', function(req, res) {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
 });
 
 // Creation of https connection
