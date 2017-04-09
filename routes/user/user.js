@@ -24,6 +24,9 @@ module.exports = function (app) {
      *     description: Crea un nuevo usuario en el sistema, comprueba que no se trate de un bot
      *       con el recaptcha de google y manda un correo electrónico al parámetro [email] con un
      *       link para confirmar la creación de la cuenta.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
@@ -114,6 +117,9 @@ module.exports = function (app) {
      *     summary: Iniciar sesión
      *     description: End-point para iniciar sesión en el sistema. El usuario pasa los
      *       credenciales de la cuenta siguiendo el estándar de base64.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
@@ -187,6 +193,9 @@ module.exports = function (app) {
      *     description: Genera una nueva contraseña aleatoria para el usuario y la manda por
      *       correo electrónico para que el usuario pueda acceder al sistema si se ha olvidado de
      *       su contraseña anterior.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
@@ -245,6 +254,9 @@ module.exports = function (app) {
      *     summary: Confirmar contraseña
      *     description: Confirma la cuenta de un usuario creando una nueva contraseña aleatoria
      *       y pasándosela al usuario por correo electrónico.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
@@ -305,6 +317,9 @@ module.exports = function (app) {
      *     summary: Buscar usuario
      *     description: Busca un usuario por el email en el sistema y devuelve su información de
      *       perfil.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
@@ -347,6 +362,9 @@ module.exports = function (app) {
      *       - Users
      *     summary: Cambiar contraseña
      *     description: Cambia la contraseña de un usuario determinado.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
@@ -424,6 +442,9 @@ module.exports = function (app) {
      *       - Users
      *     summary: Borrar usuario
      *     description: Borra la cuenta de usuario.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
