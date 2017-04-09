@@ -72,7 +72,7 @@ module.exports = function (app) {
         gfs = grid(mongoose.connection.db);
 
         // Checks all body fields
-        if(!req.body.email || !req.body.poi){
+        if(!req.body.userEmail || !req.body.poi){
             res.status(404).send("Usuario o POI incorrecto");
             return;
         }
@@ -84,7 +84,7 @@ module.exports = function (app) {
         }
 
         // It searches for the user.
-        User.findOne({"email": req.body.email}, function(err, user){
+        User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
                 res.status(500).send("Error recuperando datos");
@@ -102,7 +102,7 @@ module.exports = function (app) {
                     tags: req.body.poi.tags,
                     lat: req.body.poi.lat,
                     lng: req.body.poi.lng,
-                    owner: req.body.email
+                    owner: req.body.userEmail
 
                 });
 
@@ -174,6 +174,76 @@ module.exports = function (app) {
             }
             // If the user doesn't exists.
             else {
+                res.status(404).send("El usuario no existe");
+            }
+        });
+
+    });
+
+    /**
+     * Duplicates the desired POI and saves it
+     * in the account with email [userEmail].
+     */
+    router.post("/:id", function(req, res){
+
+        // Checks all body fields
+        if(!req.body.userEmail){
+            res.status(404).send("Usuario incorrecto");
+            return;
+        }
+
+        // It searches for the user which will have the duplicate.
+        User.findOne({"email": req.body.userEmail}, function(err, user){
+
+            if(err) {
+                res.status(500).send("Error recuperando datos");
+                return;
+            }
+
+            // If the user exists.
+            if(user){
+
+                // Checks if the POI that is going to be duplicated exists.
+                POI.findById(req.params.id, function(err, poi){
+                    if(err) {
+                        res.status(500).send("Error recuperando datos");
+                        return;
+                    }
+
+                    // If the POI exists.
+                    if(poi){
+
+                        // Creates the duplicate and remove the unwanted fields.
+                        var duplicate = poi.toJSON();
+                        delete duplicate._id;
+                        delete duplicate.__v;
+                        delete duplicate.owner;
+                        delete duplicate.creationDate;
+                        delete duplicate.rating;
+                        delete duplicate.fav;
+                        // Sets the new owner of the duplicated POI.
+                        duplicate.owner = req.body.userEmail;
+
+                        // Creates the POI model objetc and saves it.
+                        var duplicatedPoi = new POI(duplicate);
+                        duplicatedPoi.save(function(err, result){
+                            if(err){
+                                res.status(500).send("Error guardando POI");
+                            }
+                            else{
+                                res.status(200).send("POI duplicado correctamente");
+                            }
+                        });
+                    }
+                    // If the POI doesn't exists.
+                    else{
+                        res.status(404).send("El POI no existe");
+                    }
+                })
+
+            }
+            // If the user doesn't exists.
+            else{
                 res.status(404).send("El usuario no existe");
             }
         });
