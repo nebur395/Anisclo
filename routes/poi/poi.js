@@ -250,6 +250,54 @@ module.exports = function (app) {
 
     });
 
+    router.delete("/:id", function(req, res){
+
+        gfs = grid(mongoose.connection.db);
+
+        // Checks all body fields
+        if(!req.body.userEmail){
+            res.status(404).send("Usuario incorrecto");
+            return;
+        }
+
+        User.findOne({"email": req.body.userEmail}, function(err, user){
+
+            if(err) {
+                res.status(500).send("Error recuperando datos");
+                return;
+            }
+
+            if(user){
+                semaphore.take(function(){
+
+                    POI.findOneAndRemove({"_id": req.params.id, "owner": req.body.userEmail}, function(err, result){
+
+                        if(err) {
+                            semaphore.leave();
+                            res.status(500).send("Error recuperando y eliminando datos");
+                            return;
+                        }
+
+                        if(result===null){
+                            semaphore.leave();
+                            res.status(404).send("El POI no existe");
+                        }
+                        else{
+                            removeUrlAndImage(result, function(){
+                                semaphore.leave();
+                                res.status(200).send("POI eliminado correctamente");
+                            });
+                        }
+                    });
+                });
+            }
+            // If the user doesn't exists.
+            else{
+                res.status(404).send("El usuario no existe");
+            }
+        });
+    });
+
     /**
      *  Stores a new image in the system.
      */
@@ -292,6 +340,94 @@ module.exports = function (app) {
      */
     function urlShortener(url, callback){
         return callback(url);
+    }
+
+    /**
+     * Removes the image and the URL attached to the
+     * POI, if any, and if they are not attached
+     * to any other POI. It uses an auxiliary function
+     * to remove the URL.
+     */
+    function removeUrlAndImage(poi, callback){
+
+        // Cheks if the POI has an image attached to it.
+        if(poi.image!==null){
+            // If there's an image attached, it searches for it.
+            POI.find({"image": poi.image}, function(err, result){
+
+                if(err) {
+                    return callback();
+                }
+
+                // If there're no other POIs that have this image attached
+                if(result.length==0){
+                    // Removes the image from the system.
+                    gfs.remove({
+
+                        _id: poi.image
+
+                    }, function(err){
+                        if(err) {
+                            return callback();
+                        }
+
+                        // Check if the POI has an URL attached to it.
+                        if(poi.url!==''){
+                            // If there's and URL attached, it calls a function to remove it.
+                            removeUrl(poi.url, function(){
+                                return callback();
+                            });
+                        }
+                        else{
+                            return callback();
+                        }
+                    })
+                }
+                // If any other POI have this image attached, checks if there's an URL attached to it.
+                else if(poi.url!==''){
+                    // If there's and URL attached, it calls a function to remove it.
+                    removeUrl(poi.url, function(){
+                        return callback();
+                    });
+                }
+                else{
+                    return callback();
+                }
+            });
+        }
+        // If there's no image attached to the POI, it checks if there's an URL attached to it.
+        else if(poi.url!==''){
+            // If there's and URL attached, it calls a function to remove it.
+            removeUrl(poi.url, function(){
+                return callback();
+            });
+        }
+        else{
+            return callback();
+        }
+    }
+
+    /**
+     * Removes an URL attached to a POI if it
+     * isn't attached to any other POI.
+     */
+    function removeUrl(url, callback){
+        // Searches for the URL in all the POIS in the system
+        POI.find({"url": url}, function(err, result){
+
+            if(err) {
+                return callback();
+            }
+            // If there's no other POIs that have this URL attached
+            if(result==0){
+                //TODO borrar la URL de su colección
+                return callback();
+            }
+            // If any other POI have this URL attached
+            else{
+                return callback();
+            }
+        });
     }
 
     return router;
