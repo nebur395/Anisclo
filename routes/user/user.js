@@ -235,13 +235,31 @@ module.exports = function (app) {
         });
     });
 
+
     /**
-     * Confirm account
-     *
-     * Confirms a new user account creating a new random pass for it
-     * and sending it by email.
-     *
-     * NOTE: E-mail sending is not yet working
+     * @swagger
+     * /users/confirm/{email}:
+     *   get:
+     *     tags:
+     *       - Users
+     *     summary: Confirmar contraseña
+     *     description: Confirma la cuenta de un usuario creando una nueva contraseña aleatoria
+     *       y pasándosela al usuario por correo electrónico.
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.get("/confirm/:email", function(req, res){
 
@@ -280,30 +298,30 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /users/{id}:
+     * /users/{email}:
      *   get:
      *     tags:
      *       - Users
-     *     description: Returns a single user
+     *     summary: Buscar usuario
+     *     description: Busca un usuario por el email en el sistema y devuelve su información de
+     *       perfil.
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: id
-     *         description: User's id
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
      *         in: path
      *         required: true
-     *         type: integer
+     *         type: string
      *     responses:
      *       200:
-     *         description: A single user
+     *         description: Información de perfil del usuario.
      *         schema:
      *           $ref: '#/definitions/User'
-     */
-
-    /*
-     * Get user info.
-     *
-     * Returns the profile of the user with email [email]
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.get("/:email", function(req,res){
         User.findOne({email: req.params.email},function(err,data){
@@ -323,34 +341,37 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /users/{id}:
+     * /users/{email}:
      *   put:
      *     tags:
      *       - Users
-     *     description: Updates a single user
+     *     summary: Cambiar contraseña
+     *     description: Cambia la contraseña de un usuario determinado.
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: id
-     *         description: Users's id
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
      *         in: path
      *         required: true
-     *         type: integer
-     *       - name: user
+     *         type: string
+     *       - name: current
+     *         description: Contraseña actual del usuario.
      *         in: body
-     *         description: Fields for the User resource
-     *         schema:
-     *           type: array
-     *           $ref: '#/definitions/User'
+     *         required: true
+     *         type: string
+     *       - name: new
+     *         description: Contraseña nueva del usuario.
+     *         in: body
+     *         required: true
+     *         type: string
      *     responses:
      *       200:
-     *         description: Successfully updated
-     */
-
-    /**
-     * Change password
-     *
-     * Updates the user's password
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.put("/:email", function(req,res){
 
