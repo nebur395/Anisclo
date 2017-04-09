@@ -29,7 +29,7 @@ describe('Profile Page', function() {
         profilePage.setNewPassword("newPass");
         profilePage.changePasswordClick();
 
-        expect(profilePage.getError()).toContain("Contraseña actual incorrecta");
+        expect(profilePage.getError()).toContain("Email o contraseña actual incorrectos");
         navbar.goLogout();
     });
 
