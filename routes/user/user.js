@@ -16,17 +16,6 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * definition:
-     *   User:
-     *     properties:
-     *       userEmail:
-     *         type: string
-     *       userPassword:
-     *         type: string
-     */
-
-    /**
-     * @swagger
      * /users/:
      *   post:
      *     tags:
