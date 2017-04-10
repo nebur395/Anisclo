@@ -252,6 +252,10 @@ module.exports = function (app) {
 
     });
 
+    /**
+     * Removes the desired POI from the system,
+     * including the attached image and URL, if any.
+     */
     router.delete("/:id", function(req, res){
 
         gfs = grid(mongoose.connection.db);
@@ -262,6 +266,7 @@ module.exports = function (app) {
             return;
         }
 
+        // Checks if the user exists
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
@@ -269,9 +274,12 @@ module.exports = function (app) {
                 return;
             }
 
+            // If the user exists.
             if(user){
+                // Takes the token in order to prevent inconsistency in the system during the operation
                 semaphore.take(function(){
 
+                    // Searches for the POI with the given ID and user and removes it
                     POI.findOneAndRemove({"_id": req.params.id, "owner": req.body.userEmail}, function(err, result){
 
                         if(err) {
@@ -280,11 +288,14 @@ module.exports = function (app) {
                             return;
                         }
 
+                        // If the POI doesn't exists.
                         if(result===null){
                             semaphore.leave();
                             res.status(404).send("El POI no existe");
                         }
+                        // If the POI exists and it's been removed
                         else{
+                            // It calls a function that removes the image and url attached to the POI, if any
                             removeUrlAndImage(result, function(){
                                 semaphore.leave();
                                 res.status(200).send("POI eliminado correctamente");
@@ -300,7 +311,9 @@ module.exports = function (app) {
         });
     });
 
-
+    /**
+     * Updates an existing POI with new information.
+     */
     router.put("/:id", function(req, res){
 
         // Checks all body fields
@@ -315,6 +328,7 @@ module.exports = function (app) {
             return;
         }
 
+        // Checks if the user exists
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
@@ -322,8 +336,9 @@ module.exports = function (app) {
                 return;
             }
 
+            // If the user exists
             if(user){
-
+                // Searches for the POI with the given ID and user
                 POI.findOne({"_id":req.params.id, "owner":req.body.userEmail}, function(err, poi){
 
                     if(err) {
@@ -331,18 +346,22 @@ module.exports = function (app) {
                         return;
                     }
 
+                    // If the POI with that ID and user exists
                     if(poi){
 
+                        // Updates every modifiable field in the POI
                         poi.name = req.body.poi.name;
                         poi.description = req.body.poi.description;
                         poi.tags = req.body.poi.tags;
                         poi.lat = req.body.poi.lat;
                         poi.lng = req.body.poi.lng;
 
+                        // Checks if the request have a new URL for the POI, since it's an optional field
                         if(req.body.poi.url){
                             poi.url = req.body.poi.url;
                         }
 
+                        // Saves the POI with the new info
                         poi.save(function(err, result){
 
                             if(err) {
@@ -353,6 +372,7 @@ module.exports = function (app) {
                             }
                         });
                     }
+                    // If the POI with that ID and user doesn't exists
                     else{
                         res.status(404).send("El POI no existe");
                     }
