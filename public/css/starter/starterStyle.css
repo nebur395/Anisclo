@@ -3,6 +3,22 @@
 }
 
 #starterStyle .container-fluid {
-  padding: 50px 0 0 0;
+  padding: 0;
 }
 
+#starterStyle #selectViewOfPoisAndRoutes {
+  margin-top: 50px;
+  background-color: rgba(255,255,255,0.9);
+  text-align: center;
+  height: 20px;
+  z-index: 1000;
+  width: 100%;
+  position: absolute;
+}
+
+#starterStyle #selectViewOfPoisAndRoutes div {
+  cursor: pointer;
+}
+#starterStyle #selectViewOfPoisAndRoutes #viewListPOis {
+  border-right: 1px solid rgba(150,150,150,0.6);
+}
