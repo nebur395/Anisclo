@@ -16,10 +16,16 @@ In order to run this project you have to have installed
   Alternatively, you can also use `node server.js`.
   6. Open a web browser (Preferably Mozilla Firefox or Chrome >55.X) and type http://localhost:8080 for the HTTP page, or https://localhost:8443 for the HTTPS equivalent.
   
+## API DOC
+In order to have a look at the project's API you have to follow these steps:
+1. Run `npm start` in order to launch the application.
+1. **JSON:** Open a web browser and type http://localhost:8080/swagger.json to display the application's API in a JSON.
+1. **UI Web:** Open a web browser and type http://localhost:8080/api-docs/ to display the application's API in a UI web.
+
 ## Test
 In order to run the [Protractor](http://www.protractortest.org/#/) tests of this project you have to follow these steps:
   1. Check that Protractor is working by running `node_modules/protractor/bin/protractor --version`.
-  2. Now start up a Selenium Server: `node_modules/protractor/bin/webdriver-manager start`. This will output a bunch of info logs. You can see information about the status of the server at `http://localhost:4444/wd/hub`.
+  2. Now start up the app server with `npm start`and a Selenium Server: `node_modules/protractor/bin/webdriver-manager start`. This will output a bunch of info logs. You can see information about the status of the server at `http://localhost:4444/wd/hub`.
   3. Finally, execute `node_modules/protractor/bin/protractor test/protractor/conf.js`.
   
 In order to run the [Mocha](https://mochajs.org/) tests of this project you only have to execute the following command: `npm test`

@@ -17,7 +17,8 @@ module.exports = function (app) {
      * Returns a list of the existing POIs in the system.
      */
     router.get("/", function(req, res){
-
+        
+        // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
         gfs = grid(mongoose.connection.db);
 
         POI.find({}, function(err, result){
@@ -68,7 +69,8 @@ module.exports = function (app) {
      * Creates a new POI in the system.
      */
     router.post("/", function(req, res){
-
+        
+        // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
         gfs = grid(mongoose.connection.db);
 
         // Checks all body fields

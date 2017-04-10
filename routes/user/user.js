@@ -16,40 +16,47 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * definition:
-     *   User:
-     *     properties:
-     *       userEmail:
-     *         type: string
-     *       userPassword:
-     *         type: string
-     */
-
-    /**
-     * @swagger
      * /users/:
      *   post:
      *     tags:
      *       - Users
-     *     description: Creates a new user
+     *     summary: Crear usuario (Sign Up)
+     *     description: Crea un nuevo usuario en el sistema, comprueba que no se trate de un bot
+     *       con el recaptcha de google y manda un correo electrónico al parámetro [email] con un
+     *       link para confirmar la creación de la cuenta.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: userInfo
-     *         description: User's email and password
+     *       - name: name
+     *         description: Nombre del usuario.
      *         in: body
      *         required: true
-     *         schema:
-     *           $ref: '#/definitions/User'
+     *         type: string
+     *       - name: lastname
+     *         description: Apellido del usuario.
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: captcha
+     *         description: Key del recaptcha de google.
+     *         in: body
+     *         required: true
+     *         type: string
      *     responses:
      *       200:
-     *         description: Successfully created
-     */
-
-    /**
-     * SignUp
-     *
-     * Creates a new user in the system
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
 	router.post("/", function(req,res){
 
@@ -101,11 +108,37 @@ module.exports = function (app) {
         });
     });
 
-
     /**
-     * LogIn
-     *
-     * Logs the user in if it's registered.
+     * @swagger
+     * /users/login:
+     *   get:
+     *     tags:
+     *       - Users
+     *     summary: Iniciar sesión
+     *     description: End-point para iniciar sesión en el sistema. El usuario pasa los
+     *       credenciales de la cuenta siguiendo el estándar de base64.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           Base64 estándar: `Authorization: Basic + base64.encode(user:password)`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
+     *     responses:
+     *       200:
+     *         description: Información de perfil del usuario.
+     *         schema:
+     *           $ref: '#/definitions/User'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.get("/login", function(req, res){
 
@@ -151,12 +184,33 @@ module.exports = function (app) {
     });
 
     /**
-     * Retrieve Password
-     *
-     * Creates a new random password for a user and sends it
-     * by email in order to allow him/her to access the system
-     * if it's previous password was forgotten.
-     *
+     * @swagger
+     * /users/retrievePass:
+     *   put:
+     *     tags:
+     *       - Users
+     *     summary: Recuperar contraseña
+     *     description: Genera una nueva contraseña aleatoria para el usuario y la manda por
+     *       correo electrónico para que el usuario pueda acceder al sistema si se ha olvidado de
+     *       su contraseña anterior.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.put("/retrievePass", function(req, res){
 
@@ -190,13 +244,34 @@ module.exports = function (app) {
         });
     });
 
+
     /**
-     * Confirm account
-     *
-     * Confirms a new user account creating a new random pass for it
-     * and sending it by email.
-     *
-     * NOTE: E-mail sending is not yet working
+     * @swagger
+     * /users/confirm/{email}:
+     *   get:
+     *     tags:
+     *       - Users
+     *     summary: Confirmar contraseña
+     *     description: Confirma la cuenta de un usuario creando una nueva contraseña aleatoria
+     *       y pasándosela al usuario por correo electrónico.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.get("/confirm/:email", function(req, res){
 
@@ -235,30 +310,33 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /users/{id}:
+     * /users/{email}:
      *   get:
      *     tags:
      *       - Users
-     *     description: Returns a single user
+     *     summary: Buscar usuario
+     *     description: Busca un usuario por el email en el sistema y devuelve su información de
+     *       perfil.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: id
-     *         description: User's id
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
      *         in: path
      *         required: true
-     *         type: integer
+     *         type: string
      *     responses:
      *       200:
-     *         description: A single user
+     *         description: Información de perfil del usuario.
      *         schema:
      *           $ref: '#/definitions/User'
-     */
-
-    /*
-     * Get user info.
-     *
-     * Returns the profile of the user with email [email]
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.get("/:email", function(req,res){
         User.findOne({email: req.params.email},function(err,data){
@@ -278,34 +356,40 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /users/{id}:
+     * /users/{email}:
      *   put:
      *     tags:
      *       - Users
-     *     description: Updates a single user
+     *     summary: Cambiar contraseña
+     *     description: Cambia la contraseña de un usuario determinado.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: id
-     *         description: Users's id
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
      *         in: path
      *         required: true
-     *         type: integer
-     *       - name: user
+     *         type: string
+     *       - name: current
+     *         description: Contraseña actual del usuario.
      *         in: body
-     *         description: Fields for the User resource
-     *         schema:
-     *           type: array
-     *           $ref: '#/definitions/User'
+     *         required: true
+     *         type: string
+     *       - name: new
+     *         description: Contraseña nueva del usuario.
+     *         in: body
+     *         required: true
+     *         type: string
      *     responses:
      *       200:
-     *         description: Successfully updated
-     */
-
-    /**
-     * Change password
-     *
-     * Updates the user's password
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.put("/:email", function(req,res){
 
@@ -352,28 +436,35 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /users/{id}:
+     * /users/{email}:
      *   delete:
      *     tags:
      *       - Users
-     *     description: Deletes a single user
+     *     summary: Borrar usuario
+     *     description: Borra la cuenta de usuario.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: id
-     *         description: Users's id
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
      *         in: path
      *         required: true
-     *         type: integer
+     *         type: string
+     *       - name: current
+     *         description: Contraseña actual del usuario.
+     *         in: body
+     *         required: true
+     *         type: string
      *     responses:
      *       200:
-     *         description: Successfully deleted
-     */
-
-    /**
-     * Delete user
-     *
-     * Removes the user with the corresponding email from the system
+     *         description: Mensaje de feedback para el usuario.
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
      */
     router.delete("/:email", function(req,res){
         console.log("Email: "+req.params.email);
