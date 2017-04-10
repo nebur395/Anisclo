@@ -10,7 +10,6 @@ var poiSchema = mongoose.Schema({
     lat: {type: Number, required: true},
     lng: {type: Number, required: true},
     owner: {type: String, required: true},
-    fav: {type: Boolean, default: false},
     rating: {type: [Number], default: []},
     url: {type: String, default: ""},
     image: {type:mongoose.Schema.Types.ObjectId, default: null},

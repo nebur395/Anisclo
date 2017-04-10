@@ -222,7 +222,6 @@ module.exports = function (app) {
                         delete duplicate.owner;
                         delete duplicate.creationDate;
                         delete duplicate.rating;
-                        delete duplicate.fav;
                         // Sets the new owner of the duplicated POI.
                         duplicate.owner = req.body.userEmail;
 

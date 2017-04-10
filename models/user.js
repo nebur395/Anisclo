@@ -46,6 +46,7 @@ var userSchema = mongoose.Schema({
     lastname: {type: String, required: true},
     admin: {type: Boolean, required: true},
     firstLogin: {type: Boolean, required: true},
+    favs: {type:[mongoose.Schema.Types.ObjectId], default: []},
     registerDate: {type: Date, default: Date.now}
 });
 

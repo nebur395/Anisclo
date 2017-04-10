@@ -173,7 +173,8 @@ module.exports = function (app) {
                         "name": result.name,
                         "lastname": result.lastname,
                         "firstLogin": result.firstLogin,
-                        "admin": result.admin
+                        "admin": result.admin,
+                        "favs": result.favs
                 });
             }
             // If there's no user with that email or the password is incorrect
