@@ -11,9 +11,13 @@
       <p>Lista de POIs</p>
       <div class="divider"></div>
       <ul class="list-group">
-        <li class="list-group-item" ng-repeat="poi in poiList track by $index">{{poi}}</li>
+        <li class="list-group-item" ng-repeat="poi in poiList track by $index"
+            ng-click="openPOIModal(poi)" style="cursor:pointer">
+          {{poi.name}}</li>
       </ul>
     </div>
+
+    <!-- GOOGLE MAPS SECTION -->
 
     <ui-gmap-google-map center="map.center" options="options" zoom="map.zoom" events="map.events"
                         style="height: 100%">
@@ -22,6 +26,65 @@
 
       </ui-gmap-marker>
     </ui-gmap-google-map>
+
+    <!-- MODAL SECTION -->
+
+    <!-- poi modal popup -->
+    <div id="poiModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- modal content -->
+        <div class="modal-content">
+          <div class="modal-header text-center modalCustomTheme">
+            <button class="close" data-dismiss="modal">&times;</button>
+            <h2>¡Echa un vistazo a tu POI!</h2>
+          </div>
+          <div class="modal-body modalCustomTheme">
+            <form role="form" class="form-horizontal" ng-submit="savePOI()">
+              <!-- name input poi -->
+              <div class="form-group">
+                <label for="namePOI" class="control-label col-xs-2"><strong>Nombre*:</strong></label>
+                <div class="col-xs-10">
+                  <input id="namePOI" type="text" ng-model="poiModal.name" required
+                         class="form-control" placeholder="Introduce el nombre del POI" />
+                </div>
+              </div>
+              <!-- latitude input poi -->
+              <div class="form-group">
+                <label for="latPOI" class="control-label col-xs-2"><strong>Lat*:</strong></label>
+                <div class="col-xs-4">
+                  <input id="latPOI" type="text" ng-model="poiModal.lat" required
+                         class="form-control" placeholder="Latitud" />
+                </div>
+                <label for="lngPOI" class="control-label col-xs-2"><strong>Lng*:</strong></label>
+                <div class="col-xs-4">
+                  <input id="lngPOI" type="text" ng-model="poiModal.lng" required
+                         class="form-control" placeholder="Latitud" />
+                </div>
+              </div>
+
+              <!-- commentary input exercise -->
+              <div class="form-group">
+                <label for="descriptionPOI" class="control-label col-xs-2"><strong>Descripción:</strong></label>
+                <div class="col-xs-10">
+                  <textarea id="descriptionPOI" rows="5" style="max-width: 100%;"
+                            ng-model="poiModal.description" class="form-control"
+                            placeholder="Introduce una descripción (opcional)"></textarea>
+                </div>
+              </div>
+              <p style="font-size: 75%;text-align: right">* Campos obligatorios.</p>
+              <div style="text-align: right">
+                <button class="btn btn-default" ng-click="closePOIModal()" style="font-weight: 600;">
+                  Cancelar
+                </button>
+                <button type="submit" class="btn btn-success" style="font-weight: 600;">
+                  Guardar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
  </div>

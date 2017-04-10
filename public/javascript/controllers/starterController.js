@@ -4,8 +4,82 @@ angular.module('pirineoPOIApp')
 
         function ($scope, $state, auth, uiGmapGoogleMapApi) {
 
-            $scope.poiList = ["blabla","blabla","blabla","blabla","blabla","blabla","blabla","blabla","blabla",
-                "blabla","blabla","blabla","blabla","blabla","blabla","blabla","blabla"];
+            $scope.poiList = [
+                {id:1,name:"1",description:"11",tags:["12","13"],lat:1,lng:1,url:"111",image:"",owner:"1111"},
+                {id:2,name:"2",description:"22",tags:["22","23"],lat:2,lng:2,url:"222",image:"",owner:"2222"}
+            ];
+
+            // MODAL POI SECTION
+
+            $scope.poiModal = {    // temporal POI data on modals
+                id: 0,
+                name: "",
+                description: "",
+                tags: [],
+                lat: 0,
+                lng: 0,
+                url: "",
+                image: "",
+                owner: ""
+            };
+
+            // open modal with [POI] information
+            $scope.openPOIModal = function (poi) {
+                $("#poiModal").modal("show");
+                $scope.poiModal = {
+                    id: poi.id,
+                    name: poi.name,
+                    description: poi.description,
+                    tags: poi.tags,
+                    lat: poi.lat,
+                    lng: poi.lng,
+                    url: poi.url,
+                    image: poi.image,
+                    owner: poi.owner
+                };
+            };
+
+            // save record
+            $scope.savePOI = function () {
+                $("#poiModal").modal("hide");
+                $scope.save = true; //flag to indicate that we are saving the record
+                $("#poiModal").on('hidden.bs.modal', function () {
+                    if ($scope.save) {
+                        /*recordsService.saveRecord($scope.recordModal, showSuccess, showError,
+                            function (exercises, cardio) {
+                                //añadir el nuevo poi a la lista
+                            });*/
+                        $scope.save = false;
+                        $scope.poiModal = {
+                            id: 0,
+                            name: "",
+                            description: "",
+                            tags: [],
+                            lat: 0,
+                            lng: 0,
+                            url: "",
+                            image: "",
+                            owner: ""
+                        };
+                    }
+                });
+            };
+
+            //close record
+            $scope.closePOIModal = function () {
+                $scope.poiModal = {
+                    id: 0,
+                    name: "",
+                    description: "",
+                    tags: [],
+                    lat: 0,
+                    lng: 0,
+                    url: "",
+                    image: "",
+                    owner: ""
+                };
+                $("#poiModal").modal("hide");
+            };
 
             // MAP SECTION
 
