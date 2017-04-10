@@ -441,7 +441,7 @@ module.exports = function (app) {
 
         // Cheks if the POI has an image attached to it.
         if(poi.image!==null){
-            // If there's an image attached, it searches for it.
+            // If there's an image attached, it searches for other POIs with that image
             POI.find({"image": poi.image}, function(err, result){
 
                 if(err) {
@@ -460,7 +460,7 @@ module.exports = function (app) {
                             return callback();
                         }
 
-                        // Check if the POI has an URL attached to it.
+                        // Checks if the POI has an URL attached to it.
                         if(poi.url!==''){
                             // If there's and URL attached, it calls a function to remove it.
                             removeUrl(poi.url, function(){
@@ -502,7 +502,7 @@ module.exports = function (app) {
      * isn't attached to any other POI.
      */
     function removeUrl(url, callback){
-        // Searches for the URL in all the POIS in the system
+        // Searches for the URL in all the POIs in the system
         POI.find({"url": url}, function(err, result){
 
             if(err) {
@@ -510,7 +510,7 @@ module.exports = function (app) {
             }
             // If there's no other POIs that have this URL attached
             if(result==0){
-                //TODO borrar la URL de su colección
+                //TODO: borrar la URL de su colección
                 return callback();
             }
             // If any other POI have this URL attached
