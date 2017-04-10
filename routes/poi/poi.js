@@ -95,33 +95,46 @@ module.exports = function (app) {
 
             // If the user exists.
             if(user){
+                // Transforms all the tags to lowerCase
+                arrayToLowerCase(req.body.poi.tags, function(lowerCaseTags){
+                    // Creates a new POI with the basic and required info.
+                    var newPoi = new POI({
 
-                // Creates a new POI with the basic and required info.
-                var newPoi = new POI({
+                        name: req.body.poi.name,
+                        description: req.body.poi.description,
+                        tags: lowerCaseTags,
+                        lat: req.body.poi.lat,
+                        lng: req.body.poi.lng,
+                        owner: req.body.userEmail
+                    });
 
-                    name: req.body.poi.name,
-                    description: req.body.poi.description,
-                    tags: req.body.poi.tags,
-                    lat: req.body.poi.lat,
-                    lng: req.body.poi.lng,
-                    owner: req.body.userEmail
+                    // Checks if there's an image attached to the POI.
+                    if(req.body.poi.image){
+                        // TODO: Extraer nombre y path de la request
+                        var name = "imagen";
+                        var path = "./image.jpg";
+                        // Stores the image in the system and adds it to the POI
+                        storeImage(name, path, function(imageId){
+                            newPoi.image = imageId;
+                            // Checks if there's an URL attached to the POI
+                            if(req.body.poi.url){
+                                // It shorts and stores the URL in the system and adds it to the POI
+                                urlShortener(req.body.poi.url, function(shortUrl){
+                                    newPoi.url = shortUrl;
+                                    // Stores the POI in the system
+                                    newPoi.save(function(err, result){
+                                        if(err){
+                                            res.status(500).send("Error guardando POI");
+                                        }
+                                        else{
+                                            res.status(200).send("POI añadido correctamente");
+                                        }
+                                    });
 
-                });
-
-                // Checks if there's an image attached to the POI.
-                if(req.body.poi.image){
-                    // TODO: Extraer nombre y path de la request
-                    var name = "imagen";
-                    var path = "./image.jpg";
-                    // Stores the image in the system and adds it to the POI
-                    storeImage(name, path, function(imageId){
-                        newPoi.image = imageId;
-                        // Checks if there's an URL attached to the POI
-                        if(req.body.poi.url){
-                            // It shorts and stores the URL in the system and adds it to the POI
-                            urlShortener(req.body.poi.url, function(shortUrl){
-                                newPoi.url = shortUrl;
-                                // Stores the POI in the system
+                                });
+                            }
+                            // If there's no URL attached to the POI, it stores the POI in the system.
+                            else{
                                 newPoi.save(function(err, result){
                                     if(err){
                                         res.status(500).send("Error guardando POI");
@@ -130,11 +143,14 @@ module.exports = function (app) {
                                         res.status(200).send("POI añadido correctamente");
                                     }
                                 });
-
-                            });
-                        }
-                        // If there's no URL attached to the POI, it stores the POI in the system.
-                        else{
+                            }
+                        });
+                    }
+                    // If there's no image attached to the POI, it checks if there's an URL attached.
+                    else if(req.body.poi.url){
+                        urlShortener(req.body.poi.url, function(shortUrl){
+                            newPoi.url = shortUrl;
+                            // Stores the POI in the system.
                             newPoi.save(function(err, result){
                                 if(err){
                                     res.status(500).send("Error guardando POI");
@@ -143,14 +159,11 @@ module.exports = function (app) {
                                     res.status(200).send("POI añadido correctamente");
                                 }
                             });
-                        }
-                    });
-                }
-                // If there's no image attached to the POI, it checks if there's an URL attached.
-                else if(req.body.poi.url){
-                    urlShortener(req.body.poi.url, function(shortUrl){
-                        newPoi.url = shortUrl;
-                        // Stores the POI in the system.
+
+                        });
+                    }
+                    // If there's no image nor URL attached to the POI, it stores the POI in the system.
+                    else{
                         newPoi.save(function(err, result){
                             if(err){
                                 res.status(500).send("Error guardando POI");
@@ -159,20 +172,8 @@ module.exports = function (app) {
                                 res.status(200).send("POI añadido correctamente");
                             }
                         });
-
-                    });
-                }
-                // If there's no image nor URL attached to the POI, it stores the POI in the system.
-                else{
-                    newPoi.save(function(err, result){
-                        if(err){
-                            res.status(500).send("Error guardando POI");
-                        }
-                        else{
-                            res.status(200).send("POI añadido correctamente");
-                        }
-                    });
-                }
+                    }
+                });
             }
             // If the user doesn't exists.
             else {
@@ -180,6 +181,62 @@ module.exports = function (app) {
             }
         });
 
+    });
+
+    /**
+     * Searches for every POI that match with the given tags
+     * and returns them.
+     */
+    router.get("/filter", function(req, res){
+
+        var tags = JSON.parse(req.headers["tags"]);
+
+        arrayToLowerCase(tags, function(lowerCaseTags){
+
+            // Searches for the POIs that match with the tags
+            POI.find({"tags": {$in: lowerCaseTags}}, function(err, result){
+
+                if(err) {
+                    res.status(500).send("Error recuperando datos");
+                    return;
+                }
+
+                // If no POI match with the tags, it returns an empty array
+                if (result.length==0){
+                    res.status(200).send(result);
+                }
+                else{
+                    var pois = [];
+                    // Iterates all the POIs that match with the tags
+                    result.forEach(function(poi, index){
+
+                        // Checks if there's an image attached to the POI and retrieves it if it's the case.
+                        if(poi.image!=null){
+                            retrieveImage(poi.image, function(data){
+
+                                pois.push(poi.createResponse(data));
+
+                                if(index == result.length - 1){
+                                    res.status(200).send({
+                                        "pois": pois
+                                    });
+                                }
+                            });
+                        }
+                        else{
+                            pois.push(poi.createResponse(""));
+
+                            if(index == result.length - 1){
+                                res.status(200).send({
+                                    "pois": pois
+                                });
+                            }
+                        }
+                    });
+                }
+
+            });
+        });
     });
 
     /**
@@ -515,6 +572,17 @@ module.exports = function (app) {
             // If any other POI have this URL attached
             else{
                 return callback();
+            }
+        });
+    }
+
+    function arrayToLowerCase(array, callback){
+        var newArray = [];
+        array.forEach(function(tag, index){
+            newArray.push(tag.toLowerCase());
+
+            if(index == array.length-1){
+                return callback(newArray);
             }
         });
     }

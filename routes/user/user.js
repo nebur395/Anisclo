@@ -10,6 +10,24 @@ var request = require('request');
 
 module.exports = function (app) {
 
+    /**
+     * @swagger
+     * definition:
+     *   FeedbackMessage:
+     *     description: Mensaje de feedback que se devuelve al usuario en caso de error o acierto en una determinada
+     *       operación.
+     *     type: object
+     *     properties:
+     *       success:
+     *         type: boolean
+     *         required: true
+     *         description: True si la operación ha ido con éxito. False si ha habido algún error.
+     *       message:
+     *         type: string
+     *         required: true
+     *         description: Mensaje que describe el resultado de una operación.
+     */
+
 	var router = express.Router();
 
     var User = app.models.User;

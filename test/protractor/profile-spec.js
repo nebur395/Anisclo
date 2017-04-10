@@ -19,7 +19,7 @@ describe('Profile Page', function() {
     it('should show an error with incorrect credentials', function() {
         loginPage.get();
 
-        loginPage.setEmail('nebur395@hotmail.com');
+        loginPage.setEmail('e2etest@email.com');
         loginPage.setPassword('pass');
         loginPage.loginClick();
 
@@ -36,7 +36,7 @@ describe('Profile Page', function() {
     it('should change the current password', function() {
         loginPage.get();
 
-        loginPage.setEmail('nebur395@hotmail.com');
+        loginPage.setEmail('e2etest@email.com');
         loginPage.setPassword('pass');
         loginPage.loginClick();
 
@@ -50,7 +50,7 @@ describe('Profile Page', function() {
 
         navbar.goLogout();
 
-        loginPage.setEmail('nebur395@hotmail.com');
+        loginPage.setEmail('e2etest@email.com');
         loginPage.setPassword('pass');
         loginPage.loginClick();
 
@@ -60,7 +60,7 @@ describe('Profile Page', function() {
     it('should delete the account', function() {
         loginPage.get();
 
-        loginPage.setEmail('nebur395@hotmail.com');
+        loginPage.setEmail('e2etest@email.com');
         loginPage.setPassword('newPass');
         loginPage.loginClick();
 
@@ -71,7 +71,7 @@ describe('Profile Page', function() {
 
         expect(browser.getCurrentUrl()).toBe(loginPage.getUrl());
 
-        loginPage.setEmail('nebur395@hotmail.com');
+        loginPage.setEmail('e2etest@email.com');
         loginPage.setPassword('newPass');
         loginPage.loginClick();
 
