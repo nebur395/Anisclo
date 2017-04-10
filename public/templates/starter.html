@@ -2,12 +2,17 @@
   <div class="container-fluid">
 
     <div id="selectViewOfPoisAndRoutes">
-      <div class="col-xs-6 w3-text-theme" id="viewListPOis">Mostrar/ocultar POIs</div>
+      <div class="col-xs-6 w3-text-theme" id="viewListPOis" ng-click="hidePOIs = !hidePOIs">
+        Mostrar/ocultar POIs</div>
       <div class="col-xs-6 w3-text-theme">Mostrar/ocultar Rutas</div>
     </div>
 
-    <div id="poiList">
-
+    <div id="poiList" class="text-center" ng-hide="hidePOIs">
+      <p>Lista de POIs</p>
+      <div class="divider"></div>
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="poi in poiList track by $index">{{poi}}</li>
+      </ul>
     </div>
 
     <ui-gmap-google-map center="map.center" options="options" zoom="map.zoom" events="map.events"
