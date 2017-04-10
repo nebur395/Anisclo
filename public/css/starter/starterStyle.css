@@ -67,3 +67,12 @@
   background-color: rgba(50, 50, 50, 0.6);
   color: #fff;
 }
+
+#starterStyle .modalLink {
+  color: #63ece8;
+  font-weight: 600;
+  cursor: pointer;
+}
+#starterStyle .modalLink:hover {
+  color: #23527c;
+}

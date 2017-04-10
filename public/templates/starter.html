@@ -39,7 +39,17 @@
             <h2>¡Echa un vistazo a tu POI!</h2>
           </div>
           <div class="modal-body modalCustomTheme">
+
+            <!-- owner poi -->
+            <div ng-hide="true" class="col-xs-12" style="font-weight:600;text-align:right;margin-bottom:2%">
+              Propiedad <span class="modalLink" ng-click="goUser(poiModal.owner)">{{poiModal.owner}}</span>
+            </div>
+            <div ng-hide="false" class="col-xs-12" style="font-weight:600;text-align:right;margin-bottom:2%">
+              Propiedad: Yo
+            </div>
+
             <form role="form" class="form-horizontal" ng-submit="savePOI()">
+
               <!-- name input poi -->
               <div class="form-group">
                 <label for="namePOI" class="control-label col-xs-2"><strong>Nombre*:</strong></label>
@@ -48,13 +58,26 @@
                          class="form-control" placeholder="Introduce el nombre del POI" />
                 </div>
               </div>
-              <!-- latitude input poi -->
+
+              <!-- tags input poi -->
               <div class="form-group">
+                <label for="tagsPOI"
+                       class="control-label col-xs-2"><strong>Etiquetas*:</strong></label>
+                <div class="col-xs-10">
+                  <input id="tagsPOI" type="text" ng-model="poiModal.tags" required
+                         class="form-control" placeholder="P.ej., #Etiqueta1#Etiqueta2" />
+                </div>
+              </div>
+
+              <!-- coordenates input poi -->
+              <div class="form-group">
+                <!-- latitude input poi -->
                 <label for="latPOI" class="control-label col-xs-2"><strong>Lat*:</strong></label>
                 <div class="col-xs-4">
                   <input id="latPOI" type="text" ng-model="poiModal.lat" required
                          class="form-control" placeholder="Latitud" />
                 </div>
+                <!-- longitude input poi -->
                 <label for="lngPOI" class="control-label col-xs-2"><strong>Lng*:</strong></label>
                 <div class="col-xs-4">
                   <input id="lngPOI" type="text" ng-model="poiModal.lng" required
@@ -64,21 +87,35 @@
 
               <!-- commentary input exercise -->
               <div class="form-group">
-                <label for="descriptionPOI" class="control-label col-xs-2"><strong>Descripción:</strong></label>
+                <label for="descriptionPOI" class="control-label col-xs-2"><strong>Descripción*:</strong></label>
                 <div class="col-xs-10">
                   <textarea id="descriptionPOI" rows="5" style="max-width: 100%;"
-                            ng-model="poiModal.description" class="form-control"
+                            ng-model="poiModal.description" class="form-control" required
                             placeholder="Introduce una descripción (opcional)"></textarea>
                 </div>
               </div>
+
+              <!-- url input poi -->
+              <div class="form-group">
+                <!-- latitude input poi -->
+                <label for="urlPOI" class="control-label col-xs-2"><strong>Url:</strong></label>
+                <div class="col-xs-8">
+                  <input id="urlPOI" type="text" ng-model="poiModal.url"
+                         class="form-control" placeholder="Url asociada al POI" />
+                </div>
+                <!-- short url poi -->
+                <div class="col-xs-2 modalLink" ng-click="shortUrl(poiModal.url)">
+                  Acortar
+                </div>
+              </div>
+              <div style="max-width: 200px;margin:auto">
+                <!--<img  class="img-responsive img-thumbnail" data-ng-src="data:image/png;base64,{{user.data}}"/>-->
+              </div>
+
               <p style="font-size: 75%;text-align: right">* Campos obligatorios.</p>
               <div style="text-align: right">
-                <button class="btn btn-default" ng-click="closePOIModal()" style="font-weight: 600;">
-                  Cancelar
-                </button>
-                <button type="submit" class="btn btn-success" style="font-weight: 600;">
-                  Guardar
-                </button>
+                <button class="btn btn-default" ng-click="closePOIModal()">Cancelar</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
               </div>
             </form>
           </div>

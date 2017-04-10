@@ -5,8 +5,8 @@ angular.module('pirineoPOIApp')
         function ($scope, $state, auth, uiGmapGoogleMapApi) {
 
             $scope.poiList = [
-                {id:1,name:"1",description:"11",tags:["12","13"],lat:1,lng:1,url:"111",image:"",owner:"1111"},
-                {id:2,name:"2",description:"22",tags:["22","23"],lat:2,lng:2,url:"222",image:"",owner:"2222"}
+                {id:1,name:"1",description:"11",tags:"#1",lat:1,lng:1,url:"111",image:"",owner:"1111"},
+                {id:2,name:"2",description:"22",tags:"#2",lat:2,lng:2,url:"222",image:"",owner:"2222"}
             ];
 
             // MODAL POI SECTION
@@ -15,7 +15,7 @@ angular.module('pirineoPOIApp')
                 id: 0,
                 name: "",
                 description: "",
-                tags: [],
+                tags: "",
                 lat: 0,
                 lng: 0,
                 url: "",
@@ -54,7 +54,7 @@ angular.module('pirineoPOIApp')
                             id: 0,
                             name: "",
                             description: "",
-                            tags: [],
+                            tags: "",
                             lat: 0,
                             lng: 0,
                             url: "",
@@ -71,7 +71,7 @@ angular.module('pirineoPOIApp')
                     id: 0,
                     name: "",
                     description: "",
-                    tags: [],
+                    tags: "",
                     lat: 0,
                     lng: 0,
                     url: "",
@@ -79,6 +79,11 @@ angular.module('pirineoPOIApp')
                     owner: ""
                 };
                 $("#poiModal").modal("hide");
+            };
+
+            //POI CONTROLLER
+            $scope.shortUrl = function (url) {
+              console.log("SHORTED");
             };
 
             // MAP SECTION
