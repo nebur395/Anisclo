@@ -377,6 +377,7 @@ module.exports = function (app) {
             return;
         }
 
+        // Checks if the users exists.
         User.findOne({"email":req.params.email}, function(err, user){
 
             if(err) {
@@ -387,8 +388,10 @@ module.exports = function (app) {
                 return;
             }
 
+            // If the user exists
             if(user){
 
+                // Checks if the given POI exists
                 POI.findById(req.body.poiId, function(err, poi){
 
                     if(err) {
@@ -399,8 +402,10 @@ module.exports = function (app) {
                         return;
                     }
 
+                    // If the POI exists
                     if(poi){
 
+                        // Adds the POI to the list of favorite POIs of the user and saves it
                         user.favs.push(req.body.poiId);
                         user.save(function(err, result){
                             if(err) {
@@ -417,6 +422,8 @@ module.exports = function (app) {
                             }
                         });
                     }
+
+                    // If the POI doesn't exists
                     else{
                         res.status(404).send({
                             "success": false,
@@ -425,6 +432,7 @@ module.exports = function (app) {
                     }
                 });
             }
+            // If the user doesn't exists
             else{
                 res.status(404).send({
                     "success": false,
