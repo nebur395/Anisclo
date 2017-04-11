@@ -1,13 +1,18 @@
 angular.module('pirineoPOIApp')
 
-    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi',
+    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService',
 
-        function ($scope, $state, auth, uiGmapGoogleMapApi) {
+        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService) {
 
-            $scope.poiList = [
-                {id:1,name:"1",description:"11",tags:"#1",lat:1,lng:1,url:"111",image:"",owner:"1111"},
-                {id:2,name:"2",description:"22",tags:"#2",lat:2,lng:2,url:"222",image:"",owner:"2222"}
-            ];
+            $scope.poiList = [];
+
+            poiService.getListOfPOIs(function (dataPOIs) {
+                $scope.poiList = [{id:1,name:"1",description:"11",tags:"#1",lat:1,lng:1,url:"111",image:"",owner:"1111"},
+                    {id:2,name:"2",description:"22",tags:"#2",lat:2,lng:2,url:"222",image:"",owner:"2222"}];
+            });
+            $scope.emptyPoiList = function () {
+              return $scope.poiList.length == 0;
+            };
 
             // MODAL POI SECTION
 
@@ -45,10 +50,10 @@ angular.module('pirineoPOIApp')
                 $scope.save = true; //flag to indicate that we are saving the record
                 $("#poiModal").on('hidden.bs.modal', function () {
                     if ($scope.save) {
-                        /*recordsService.saveRecord($scope.recordModal, showSuccess, showError,
-                            function (exercises, cardio) {
+                        poiService.addPoi(
+                            function () {
                                 //añadir el nuevo poi a la lista
-                            });*/
+                            });
                         $scope.save = false;
                         $scope.poiModal = {
                             id: 0,

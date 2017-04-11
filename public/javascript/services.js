@@ -87,7 +87,6 @@ angular.module('pirineoPOIApp')
 
             //send the register info to the server
             signUp: function (userObject, callbackSuccess, callbackError) {
-                var that = this;
                 $http({
                     method: 'POST',
                     url: 'users',
@@ -124,7 +123,6 @@ angular.module('pirineoPOIApp')
 
             // Retrieve password user service
             retrievePassword: function (email, callbackSuccess, callbackError) {
-                var that = this;
                 $http({
                     method: 'PUT',
                     url: 'users/retrievePass',
@@ -180,7 +178,6 @@ angular.module('pirineoPOIApp')
         return {
             // change the current user password
             changePassword: function (email, passwords, callbackSuccess, callbackError) {
-                var that = this;
                 $http({
                     method: 'PUT',
                     url: 'users/' + email,
@@ -197,7 +194,6 @@ angular.module('pirineoPOIApp')
 
             // change the current user password
             deleteAccount: function (email, password, callbackError) {
-                var that = this;
                 var temp = {current: password};
                 $http({
                     method: 'DELETE',
@@ -211,6 +207,31 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data);
                 });
+            }
+
+        };
+    })
+
+    // 'poiService' service manage the poi settings function of the page with the server
+    .factory('poiService', function ($state, $http) {
+        return {
+            // change the current user password
+            getListOfPOIs: function (callback) {
+                $http({
+                    method: 'GET',
+                    url: 'pois/',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callback(data.pois);
+                }).error(function (data) {
+                    alert(data);
+                });
+            },
+
+            addPoi: function (callback) {
+                callback()
             }
 
         };
