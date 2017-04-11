@@ -86,6 +86,10 @@ angular.module('pirineoPOIApp')
               console.log("SHORTED");
             };
 
+            $scope.ownedPoi = function (email) {
+                return auth.getEmail() == email;
+            };
+
             // MAP SECTION
 
             $scope.map = {

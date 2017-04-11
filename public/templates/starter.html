@@ -41,10 +41,12 @@
           <div class="modal-body modalCustomTheme">
 
             <!-- owner poi -->
-            <div ng-hide="true" class="col-xs-12" style="font-weight:600;text-align:right;margin-bottom:2%">
+            <div ng-hide="ownedPoi(poiModal.owner)" class="col-xs-12"
+                 style="font-weight:600;text-align:right;margin-bottom:2%">
               Propiedad <span class="modalLink" ng-click="goUser(poiModal.owner)">{{poiModal.owner}}</span>
             </div>
-            <div ng-hide="false" class="col-xs-12" style="font-weight:600;text-align:right;margin-bottom:2%">
+            <div ng-hide="!ownedPoi(poiModal.owner)" class="col-xs-12"
+                 style="font-weight:600;text-align:right;margin-bottom:2%">
               Propiedad: Yo
             </div>
 
