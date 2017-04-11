@@ -240,6 +240,49 @@ module.exports = function (app) {
     });
 
     /**
+     * @swagger
+     * /pois/{id}/rate:
+     *   put:
+     *     tags:
+     *       - POIs
+     *     summary: Valorar un POI
+     *     description: Añade la valoración indicada a la lista
+     *      de valoraciones del POI.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: ID del POI al que se va a añadir la valoración.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: rating
+     *         description: Valoración que se va a añadir al POI
+     *         in: body
+     *         required: true
+     *         type: integer
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.put("/:id/rate", function(req, res){
+
+    });
+
+    /**
      * Duplicates the desired POI and saves it
      * in the account with email [userEmail].
      */
