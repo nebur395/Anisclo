@@ -7,8 +7,8 @@ angular.module('pirineoPOIApp')
             $scope.poiList = [];
 
             poiService.getListOfPOIs(function (dataPOIs) {
-                $scope.poiList = [{id:1,name:"1",description:"11",tags:"#1",lat:1,lng:1,url:"111",image:"",owner:"1111"},
-                    {id:2,name:"2",description:"22",tags:"#2",lat:2,lng:2,url:"222",image:"",owner:"2222"}];
+                $scope.poiList = [{id:1,name:"1",description:"11",tags:"#1",lat:45.42158812329091,lng:-72.2515869140625,url:"111",image:"",owner:"1111"},
+                    {id:2,name:"2",description:"22",tags:"#2",lat:45.170419972764,lng:-72.71850586000,url:"222",image:"",owner:"2222"}];
             });
             $scope.emptyPoiList = function () {
               return $scope.poiList.length == 0;
@@ -72,19 +72,41 @@ angular.module('pirineoPOIApp')
                             poiService.addPoi($scope.poiModal,
                                 function (poi) {
                                     $scope.poiList.push(poi);
-
-                                    //TODO DARÍO: PINTAR EL NUEVO POI (poi)
+                                    var marker= {};
+                                    marker.coords = {};
+                                    marker.coords.latitude = poi.lat;
+                                    marker.coords.longitude = poi.lng;
+                                    console.log("Saving marker: " + marker.coords.latitude + " ; " + marker.coords.longitude);
+                                    $scope.map.markers.push(marker);
                                 }, showError);
                         } else { // It is an existing POI
                             poiService.modifyPoi($scope.poiModal,
                                 function (poi) {
+                                console.log("modifying poi: "+poi.id);
                                     for (i=0;i<$scope.poiList.length;i++) {
                                         if ($scope.poiList[i].id == poi.id) {
-
+                                            console.log("found poi in poilist: "+$scope.poiList[i].id);
+                                            // TODO: A PARTIR DE AQUI NO SE SI FUNCIONA, PROBAR CUANDO FUNCIONE LO DE ARRIBA
+                                            /*for(var j=0;j<$scope.map.markers.length;j++){
+                                                //var markerOriginal = $scope.map.markers.pop();
+                                                if($scope.map.markers[j].coords.lat == $scope.poiList[i].lat && $scope.map.markers[j].coords.lng == $scope.poiList[i].lng){
+                                                    console.log("changing marker location for poi");
+                                                    var marker = {
+                                                        coords: {
+                                                            latitude: poi.lat,
+                                                            longitude: poi.lng
+                                                        }
+                                                    };
+                                                    $scope.map.markers[j] = marker;
+                                                    //$scope.map.markers.push(marker);
+                                                }
+                                                //else $scope.map.markers.push(markerOriginal);
+                                            }*/
                                             //TODO DARÍO: BORRAR EL POI ANTERIOR ($scope.poiList[i]) Y PINTAR EL NUEVO (poi)
                                             $scope.poiList[i] = poi;
                                         }
                                     }
+                                    $scope.$apply();
                                 }, showError);
                         }
 
@@ -135,25 +157,53 @@ angular.module('pirineoPOIApp')
                 center: {latitude: 45, longitude: -73}, zoom: 8,
 
                 markers: [],
+                markersEvents: {
+                    click: function(marker, eventName, model, eventArgs){
+                        var e = marker.getPosition();
+                        var poi;
+                        console.log("esto es el poi:"+e);
+                        for(var i=0;i<$scope.poiList.length;i++){
+                            if($scope.poiList[i].lat == e.lat() && $scope.poiList[i].lng == e.lng()){
+                                poi = $scope.poiList[i];
+                                console.log("encontrado poi: "+poi.lat+" ; "+poi.lng);
+                                break;
+                            }
+                        }
+                        $scope.openPOIModal(poi);
+                    }
+                },
                 events: {
                     click: function (mapModel, eventName, originalEventArgs) {
                         $scope.$apply(function () {
                             var e = originalEventArgs[0];
-                            var marker = {};
-                            marker.coords = {};
-                            marker.coords.latitude = e.latLng.lat();
-                            marker.coords.longitude = e.latLng.lng();
-                            console.log("Saving marker: " + marker.coords.latitude + " ; " + marker.coords.longitude);
-                            $scope.map.markers.push(marker);
+                            var poi = {
+                                id: 0,
+                                name: "",
+                                description: "",
+                                tags: "",
+                                lat: e.latLng.lat(),
+                                lng: e.latLng.lng(),
+                                url: "",
+                                image: "",
+                                owner: ""
+                            };
+                            $scope.openPOIModal(poi);
                         });
-                        //TODO: añadir aquí llamada a funcion mostrar formulario
                     }
                 }
             };
             $scope.options = {scrollwheel: false, streetViewControl: false, mapTypeControl: false};
             uiGmapGoogleMapApi.then(function (maps) {
-
-
+                var marker = {};
+                marker.coords = {};
+                for(var i=0; i<$scope.poiList.length; i++){
+                    marker.coords.latitude = $scope.poiList[i].lat;
+                    marker.coords.longitude = $scope.poiList[i].lng;
+                    console.log("painting marker: " + marker.coords.latitude + " ; " + marker.coords.longitude);
+                    $scope.map.markers.push(marker);
+                    marker = {};
+                    marker.coords = {};
+                }
             });
 
         }]);

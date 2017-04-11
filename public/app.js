@@ -2,7 +2,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
 
     .config(function(uiGmapGoogleMapApiProvider) {
         uiGmapGoogleMapApiProvider.configure({
-            key: 'API KEY HERE',
+            key: 'AIzaSyCzuYo95Y83vG0jLpI97fC8Rfw1pgRuq7U',
             v: '3', //defaults to latest 3.X anyhow
             libraries: 'geometry,visualization'
         });
