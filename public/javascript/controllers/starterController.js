@@ -68,11 +68,26 @@ angular.module('pirineoPOIApp')
                 $scope.save = true; //flag to indicate that we are saving the poi
                 $("#poiModal").on('hidden.bs.modal', function () {
                     if ($scope.save) {
-                        poiService.addPoi($scope.poiModal,
-                            function (poi) {
-                                $scope.poiList.push(poi);
-                                //añadir el nuevo poi a la lista
-                            }, showError);
+                        if ($scope.poiModal.id == 0) { // It is a new POI
+                            poiService.addPoi($scope.poiModal,
+                                function (poi) {
+                                    $scope.poiList.push(poi);
+
+                                    //TODO DARÍO: PINTAR EL NUEVO POI (poi)
+                                }, showError);
+                        } else { // It is an existing POI
+                            poiService.modifyPoi($scope.poiModal,
+                                function (poi) {
+                                    for (i=0;i<$scope.poiList.length;i++) {
+                                        if ($scope.poiList[i].id == poi.id) {
+
+                                            //TODO DARÍO: BORRAR EL POI ANTERIOR ($scope.poiList[i]) Y PINTAR EL NUEVO (poi)
+                                            $scope.poiList[i] = poi;
+                                        }
+                                    }
+                                }, showError);
+                        }
+
                         $scope.save = false;
                         $scope.poiModal = {
                             id: 0,

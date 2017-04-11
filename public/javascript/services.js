@@ -248,8 +248,27 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data);
                 });
-            }
+            },
 
+            modifyPoi: function (poi, callbackSuccess, callbackError) {
+                var poiTemp = {
+                    userEmail: auth.getEmail(),
+                    poi: poi
+                };
+                $http({
+                    method: 'PUT',
+                    url: 'pois/' + poiTemp.poi.id,
+                    data: JSON.stringify(poiTemp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(poiTemp.poi);
+                    alert(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            }
         };
     });
 
