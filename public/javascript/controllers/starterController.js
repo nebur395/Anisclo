@@ -14,6 +14,23 @@ angular.module('pirineoPOIApp')
               return $scope.poiList.length == 0;
             };
 
+            // FEEDBACK MESSAGES
+
+            // feedback handling variables
+            $scope.error = false;
+            $scope.errorMsg = "";
+
+            // hide the error mensage
+            $scope.hideError = function () {
+                $scope.errorMsg = "";
+                $scope.error = false;
+            };
+            // show the error mensage
+            var showError = function (error) {
+                $scope.errorMsg = error;
+                $scope.error = true;
+            };
+
             // MODAL POI SECTION
 
             $scope.poiModal = {    // temporal POI data on modals
@@ -50,10 +67,11 @@ angular.module('pirineoPOIApp')
                 $scope.save = true; //flag to indicate that we are saving the record
                 $("#poiModal").on('hidden.bs.modal', function () {
                     if ($scope.save) {
-                        poiService.addPoi(
-                            function () {
+                        poiService.addPoi($scope.poiModal,
+                            function (poi) {
+                                $scope.poiList.push(poi);
                                 //añadir el nuevo poi a la lista
-                            });
+                            }, showError);
                         $scope.save = false;
                         $scope.poiModal = {
                             id: 0,

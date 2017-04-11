@@ -213,7 +213,7 @@ angular.module('pirineoPOIApp')
     })
 
     // 'poiService' service manage the poi settings function of the page with the server
-    .factory('poiService', function ($state, $http) {
+    .factory('poiService', function ($state, $http, auth) {
         return {
             // change the current user password
             getListOfPOIs: function (callback) {
@@ -230,8 +230,24 @@ angular.module('pirineoPOIApp')
                 });
             },
 
-            addPoi: function (callback) {
-                callback()
+            addPoi: function (poi, callbackSuccess, callbackError) {
+                var poiTemp = {
+                    userEmail: auth.getEmail(),
+                    poi: poi
+                };
+                $http({
+                    method: 'POST',
+                    url: 'pois/',
+                    data: JSON.stringify(poiTemp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(poiTemp.poi);
+                    alert(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
             }
 
         };
