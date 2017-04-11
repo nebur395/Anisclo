@@ -10,7 +10,7 @@
     <div id="poiList" class="text-center" ng-hide="hidePOIs">
       <form><!-- SEARCH POI INPUT -->
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search">
+          <input type="text" class="form-control" placeholder="Buscar">
           <div class="input-group-btn">
             <button class="btn btn-default" type="submit">
               <i class="glyphicon glyphicon-search"></i>
@@ -73,7 +73,7 @@
               <div class="form-group">
                 <label for="namePOI" class="control-label col-xs-2"><strong>Nombre*:</strong></label>
                 <div class="col-xs-10">
-                  <input id="namePOI" type="text" ng-model="poiModal.name" required
+                  <input id="namePOI" type="text" ng-model="poiModal.name" required ng-click="hideError()"
                          class="form-control" placeholder="Introduce el nombre del POI" />
                 </div>
               </div>
@@ -83,7 +83,7 @@
                 <label for="tagsPOI"
                        class="control-label col-xs-2"><strong>Etiquetas*:</strong></label>
                 <div class="col-xs-10">
-                  <input id="tagsPOI" type="text" ng-model="poiModal.tags" required
+                  <input id="tagsPOI" type="text" ng-model="poiModal.tags" required ng-click="hideError()"
                          class="form-control" placeholder="P.ej., #Etiqueta1#Etiqueta2" />
                 </div>
               </div>
@@ -94,21 +94,21 @@
                 <label for="latPOI" class="control-label col-xs-2"><strong>Lat*:</strong></label>
                 <div class="col-xs-4">
                   <input id="latPOI" type="text" ng-model="poiModal.lat" required
-                         class="form-control" placeholder="Latitud" />
+                         class="form-control" placeholder="Latitud" ng-click="hideError()"/>
                 </div>
                 <!-- longitude input poi -->
                 <label for="lngPOI" class="control-label col-xs-2"><strong>Lng*:</strong></label>
                 <div class="col-xs-4">
                   <input id="lngPOI" type="text" ng-model="poiModal.lng" required
-                         class="form-control" placeholder="Latitud" />
+                         class="form-control" placeholder="Latitud" ng-click="hideError()"/>
                 </div>
               </div>
 
-              <!-- commentary input exercise -->
+              <!-- description input poi -->
               <div class="form-group">
                 <label for="descriptionPOI" class="control-label col-xs-2"><strong>Descripción*:</strong></label>
                 <div class="col-xs-10">
-                  <textarea id="descriptionPOI" rows="5" style="max-width: 100%;"
+                  <textarea id="descriptionPOI" rows="5" style="max-width: 100%;" ng-click="hideError()"
                             ng-model="poiModal.description" class="form-control" required
                             placeholder="Introduce una descripción (opcional)"></textarea>
                 </div>
@@ -116,10 +116,9 @@
 
               <!-- url input poi -->
               <div class="form-group">
-                <!-- latitude input poi -->
                 <label for="urlPOI" class="control-label col-xs-2"><strong>Url:</strong></label>
                 <div class="col-xs-8">
-                  <input id="urlPOI" type="text" ng-model="poiModal.url"
+                  <input id="urlPOI" type="text" ng-model="poiModal.url" ng-click="hideError()"
                          class="form-control" placeholder="Url asociada al POI" />
                 </div>
                 <!-- short url poi -->
@@ -127,6 +126,7 @@
                   Acortar
                 </div>
               </div>
+              <!-- image poi -->
               <div style="max-width: 200px;margin:auto">
                 <!--<img  class="img-responsive img-thumbnail" data-ng-src="data:image/png;base64,{{user.data}}"/>-->
               </div>

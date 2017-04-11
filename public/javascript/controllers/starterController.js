@@ -48,6 +48,7 @@ angular.module('pirineoPOIApp')
             // open modal with [POI] information
             $scope.openPOIModal = function (poi) {
                 $("#poiModal").modal("show");
+                $scope.hideError();
                 $scope.poiModal = {
                     id: poi.id,
                     name: poi.name,
@@ -64,7 +65,7 @@ angular.module('pirineoPOIApp')
             // save record
             $scope.savePOI = function () {
                 $("#poiModal").modal("hide");
-                $scope.save = true; //flag to indicate that we are saving the record
+                $scope.save = true; //flag to indicate that we are saving the poi
                 $("#poiModal").on('hidden.bs.modal', function () {
                     if ($scope.save) {
                         poiService.addPoi($scope.poiModal,
