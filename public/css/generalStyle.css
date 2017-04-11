@@ -51,3 +51,18 @@ h1 {
   text-align: center;
   margin: 1%;
 }
+
+::-webkit-scrollbar {
+  width: .5em;
+  height: .5em;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #aaaaaa;
+}
+
+::-webkit-scrollbar-track {
+  background: #dddddd;
+}

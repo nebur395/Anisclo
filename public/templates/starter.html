@@ -9,7 +9,7 @@
 
     <div id="poiList" class="text-center" ng-hide="hidePOIs">
       <form><!-- SEARCH POI INPUT -->
-        <div class="input-group">
+        <div class="input-group" style="padding:5%;padding-bottom:0">
           <input type="text" class="form-control" placeholder="Buscar">
           <div class="input-group-btn">
             <button class="btn btn-default" type="submit">
@@ -134,6 +134,8 @@
               <p style="font-size: 75%;text-align: right">* Campos obligatorios.</p>
               <div style="text-align: right">
                 <button class="btn btn-default" ng-click="closePOIModal()">Cancelar</button>
+                <button class="btn btn-default" ng-click="closePOIModal()">Borrar</button>
+                <button class="btn btn-default" ng-click="closePOIModal()">Duplicar</button>
                 <button type="submit" class="btn btn-success">Guardar</button>
               </div>
             </form>
