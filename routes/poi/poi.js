@@ -280,6 +280,62 @@ module.exports = function (app) {
      */
     router.put("/:id/rate", function(req, res){
 
+        // Checks all body fields
+        if(!req.body.rating && req.body.rating!==0){
+            res.status(404).send({
+                "success": false,
+                "message": "Valoración incorrecta."
+            });
+            return;
+        }
+
+        POI.findById(req.params.id, function(err, poi){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos."
+                });
+                return;
+            }
+
+            if(poi){
+
+                var rating = req.body.rating;
+                // Checks if the rating is a valid one
+                if(rating>-1 && rating<6){
+                    poi.rating.push(rating);
+                    poi.save(function(err, result){
+
+                        if(err) {
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error guardando datos."
+                            });
+                        }
+                        else{
+                            res.status(200).send({
+                                "success": true,
+                                "message": "Valoración añadida correctamente."
+                            });
+                        }
+                    });
+                }
+                // If the rating is not valid
+                else{
+                    res.status(404).send({
+                        "success": false,
+                        "message": "Valoración no válida. Indique una valoración entre 1 y 5."
+                    });
+                }
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El POI no existe."
+                });
+            }
+        });
     });
 
     /**
@@ -307,6 +363,7 @@ module.exports = function (app) {
 
                 // Checks if the POI that is going to be duplicated exists.
                 POI.findById(req.params.id, function(err, poi){
+
                     if(err) {
                         res.status(500).send("Error recuperando datos");
                         return;
