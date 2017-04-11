@@ -31,6 +31,7 @@ module.exports = function (app) {
 	var router = express.Router();
 
     var User = app.models.User;
+    var POI = app.models.POI;
 
     /**
      * @swagger
@@ -365,8 +366,72 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/FeedbackMessage'
      */
-    router.put("/:email/fav", function(req, response){
+    router.put("/:email/fav", function(req, res){
 
+        // Checks all body fields
+        if(!req.body.poiId){
+            res.status(404).send({
+                "success": false,
+                "message": "ID del POI no válido."
+            });
+            return;
+        }
+
+        User.findOne({"email":req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos."
+                });
+                return;
+            }
+
+            if(user){
+
+                POI.findById(req.body.poiId, function(err, poi){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos."
+                        });
+                        return;
+                    }
+
+                    if(poi){
+
+                        user.favs.push(req.body.poiId);
+                        user.save(function(err, result){
+                            if(err) {
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error guardando datos."
+                                });
+                            }
+                            else{
+                                res.status(200).send({
+                                    "success": true,
+                                    "message": "POI añadido a favoritos."
+                                });
+                            }
+                        });
+                    }
+                    else{
+                        res.status(404).send({
+                            "success": false,
+                            "message": "El POI no existe."
+                        });
+                    }
+                });
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe."
+                });
+            }
+        });
     });
 
     /**
@@ -481,7 +546,7 @@ module.exports = function (app) {
                 User.update({email: req.params.email}, {password:hashPass, firstLogin: false},function(err,data){
 
                     if(err) {
-                        res.status(500).send("Error actualizando usuario");
+                        res.status(500).send({});
                         return;
                     }
 
