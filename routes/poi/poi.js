@@ -95,8 +95,8 @@ module.exports = function (app) {
 
             // If the user exists.
             if(user){
-                // Transforms all the tags to lowerCase
-                arrayToLowerCase(req.body.poi.tags, function(lowerCaseTags){
+                // Transforms all the tags to an array with the tags in lowercase
+                tagsToArray(req.body.poi.tags, function(lowerCaseTags){
                     // Creates a new POI with the basic and required info.
                     var newPoi = new POI({
 
@@ -108,6 +108,10 @@ module.exports = function (app) {
                         owner: req.body.userEmail
                     });
 
+                    if(req.body.poi.url){
+                        newPoi.url = req.body.poi.url;
+                    }
+
                     // Checks if there's an image attached to the POI.
                     if(req.body.poi.image){
                         // TODO: Extraer nombre y path de la request
@@ -116,50 +120,18 @@ module.exports = function (app) {
                         // Stores the image in the system and adds it to the POI
                         storeImage(name, path, function(imageId){
                             newPoi.image = imageId;
-                            // Checks if there's an URL attached to the POI
-                            if(req.body.poi.url){
-                                // It shorts and stores the URL in the system and adds it to the POI
-                                urlShortener(req.body.poi.url, function(shortUrl){
-                                    newPoi.url = shortUrl;
-                                    // Stores the POI in the system
-                                    newPoi.save(function(err, result){
-                                        if(err){
-                                            res.status(500).send("Error guardando POI");
-                                        }
-                                        else{
-                                            res.status(200).send("POI añadido correctamente");
-                                        }
-                                    });
-
-                                });
-                            }
-                            // If there's no URL attached to the POI, it stores the POI in the system.
-                            else{
-                                newPoi.save(function(err, result){
-                                    if(err){
-                                        res.status(500).send("Error guardando POI");
-                                    }
-                                    else{
-                                        res.status(200).send("POI añadido correctamente");
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    // If there's no image attached to the POI, it checks if there's an URL attached.
-                    else if(req.body.poi.url){
-                        urlShortener(req.body.poi.url, function(shortUrl){
-                            newPoi.url = shortUrl;
-                            // Stores the POI in the system.
                             newPoi.save(function(err, result){
                                 if(err){
                                     res.status(500).send("Error guardando POI");
                                 }
                                 else{
-                                    res.status(200).send("POI añadido correctamente");
+                                    retrieveImage(imageId, function(data){
+                                        res.status(200).send({
+                                            "poi":result.createResponse(data)
+                                        });
+                                    });
                                 }
                             });
-
                         });
                     }
                     // If there's no image nor URL attached to the POI, it stores the POI in the system.
@@ -169,7 +141,9 @@ module.exports = function (app) {
                                 res.status(500).send("Error guardando POI");
                             }
                             else{
-                                res.status(200).send("POI añadido correctamente");
+                                res.status(200).send({
+                                    "poi":result.createResponse("")
+                                });
                             }
                         });
                     }
@@ -189,9 +163,9 @@ module.exports = function (app) {
      */
     router.get("/filter", function(req, res){
 
-        var tags = JSON.parse(req.headers["tags"]);
-
-        arrayToLowerCase(tags, function(lowerCaseTags){
+        var tags = req.headers["tags"];
+        // Transforms all the tags to an array with the tags in lowercase
+        tagsToArray(tags, function(lowerCaseTags){
 
             // Searches for the POIs that match with the tags
             POI.find({"tags": {$in: lowerCaseTags}}, function(err, result){
@@ -505,27 +479,30 @@ module.exports = function (app) {
                     // If the POI with that ID and user exists
                     if(poi){
 
-                        // Updates every modifiable field in the POI
-                        poi.name = req.body.poi.name;
-                        poi.description = req.body.poi.description;
-                        poi.tags = req.body.poi.tags;
-                        poi.lat = req.body.poi.lat;
-                        poi.lng = req.body.poi.lng;
+                        // Transforms all the tags to an array with the tags in lowercase
+                        tagsToArray(req.body.poi.tags, function(lowerCaseTags){
+                            // Updates every modifiable field in the POI
+                            poi.name = req.body.poi.name;
+                            poi.description = req.body.poi.description;
+                            poi.tags = lowerCaseTags;
+                            poi.lat = req.body.poi.lat;
+                            poi.lng = req.body.poi.lng;
 
-                        // Checks if the request have a new URL for the POI, since it's an optional field
-                        if(req.body.poi.url){
-                            poi.url = req.body.poi.url;
-                        }
-
-                        // Saves the POI with the new info
-                        poi.save(function(err, result){
-
-                            if(err) {
-                                res.status(500).send("Error actualizando POI");
+                            // Checks if the request have a new URL for the POI, since it's an optional field
+                            if(req.body.poi.url){
+                                poi.url = req.body.poi.url;
                             }
-                            else{
-                                res.status(200).send("POI actualizado correctamente");
-                            }
+
+                            // Saves the POI with the new info
+                            poi.save(function(err, result){
+
+                                if(err) {
+                                    res.status(500).send("Error actualizando POI");
+                                }
+                                else{
+                                    res.status(200).send("POI actualizado correctamente");
+                                }
+                            });
                         });
                     }
                     // If the POI with that ID and user doesn't exists
@@ -578,13 +555,6 @@ module.exports = function (app) {
         readstream.on("end", function(){
             return callback(buffer.toString('base64'));
         });
-    }
-
-    /**
-     *  URL shortener. Right now is just a stub.
-     */
-    function urlShortener(url, callback){
-        return callback(url);
     }
 
     /**
@@ -676,13 +646,15 @@ module.exports = function (app) {
         });
     }
 
-    function arrayToLowerCase(array, callback){
-        var newArray = [];
-        array.forEach(function(tag, index){
-            newArray.push(tag.toLowerCase());
+    function tagsToArray(tags, callback){
+        var tagsArray = tags.split("#");
+        tagsArray.splice(0,1);
+        var lowerCaserTags = [];
+        tagsArray.forEach(function(tag, index){
+            lowerCaserTags.push(tag.toLowerCase());
 
-            if(index == array.length-1){
-                return callback(newArray);
+            if(index == tagsArray.length-1){
+                return callback(lowerCaserTags);
             }
         });
     }
