@@ -324,6 +324,48 @@ module.exports = function (app) {
                 sendEmail(mailOptions, res, message);
             }
         });
+    });
+
+    /**
+     * @swagger
+     * /users/{email}/fav:
+     *   put:
+     *     tags:
+     *       - Users
+     *     summary: Añadir POI a favoritos
+     *     description: Añade el POI indicado a la lista de POIs favoritos
+     *      del usuario.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: poiId
+     *         description: ID del POI que se desea añadir como favorito.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.put("/:email/fav", function(req, response){
 
     });
 
