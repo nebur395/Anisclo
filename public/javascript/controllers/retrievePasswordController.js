@@ -4,6 +4,7 @@ angular.module('pirineoPOIApp')
         function ($scope, $state, auth) {
             // inputs visual variables
             $scope.email = "";
+            $scope.recaptchaResponse;
 
             // FEEDBACK MESSAGES
 
@@ -39,7 +40,8 @@ angular.module('pirineoPOIApp')
             // send the register form to the auth service
             $scope.retrievePassword = function () {
                 var aux = {
-                    email: $scope.email
+                    email: $scope.email,
+                    captcha: $scope.recaptchaResponse
                 };
                 auth.retrievePassword(aux, showSuccess, showError);
             }
