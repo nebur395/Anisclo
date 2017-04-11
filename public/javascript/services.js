@@ -224,7 +224,7 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callback(data.pois);
+                    callback(data);
                 }).error(function (data) {
                     alert(data);
                 });
@@ -243,7 +243,7 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(poiTemp.poi);
+                    callbackSuccess(poiTemp.poi);//TODO cambiar por data
                     alert(data);
                 }).error(function (data) {
                     callbackError(data);
@@ -263,7 +263,7 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(poiTemp.poi);
+                    callbackSuccess(poiTemp.poi);//TODO cambiar por data
                     alert(data);
                 }).error(function (data) {
                     callbackError(data);
