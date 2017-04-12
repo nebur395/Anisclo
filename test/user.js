@@ -66,7 +66,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(200);
-                    result.text.should.equal(singUpSuccessMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(singUpSuccessMessage);
 
                     done();
 
@@ -81,7 +85,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(500);
-                    result.text.should.equal(signUpErrorMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(signUpErrorMessage);
 
                     done();
                 });
@@ -95,7 +103,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(signUpBlankFieldMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(signUpBlankFieldMessage);
 
                     done();
                 });
@@ -109,7 +121,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(signUpBlankFieldMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(signUpBlankFieldMessage);
 
                     done();
                 });
@@ -123,7 +139,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(signUpBlankFieldMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(signUpBlankFieldMessage);
 
                     done();
                 });
@@ -163,6 +183,9 @@ describe('User', function(){
                     result.body.lastname.should.equal(lastname);
                     result.body.should.have.property('firstLogin');
                     result.body.firstLogin.should.equal(true);
+                    result.body.should.have.property('favs');
+                    result.body.favs.should.be.an.instanceOf(Array);
+                    result.body.favs.should.have.lengthOf(0);
                     result.body.should.have.property('admin');
                     result.body.admin.should.equal(false);
 
@@ -178,7 +201,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(loginErrorMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(loginErrorMessage);
 
                     done();
                 });
@@ -192,7 +219,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(loginErrorMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(loginErrorMessage);
 
                     done();
                 });
@@ -206,7 +237,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(loginErrorMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(loginErrorMessage);
 
                     done();
                 });
@@ -220,7 +255,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(loginErrorMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(loginErrorMessage);
 
                     done();
                 });
@@ -262,7 +301,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(200);
-                    result.text.should.equal(successRetrievingMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(successRetrievingMessage);
 
                     done();
 
@@ -277,7 +320,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(errorRetrievingMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(errorRetrievingMessage);
 
                     done();
 
@@ -292,7 +339,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(errorRetrievingMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(errorRetrievingMessage);
 
                     done();
 
@@ -339,7 +390,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(200);
-                    result.text.should.equal(confirmationSuccessMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(confirmationSuccessMessage);
 
                     done();
 
@@ -353,7 +408,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(confirmationErrorMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(confirmationErrorMessage);
 
                     done();
 
@@ -392,6 +451,9 @@ describe('User', function(){
                     result.body.password.should.equal(hashPass);
                     result.body.should.have.property('firstLogin');
                     result.body.firstLogin.should.equal(true);
+                    result.body.should.have.property('favs');
+                    result.body.favs.should.be.an.instanceOf(Array);
+                    result.body.favs.should.have.lengthOf(0);
                     result.body.should.have.property('admin');
                     result.body.admin.should.equal(false);
 
@@ -408,7 +470,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(getUserErrorMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(getUserErrorMessage);
 
                     done();
 
@@ -451,7 +517,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(200);
-                    result.text.should.equal(updateSuccessMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(updateSuccessMessage);
 
                     done();
                 });
@@ -465,7 +535,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(updateWrongPass);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(updateWrongPass);
 
                     done();
                 });
@@ -480,7 +554,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(updateWrongPass);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(updateWrongPass);
 
                     done();
                 });
@@ -494,7 +572,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(missingPasswordsMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(missingPasswordsMessage);
 
                     done();
                 });
@@ -508,7 +590,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(missingPasswordsMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(missingPasswordsMessage);
 
                     done();
                 });
@@ -558,7 +644,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(200);
-                    result.text.should.equal(deleteSuccessMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(deleteSuccessMessage);
 
                     done();
                 });
@@ -572,7 +662,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(deleteWrongPassOrUserMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(deleteWrongPassOrUserMessage);
 
                     done();
                 });
@@ -586,7 +680,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(deleteWrongPassOrUserMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(deleteWrongPassOrUserMessage);
 
                     done();
                 });
@@ -600,7 +698,11 @@ describe('User', function(){
                 .end(function(err, result){
 
                     result.should.have.status(404);
-                    result.text.should.equal(deleteWrongPassMessage);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(deleteWrongPassMessage);
 
                     done();
                 });
@@ -617,5 +719,3 @@ describe('User', function(){
         done();
     });
 });
-
-

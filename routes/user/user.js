@@ -10,9 +10,28 @@ var request = require('request');
 
 module.exports = function (app) {
 
+    /**
+     * @swagger
+     * definition:
+     *   FeedbackMessage:
+     *     description: Mensaje de feedback que se devuelve al usuario en caso de error o acierto en una determinada
+     *       operación.
+     *     type: object
+     *     properties:
+     *       success:
+     *         type: boolean
+     *         required: true
+     *         description: True si la operación ha ido con éxito. False si ha habido algún error.
+     *       message:
+     *         type: string
+     *         required: true
+     *         description: Mensaje que describe el resultado de una operación.
+     */
+
 	var router = express.Router();
 
     var User = app.models.User;
+    var POI = app.models.POI;
 
     /**
      * @swagger
@@ -53,16 +72,25 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
 	router.post("/", function(req,res){
 
         // Checks all body fields
         if(!req.body.name || !req.body.lastname || !req.body.email){
-            res.status(404).send("Nombre, apellido o email incorrectos");
+            res.status(404).send({
+                "success": false,
+                "message": "Nombre, apellido o email incorrectos"
+            });
             return;
         }
 
@@ -89,7 +117,10 @@ module.exports = function (app) {
         }, function (err, result){
 
             if(err){
-                res.status(500).send("Error guardando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error guardando datos"
+                });
             }
             else{
                 var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
@@ -137,8 +168,12 @@ module.exports = function (app) {
      *           $ref: '#/definitions/User'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/login", function(req, res){
 
@@ -155,7 +190,10 @@ module.exports = function (app) {
         User.findOne({email: email}, function(err, result){
 
             if (err){
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos."
+                });
                 return;
             }
 
@@ -173,12 +211,16 @@ module.exports = function (app) {
                         "name": result.name,
                         "lastname": result.lastname,
                         "firstLogin": result.firstLogin,
-                        "admin": result.admin
+                        "admin": result.admin,
+                        "favs": result.favs
                 });
             }
             // If there's no user with that email or the password is incorrect
             else{
-                res.status(404).send("Email o contraseña incorrectos");
+                res.status(404).send({
+                    "success": false,
+                    "message": "Email o contraseña incorrectos"
+                });
             }
         });
     });
@@ -207,10 +249,16 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/retrievePass", function(req, res){
 
@@ -222,11 +270,17 @@ module.exports = function (app) {
 
         User.findOneAndUpdate({email: req.body.email}, {password: hashPass, firstLogin: true}, function(err, result){
             if(err){
-                res.status(500).send("Error recuperando y actualizando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando y actualizando datos"
+                });
                 return;
             }
             if(result===null){
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
             else{
                 var message = "Nueva contraseña generada. Comprueba tu correo para inciar sesión con ella.";
@@ -268,10 +322,16 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/confirm/:email", function(req, res){
 
@@ -284,11 +344,17 @@ module.exports = function (app) {
         console.log(req.params.email);
         User.findOneAndUpdate({email: req.params.email}, {password: hashPass}, function(err, result){
             if(err){
-                res.status(500).send("Error borrando usuario");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error borrando usuario"
+                });
                 return;
             }
             if(result===null){
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
             else{
                 var message = "Confirmación completada. Comprueba tu correo para iniciar sesión con tu contraseña.";
@@ -305,6 +371,163 @@ module.exports = function (app) {
                 sendEmail(mailOptions, res, message);
             }
         });
+    });
+
+    /**
+     * @swagger
+     * /users/{email}/fav:
+     *   put:
+     *     tags:
+     *       - Users
+     *     summary: Añadir POI a favoritos
+     *     description: Añade el POI indicado a la lista de POIs favoritos
+     *      del usuario.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: poiId
+     *         description: ID del POI que se desea añadir como favorito.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.put("/:email/fav", function(req, res){
+
+        // Checks all body fields
+        if(!req.body.poiId){
+            res.status(404).send({
+                "success": false,
+                "message": "ID del POI no válido."
+            });
+            return;
+        }
+
+        // Checks if the users exists.
+        User.findOne({"email":req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos."
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Checks if the given POI exists
+                POI.findById(req.body.poiId, function(err, poi){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos."
+                        });
+                        return;
+                    }
+
+                    // If the POI exists
+                    if(poi){
+
+                        // Adds the POI to the list of favorite POIs of the user and saves it
+                        user.favs.push(req.body.poiId);
+                        user.save(function(err, result){
+                            if(err) {
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error guardando datos."
+                                });
+                            }
+                            else{
+                                res.status(200).send({
+                                    "success": true,
+                                    "message": "POI añadido a favoritos."
+                                });
+                            }
+                        });
+                    }
+
+                    // If the POI doesn't exists
+                    else{
+                        res.status(404).send({
+                            "success": false,
+                            "message": "El POI no existe."
+                        });
+                    }
+                });
+            }
+            // If the user doesn't exists
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe."
+                });
+            }
+        });
+    });
+
+    /**
+     * @swagger
+     * /users/{email}/follow:
+     *   put:
+     *     tags:
+     *       - Users
+     *     summary: Seguir a un usuario
+     *     description: Añade un nuevo usuario a la lista de usuarios
+     *      a los que sigue.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: followingUserEmail
+     *         description: Email del usuario al que se va a seguir que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.put("/:email/follow", function(req, res){
 
     });
 
@@ -335,13 +558,20 @@ module.exports = function (app) {
      *           $ref: '#/definitions/User'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email", function(req,res){
         User.findOne({email: req.params.email},function(err,data){
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -349,7 +579,10 @@ module.exports = function (app) {
                 res.status(200).send(data);
             }
             else {
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
         });
     });
@@ -386,22 +619,33 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/:email", function(req,res){
 
         if(!req.body.current || !req.body.new){
-            res.status(404).send("Contraseña incorrecta");
+            res.status(404).send({
+                "success": false,
+                "message": "Contraseña incorrecta"
+            });
             return;
         }
-
         User.findOne({email: req.params.email}, function(err, result){
 
             if (err){
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -420,16 +664,25 @@ module.exports = function (app) {
                 User.update({email: req.params.email}, {password:hashPass, firstLogin: false},function(err,data){
 
                     if(err) {
-                        res.status(500).send("Error actualizando usuario");
+                        res.status(500).send({
+                            "succes": false,
+                            "message": "Error actualizando datos"
+                        });
                         return;
                     }
 
-                    res.status(200).send("Usuario actualizado correctamente");
+                    res.status(200).send({
+                        "success": true,
+                        "message": "Usuario actualizado correctamente"
+                    });
 
                 });
             }
             else{
-                res.status(404).send("Email o contraseña actual incorrectos");
+                res.status(404).send({
+                    "success": false,
+                    "message": "Email o contraseña actual incorrectos"
+                });
             }
         });
     });
@@ -461,23 +714,35 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.delete("/:email", function(req,res){
         console.log("Email: "+req.params.email);
 
         if(!req.body.current){
-            res.status(404).send("Contraseña incorrecta");
+            res.status(404).send({
+                "success": false,
+                "message": "Contraseña incorrecta"
+            });
             return;
         }
 
         User.findOne({email: req.params.email}, function(err, result){
 
             if (err){
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
             // Hashes the password in order to compare it with the stored one
@@ -492,16 +757,25 @@ module.exports = function (app) {
                 User.remove({email: req.params.email},function(err,result){
 
                     if(err) {
-                        res.status(500).send("Error borrando usuario");
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error borrando usuario"
+                        });
                         return;
                     }
 
-                    res.status(200).send("Usuario eliminado correctamente");
+                    res.status(200).send({
+                        "success": true,
+                        "message": "Usuario eliminado correctamente"
+                    });
                 });
             }
             // If the user doesn't exists or the password is incorrect
             else{
-                res.status(404).send("Email o contraseña incorrectos");
+                res.status(404).send({
+                    "success": false,
+                    "message": "Email o contraseña incorrectos"
+                });
             }
         });
 
@@ -525,7 +799,10 @@ module.exports = function (app) {
                 console.log(error);
             }
             else{
-                res.status(200).send(message);
+                res.status(200).send({
+                    "success": true,
+                    "message": message
+                });
             }
         });
 

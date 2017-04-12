@@ -4,7 +4,7 @@ var mongoose = require("mongoose");
  * @swagger
  * definition:
  *   User:
- *     description: Schema del modelo de User que representa un usuario del sistema.
+ *     description: Schema del modelo de User que representa un usuario público del sistema.
  *     type: object
  *     properties:
  *       email:
@@ -12,9 +12,6 @@ var mongoose = require("mongoose");
  *         uniqueItems: true
  *         required: true
  *         description: Email del usuario que sirve como identificador.
- *       password:
- *         type: string
- *         description: Contraseña del usuario.
  *       name:
  *         type: string
  *         required: true
@@ -32,10 +29,18 @@ var mongoose = require("mongoose");
  *         required: true
  *         description: True si el usuario es la primera vez que inicia sesión tras haberse
  *           creado la cuenta o cambiado la contraseña.
- *       registerDate:
+ *       favs:
+ *        type: array
+ *        items:
  *         type: string
- *         format: date
- *         description: Fecha de creación del usuario
+ *        required: true
+ *        description: Lista con los POIs favoritos del usuario
+ *       follows:
+ *        type: array
+ *        items:
+ *         type: string
+ *        required: true
+ *        description: Lista con los usuarios a los que sigue
  */
 
 // Create the Schema
@@ -46,6 +51,8 @@ var userSchema = mongoose.Schema({
     lastname: {type: String, required: true},
     admin: {type: Boolean, required: true},
     firstLogin: {type: Boolean, required: true},
+    favs: {type:[mongoose.Schema.Types.ObjectId], default: []},
+    follows: {type:mongoose.Schema.Types.ObjectId, default: null},
     registerDate: {type: Date, default: Date.now}
 });
 
