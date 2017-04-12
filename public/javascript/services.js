@@ -61,6 +61,14 @@ angular.module('pirineoPOIApp')
                 return _identity.firstLogin;
             },
 
+            getFavs: function () {
+                return _identity.favs;
+            },
+
+            getFollows: function () {
+                return _identity.follows;
+            },
+
             //send the login info to the server
             login: function (user, password, callback) {
                 var that = this;
@@ -81,7 +89,7 @@ angular.module('pirineoPOIApp')
                         $state.go('starter');
                     }
                 }).error(function (data) {
-                    callback(data);
+                    callback(data.message);
                 });
             },
 
