@@ -14,7 +14,32 @@ module.exports = function (app) {
     var POI = app.models.POI;
 
     /**
-     * Returns a list of the existing POIs in the system.
+     * @swagger
+     * /pois:
+     *   get:
+     *     tags:
+     *       - POIs
+     *     summary: Obtener POIs
+     *     description: Devuelve una lista con todos los POIs en el sistema.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Lista con todos los POIs del sistema.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              pois:
+     *               type: array
+     *               items:
+     *                $ref: '#/definitions/POI'
+     *       500:
+     *          description: Mensaje de feecback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/", function(req, res){
         
@@ -24,7 +49,10 @@ module.exports = function (app) {
         POI.find({}, function(err, result){
 
             if (err){
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -66,7 +94,63 @@ module.exports = function (app) {
     });
 
     /**
-     * Creates a new POI in the system.
+     * @swagger
+     * /pois:
+     *   post:
+     *     tags:
+     *       - POIs
+     *     summary: Crear POI
+     *     description: Crea un nuevo POI en el sistema.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: userEmail
+     *         description: Email del usuario que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: poi
+     *         description: Información del POI que se va a añadir
+     *         in: body
+     *         required: true
+     *         schema:
+     *          type: object
+     *          properties:
+     *              name:
+     *               type: string
+     *              description:
+     *               type: string
+     *              tags:
+     *               type: string
+     *              lat:
+     *               type: number
+     *               format: double
+     *              lng:
+     *               type: number
+     *               format: double
+     *              url:
+     *               type: string
+     *              image:
+     *               type: string
+     *     responses:
+     *       200:
+     *         description: El POI que se acaba de crear.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              poi:
+     *                $ref: '#/definitions/POI'
+     *       404:
+     *          description: Mensaje de feedback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *          description: Mensaje de feecback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
      */
     router.post("/", function(req, res){
         
@@ -75,13 +159,19 @@ module.exports = function (app) {
 
         // Checks all body fields
         if(!req.body.userEmail || !req.body.poi){
-            res.status(404).send("Usuario o POI incorrecto");
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario o POI incorrectos"
+            });
             return;
         }
         // Checks all POI fields
         if(!req.body.poi.name || !req.body.poi.description || !req.body.poi.tags ||
             !req.body.poi.lat || !req.body.poi.lng){
-            res.status(404).send("Uno o más campos del POI son incorrectos");
+            res.status(404).send({
+                "success": false,
+                "message": "Uno o más campos del POI son incorrectos"
+            });
             return;
         }
 
@@ -89,108 +179,322 @@ module.exports = function (app) {
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
             // If the user exists.
             if(user){
+                // Transforms all the tags to an array with the tags in lowercase
+                tagsToArray(req.body.poi.tags, function(lowerCaseTags){
+                    // Creates a new POI with the basic and required info.
+                    var newPoi = new POI({
 
-                // Creates a new POI with the basic and required info.
-                var newPoi = new POI({
+                        name: req.body.poi.name,
+                        description: req.body.poi.description,
+                        tags: lowerCaseTags,
+                        lat: req.body.poi.lat,
+                        lng: req.body.poi.lng,
+                        owner: req.body.userEmail
+                    });
 
-                    name: req.body.poi.name,
-                    description: req.body.poi.description,
-                    tags: req.body.poi.tags,
-                    lat: req.body.poi.lat,
-                    lng: req.body.poi.lng,
-                    owner: req.body.userEmail
+                    if(req.body.poi.url){
+                        newPoi.url = req.body.poi.url;
+                    }
 
-                });
-
-                // Checks if there's an image attached to the POI.
-                if(req.body.poi.image){
-                    // TODO: Extraer nombre y path de la request
-                    var name = "imagen";
-                    var path = "./image.jpg";
-                    // Stores the image in the system and adds it to the POI
-                    storeImage(name, path, function(imageId){
-                        newPoi.image = imageId;
-                        // Checks if there's an URL attached to the POI
-                        if(req.body.poi.url){
-                            // It shorts and stores the URL in the system and adds it to the POI
-                            urlShortener(req.body.poi.url, function(shortUrl){
-                                newPoi.url = shortUrl;
-                                // Stores the POI in the system
-                                newPoi.save(function(err, result){
-                                    if(err){
-                                        res.status(500).send("Error guardando POI");
-                                    }
-                                    else{
-                                        res.status(200).send("POI añadido correctamente");
-                                    }
-                                });
-
-                            });
-                        }
-                        // If there's no URL attached to the POI, it stores the POI in the system.
-                        else{
+                    // Checks if there's an image attached to the POI.
+                    if(req.body.poi.image){
+                        // TODO: Extraer nombre y path de la request
+                        var name = "imagen";
+                        var path = "./image.jpg";
+                        // Stores the image in the system and adds it to the POI
+                        storeImage(name, path, function(imageId){
+                            newPoi.image = imageId;
                             newPoi.save(function(err, result){
                                 if(err){
-                                    res.status(500).send("Error guardando POI");
+                                    res.status(500).send({
+                                        "success": false,
+                                        "message": "Error guardando POI"
+                                    });
                                 }
                                 else{
-                                    res.status(200).send("POI añadido correctamente");
+                                    retrieveImage(imageId, function(data){
+                                        res.status(200).send({
+                                            "poi":result.createResponse(data)
+                                        });
+                                    });
                                 }
                             });
-                        }
-                    });
-                }
-                // If there's no image attached to the POI, it checks if there's an URL attached.
-                else if(req.body.poi.url){
-                    urlShortener(req.body.poi.url, function(shortUrl){
-                        newPoi.url = shortUrl;
-                        // Stores the POI in the system.
+                        });
+                    }
+                    // If there's no image attached to the POI, it stores the POI in the system.
+                    else{
                         newPoi.save(function(err, result){
                             if(err){
-                                res.status(500).send("Error guardando POI");
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error guardando POI"
+                                });
                             }
                             else{
-                                res.status(200).send("POI añadido correctamente");
+                                res.status(200).send({
+                                    "poi":result.createResponse("")
+                                });
                             }
                         });
-
-                    });
-                }
-                // If there's no image nor URL attached to the POI, it stores the POI in the system.
-                else{
-                    newPoi.save(function(err, result){
-                        if(err){
-                            res.status(500).send("Error guardando POI");
-                        }
-                        else{
-                            res.status(200).send("POI añadido correctamente");
-                        }
-                    });
-                }
+                    }
+                });
             }
             // If the user doesn't exists.
             else {
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
         });
 
     });
 
     /**
-     * Duplicates the desired POI and saves it
-     * in the account with email [userEmail].
+     * @swagger
+     * /pois/filter:
+     *   get:
+     *     tags:
+     *       - POIs
+     *     summary: Buscar POIs por tags
+     *     description: Busca los POIs que contengan los tags que se
+     *      han indicado y devuelve una lista con ellos.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: tags
+     *         description: Conjunto de tags separados por un '#'.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Lista con todos los POIs del sistema.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              pois:
+     *               type: array
+     *               items:
+     *                $ref: '#/definitions/POI'
+     *       500:
+     *          description: Mensaje de feecback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/filter", function(req, res){
+
+        var tags = req.headers["tags"];
+        // Transforms all the tags to an array with the tags in lowercase
+        tagsToArray(tags, function(lowerCaseTags){
+
+            // Searches for the POIs that match with the tags
+            POI.find({"tags": {$in: lowerCaseTags}}, function(err, result){
+
+                if(err) {
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error recuperando datos"
+                    });
+                    return;
+                }
+
+                // If no POI match with the tags, it returns an empty array
+                if (result.length==0){
+                    res.status(200).send(result);
+                }
+                else{
+                    var pois = [];
+                    // Iterates all the POIs that match with the tags
+                    result.forEach(function(poi, index){
+
+                        // Checks if there's an image attached to the POI and retrieves it if it's the case.
+                        if(poi.image!=null){
+                            retrieveImage(poi.image, function(data){
+
+                                pois.push(poi.createResponse(data));
+
+                                if(index == result.length - 1){
+                                    res.status(200).send({
+                                        "pois": pois
+                                    });
+                                }
+                            });
+                        }
+                        else{
+                            pois.push(poi.createResponse(""));
+
+                            if(index == result.length - 1){
+                                res.status(200).send({
+                                    "pois": pois
+                                });
+                            }
+                        }
+                    });
+                }
+
+            });
+        });
+    });
+
+    /**
+     * @swagger
+     * /pois/{id}/rate:
+     *   put:
+     *     tags:
+     *       - POIs
+     *     summary: Valorar un POI
+     *     description: Añade la valoración indicada a la lista
+     *      de valoraciones del POI.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: ID del POI al que se va a añadir la valoración.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: rating
+     *         description: Valoración que se va a añadir al POI
+     *         in: body
+     *         required: true
+     *         type: integer
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.put("/:id/rate", function(req, res){
+
+        // Checks all body fields
+        if(!req.body.rating && req.body.rating!==0){
+            res.status(404).send({
+                "success": false,
+                "message": "Valoración incorrecta."
+            });
+            return;
+        }
+
+        POI.findById(req.params.id, function(err, poi){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos."
+                });
+                return;
+            }
+
+            if(poi){
+
+                var rating = req.body.rating;
+                // Checks if the rating is a valid one
+                if(rating>-1 && rating<6){
+                    poi.rating.push(rating);
+                    poi.save(function(err, result){
+
+                        if(err) {
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error guardando datos."
+                            });
+                        }
+                        else{
+                            res.status(200).send({
+                                "success": true,
+                                "message": "Valoración añadida correctamente."
+                            });
+                        }
+                    });
+                }
+                // If the rating is not valid
+                else{
+                    res.status(404).send({
+                        "success": false,
+                        "message": "Valoración no válida. Indique una valoración entre 1 y 5."
+                    });
+                }
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El POI no existe."
+                });
+            }
+        });
+    });
+
+    /**
+     * @swagger
+     * /pois/{id}:
+     *   post:
+     *     tags:
+     *       - POIs
+     *     summary: Duplicar un POI
+     *     description: Duplica un POI existente y lo añade a los POIs del usuario.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: ID del POI que se va a duplicar.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: userEmail
+     *         description: Email del usuario que va a obtener el duplicado del POI
+     *          y que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.post("/:id", function(req, res){
 
         // Checks all body fields
         if(!req.body.userEmail){
-            res.status(404).send("Usuario incorrecto");
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario incorrecto"
+            });
             return;
         }
 
@@ -198,7 +502,10 @@ module.exports = function (app) {
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -207,8 +514,12 @@ module.exports = function (app) {
 
                 // Checks if the POI that is going to be duplicated exists.
                 POI.findById(req.params.id, function(err, poi){
+
                     if(err) {
-                        res.status(500).send("Error recuperando datos");
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
                         return;
                     }
 
@@ -222,7 +533,6 @@ module.exports = function (app) {
                         delete duplicate.owner;
                         delete duplicate.creationDate;
                         delete duplicate.rating;
-                        delete duplicate.fav;
                         // Sets the new owner of the duplicated POI.
                         duplicate.owner = req.body.userEmail;
 
@@ -230,31 +540,78 @@ module.exports = function (app) {
                         var duplicatedPoi = new POI(duplicate);
                         duplicatedPoi.save(function(err, result){
                             if(err){
-                                res.status(500).send("Error guardando POI");
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error guardando POI"
+                                });
                             }
                             else{
-                                res.status(200).send("POI duplicado correctamente");
+                                res.status(200).send({
+                                    "success": true,
+                                    "message": "POI duplicado correctamente"
+                                });
                             }
                         });
                     }
                     // If the POI doesn't exists.
                     else{
-                        res.status(404).send("El POI no existe");
+                        res.status(404).send({
+                            "success": false,
+                            "message": "El POI no existe"
+                        });
                     }
                 })
 
             }
             // If the user doesn't exists.
             else{
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
         });
 
     });
 
     /**
-     * Removes the desired POI from the system,
-     * including the attached image and URL, if any.
+     * @swagger
+     * /pois/{id}:
+     *   delete:
+     *     tags:
+     *       - POIs
+     *     summary: Eliminar un POI
+     *     description: Elimina un POI existente del usuario, incluida la imagen adjunta,
+     *      si la hay, y la URL acortada, si se ha acortado.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: ID del POI que se va a eliminar.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: userEmail
+     *         description: Email del usuario propietario del POI que se va a eliminar.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.delete("/:id", function(req, res){
 
@@ -262,7 +619,10 @@ module.exports = function (app) {
 
         // Checks all body fields
         if(!req.body.userEmail){
-            res.status(404).send("Usuario incorrecto");
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario incorrecto"
+            });
             return;
         }
 
@@ -270,7 +630,10 @@ module.exports = function (app) {
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -284,21 +647,30 @@ module.exports = function (app) {
 
                         if(err) {
                             semaphore.leave();
-                            res.status(500).send("Error recuperando y eliminando datos");
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error recuperando y eliminando datos"
+                            });
                             return;
                         }
 
                         // If the POI doesn't exists.
                         if(result===null){
                             semaphore.leave();
-                            res.status(404).send("El POI no existe");
+                            res.status(404).send({
+                                "success": false,
+                                "message": "El POI no existe"
+                            });
                         }
                         // If the POI exists and it's been removed
                         else{
                             // It calls a function that removes the image and url attached to the POI, if any
                             removeUrlAndImage(result, function(){
                                 semaphore.leave();
-                                res.status(200).send("POI eliminado correctamente");
+                                res.status(200).send({
+                                    "success": true,
+                                    "message": "POI eliminado correctamente"
+                                });
                             });
                         }
                     });
@@ -306,25 +678,90 @@ module.exports = function (app) {
             }
             // If the user doesn't exists.
             else{
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
         });
     });
 
     /**
-     * Updates an existing POI with new information.
+     * @swagger
+     * /pois/{id}:
+     *   put:
+     *     tags:
+     *       - POIs
+     *     summary: Modificar POI
+     *     description: Modifica un POI existente del usuario con nueva información.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: ID del POI que se va a eliminar.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: userEmail
+     *         description: Email del usuario propietario del POI que se va a modificar.
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: poi
+     *         description: Información que se va a editar en el POI.
+     *         in: body
+     *         required: true
+     *         schema:
+     *          type: object
+     *          properties:
+     *              name:
+     *               type: string
+     *              description:
+     *               type: string
+     *              tags:
+     *               type: string
+     *              lat:
+     *               type: number
+     *               format: double
+     *              lng:
+     *               type: number
+     *               format: double
+     *              url:
+     *               type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/:id", function(req, res){
 
         // Checks all body fields
         if(!req.body.userEmail || !req.body.poi){
-            res.status(404).send("Usuario o POI incorrecto");
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario o POI incorrectos"
+            });
             return;
         }
         // Checks all POI fields
         if(!req.body.poi.name || !req.body.poi.description || !req.body.poi.tags ||
             !req.body.poi.lat || !req.body.poi.lng){
-            res.status(404).send("Uno o más campos del POI son incorrectos");
+            res.status(404).send({
+                "success": false,
+                "message": "Uno o más campos del POI son incorrectos"
+            });
             return;
         }
 
@@ -332,7 +769,10 @@ module.exports = function (app) {
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -342,45 +782,63 @@ module.exports = function (app) {
                 POI.findOne({"_id":req.params.id, "owner":req.body.userEmail}, function(err, poi){
 
                     if(err) {
-                        res.status(500).send("Error recuperando datos");
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
                         return;
                     }
 
                     // If the POI with that ID and user exists
                     if(poi){
 
-                        // Updates every modifiable field in the POI
-                        poi.name = req.body.poi.name;
-                        poi.description = req.body.poi.description;
-                        poi.tags = req.body.poi.tags;
-                        poi.lat = req.body.poi.lat;
-                        poi.lng = req.body.poi.lng;
+                        // Transforms all the tags to an array with the tags in lowercase
+                        tagsToArray(req.body.poi.tags, function(lowerCaseTags){
+                            // Updates every modifiable field in the POI
+                            poi.name = req.body.poi.name;
+                            poi.description = req.body.poi.description;
+                            poi.tags = lowerCaseTags;
+                            poi.lat = req.body.poi.lat;
+                            poi.lng = req.body.poi.lng;
 
-                        // Checks if the request have a new URL for the POI, since it's an optional field
-                        if(req.body.poi.url){
-                            poi.url = req.body.poi.url;
-                        }
-
-                        // Saves the POI with the new info
-                        poi.save(function(err, result){
-
-                            if(err) {
-                                res.status(500).send("Error actualizando POI");
+                            // Checks if the request have a new URL for the POI, since it's an optional field
+                            if(req.body.poi.url){
+                                poi.url = req.body.poi.url;
                             }
-                            else{
-                                res.status(200).send("POI actualizado correctamente");
-                            }
+
+                            // Saves the POI with the new info
+                            poi.save(function(err, result){
+
+                                if(err) {
+                                    res.status(500).send({
+                                        "success": false,
+                                        "message": "Error actualizando POI"
+                                    });
+                                }
+                                else{
+                                    res.status(200).send({
+                                        "success": true,
+                                        "message": "POI actualizado correctamente"
+                                    });
+                                }
+                            });
                         });
                     }
                     // If the POI with that ID and user doesn't exists
                     else{
-                        res.status(404).send("El POI no existe");
+                        res.status(404).send({
+                            "success": false,
+                            "message": "El POI no existe"
+                        });
                     }
                 });
             }
             // If the user doesn't exists.
             else{
-                res.status(404).send("El usuario no existe");
+                rres.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
 
         });
@@ -422,13 +880,6 @@ module.exports = function (app) {
         readstream.on("end", function(){
             return callback(buffer.toString('base64'));
         });
-    }
-
-    /**
-     *  URL shortener. Right now is just a stub.
-     */
-    function urlShortener(url, callback){
-        return callback(url);
     }
 
     /**
@@ -516,6 +967,19 @@ module.exports = function (app) {
             // If any other POI have this URL attached
             else{
                 return callback();
+            }
+        });
+    }
+
+    function tagsToArray(tags, callback){
+        var tagsArray = tags.split("#");
+        tagsArray.splice(0,1);
+        var lowerCaserTags = [];
+        tagsArray.forEach(function(tag, index){
+            lowerCaserTags.push(tag.toLowerCase());
+
+            if(index == tagsArray.length-1){
+                return callback(lowerCaserTags);
             }
         });
     }
