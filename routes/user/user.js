@@ -119,7 +119,7 @@ module.exports = function (app) {
             if(err){
                 res.status(500).send({
                     "success": false,
-                    "message": "Error guardando datos."
+                    "message": "Error guardando datos"
                 });
             }
             else{
@@ -639,7 +639,6 @@ module.exports = function (app) {
             });
             return;
         }
-
         User.findOne({email: req.params.email}, function(err, result){
 
             if (err){
