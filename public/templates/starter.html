@@ -4,7 +4,8 @@
     <div id="selectViewOfPoisAndRoutes">
       <div class="col-xs-6 w3-text-theme" id="viewListPOis" ng-click="hidePOIs = !hidePOIs">
         Mostrar/ocultar POIs</div>
-      <div class="col-xs-6 w3-text-theme">Mostrar/ocultar Rutas</div>
+      <div class="col-xs-6 w3-text-theme" ng-click="hideRoutes = !hideRoutes">
+        Mostrar/ocultar Rutas</div>
     </div>
 
     <div id="poiList" class="text-center" ng-hide="hidePOIs">
@@ -21,12 +22,29 @@
 
       <!-- LIST OF POIS -->
       <div class="divider"></div>
-      <ul class="list-group" ng-hide="emptyPoiList()">
+      <ul class="list-group" ng-hide="emptyPoiList()" style="margin-bottom:0">
         <li class="list-group-item" ng-repeat="poi in poiList track by $index"
             ng-click="openPOIModal(poi)" style="cursor:pointer">
           {{poi.name}}</li>
       </ul>
       <p ng-hide="!emptyPoiList()">No hay POIs que mostrar</p>
+    </div>
+
+    <div id="routesSection" class="text-center" ng-hide="hideRoutes">
+      <div style="padding:5%;padding-bottom:0">
+        <button class="btn w3-theme-action customButton" type="submit" ng-hide="true"
+                style="width: 100%;padding:6px 12px!important;">
+          <i class="glyphicon glyphicon-plus-sign"></i> Nueva ruta
+        </button>
+        <button class="btn w3-theme-action customButton" type="submit" ng-hide="false"
+                style="width: 100%;padding:6px 12px!important;">
+          <i class="glyphicon glyphicon-ok"></i> Crear ruta
+        </button>
+      </div>
+
+      <!-- LIST OF POIS -->
+      <div class="divider"></div>
+
     </div>
 
     <!-- GOOGLE MAPS SECTION -->

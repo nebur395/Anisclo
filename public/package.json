@@ -18,6 +18,7 @@
   "homepage": "https://github.com/nebur395/Anisclo#readme",
   "dependencies": {
     "angular-base64": "^2.0.5",
+    "angular-drag-and-drop-lists": "^2.1.0",
     "angular-google-maps": "^2.4.1",
     "angular-recaptcha": "^4.0.4",
     "angular-simple-logger": "^0.1.7",
