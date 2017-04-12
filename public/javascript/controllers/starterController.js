@@ -128,6 +128,7 @@ angular.module('pirineoPOIApp')
             $scope.duplicatePOI = function () {
                 poiService.duplicatePoi($scope.poiModal,
                     function (poi) {
+                        $scope.poiList.push(poi);
                         $scope.closePOIModal();
                     }, showError);
             };
