@@ -125,7 +125,7 @@ angular.module('pirineoPOIApp')
                     that.authenticate(tmp);
                     $state.go('starter');
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
