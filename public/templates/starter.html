@@ -1,13 +1,149 @@
 <div id="starterStyle">
   <div class="container-fluid">
 
+    <div id="selectViewOfPoisAndRoutes">
+      <div class="col-xs-6 w3-text-theme" id="viewListPOis" ng-click="hidePOIs = !hidePOIs">
+        Mostrar/ocultar POIs</div>
+      <div class="col-xs-6 w3-text-theme">Mostrar/ocultar Rutas</div>
+    </div>
+
+    <div id="poiList" class="text-center" ng-hide="hidePOIs">
+      <form ng-submit="searchPOIs()"><!-- SEARCH POI INPUT -->
+        <div class="input-group" style="padding:5%;padding-bottom:0">
+          <input type="text" class="form-control" placeholder="Buscar" ng-model="searhedTags">
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              <i class="glyphicon glyphicon-search"></i>
+            </button>
+          </div>
+        </div>
+      </form><!--END: SEARCH POI INPUT -->
+
+      <!-- LIST OF POIS -->
+      <div class="divider"></div>
+      <ul class="list-group" ng-hide="emptyPoiList()">
+        <li class="list-group-item" ng-repeat="poi in poiList track by $index"
+            ng-click="openPOIModal(poi)" style="cursor:pointer">
+          {{poi.name}}</li>
+      </ul>
+      <p ng-hide="!emptyPoiList()">No hay POIs que mostrar</p>
+    </div>
+
+    <!-- GOOGLE MAPS SECTION -->
+
     <ui-gmap-google-map center="map.center" options="options" zoom="map.zoom" events="map.events"
                         style="height: 100%">
 
-      <ui-gmap-marker idKey="'marker'" ng-repeat="m in map.markers" coords="m.coords" icon="m.icon">
+      <ui-gmap-marker idKey="'marker'" events = "map.markersEvents"ng-repeat="m in map.markers" coords="m.coords" icon="m.icon">
 
       </ui-gmap-marker>
     </ui-gmap-google-map>
+
+    <!-- MODAL SECTION -->
+
+    <!-- poi modal popup -->
+    <div id="poiModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- modal content -->
+        <div class="modal-content">
+          <div class="modal-header text-center modalCustomTheme">
+            <button class="close" data-dismiss="modal">&times;</button>
+            <h2>¡Echa un vistazo a tu POI!</h2>
+          </div>
+          <div class="modal-body modalCustomTheme">
+
+            <!-- this div will show only when an error occurs -->
+            <div ng-if="error" class="alert alert-danger feedbackMessages">
+              <strong>&#10008</strong> {{errorMsg}}
+            </div>
+
+            <!-- owner poi -->
+            <div ng-hide="ownedPoi(poiModal.owner)" class="col-xs-12"
+                 style="font-weight:600;text-align:right;margin-bottom:2%">
+              Propiedad <span class="modalLink" ng-click="goUser(poiModal.owner)">{{poiModal.owner}}</span>
+            </div>
+            <div ng-hide="!ownedPoi(poiModal.owner)" class="col-xs-12"
+                 style="font-weight:600;text-align:right;margin-bottom:2%">
+              Propiedad: Yo
+            </div>
+
+            <form role="form" class="form-horizontal" ng-submit="modalSubmit()">
+
+              <!-- name input poi -->
+              <div class="form-group">
+                <label for="namePOI" class="control-label col-xs-2"><strong>Nombre*:</strong></label>
+                <div class="col-xs-10">
+                  <input id="namePOI" type="text" ng-model="poiModal.name" required ng-click="hideError()"
+                         class="form-control" placeholder="Introduce el nombre del POI" />
+                </div>
+              </div>
+
+              <!-- tags input poi -->
+              <div class="form-group">
+                <label for="tagsPOI"
+                       class="control-label col-xs-2"><strong>Etiquetas*:</strong></label>
+                <div class="col-xs-10">
+                  <input id="tagsPOI" type="text" ng-model="poiModal.tags" required ng-click="hideError()"
+                         class="form-control" placeholder="P.ej., #Etiqueta1#Etiqueta2" />
+                </div>
+              </div>
+
+              <!-- coordenates input poi -->
+              <div class="form-group">
+                <!-- latitude input poi -->
+                <label for="latPOI" class="control-label col-xs-2"><strong>Lat*:</strong></label>
+                <div class="col-xs-4">
+                  <input id="latPOI" type="text" ng-model="poiModal.lat" required
+                         class="form-control" placeholder="Latitud" ng-click="hideError()"/>
+                </div>
+                <!-- longitude input poi -->
+                <label for="lngPOI" class="control-label col-xs-2"><strong>Lng*:</strong></label>
+                <div class="col-xs-4">
+                  <input id="lngPOI" type="text" ng-model="poiModal.lng" required
+                         class="form-control" placeholder="Latitud" ng-click="hideError()"/>
+                </div>
+              </div>
+
+              <!-- description input poi -->
+              <div class="form-group">
+                <label for="descriptionPOI" class="control-label col-xs-2"><strong>Descripción*:</strong></label>
+                <div class="col-xs-10">
+                  <textarea id="descriptionPOI" rows="5" style="max-width: 100%;" ng-click="hideError()"
+                            ng-model="poiModal.description" class="form-control" required
+                            placeholder="Introduce una descripción"></textarea>
+                </div>
+              </div>
+
+              <!-- url input poi -->
+              <div class="form-group">
+                <label for="urlPOI" class="control-label col-xs-2"><strong>Url:</strong></label>
+                <div class="col-xs-8">
+                  <input id="urlPOI" type="text" ng-model="poiModal.url" ng-click="hideError()"
+                         class="form-control" placeholder="Url asociada al POI" />
+                </div>
+                <!-- short url poi -->
+                <div class="col-xs-2 modalLink" ng-click="shortUrl(poiModal.url)">
+                  Acortar
+                </div>
+              </div>
+              <!-- image poi -->
+              <div style="max-width: 200px;margin:auto">
+                <!--<img  class="img-responsive img-thumbnail" data-ng-src="data:image/png;base64,{{user.data}}"/>-->
+              </div>
+
+              <p style="font-size: 75%;text-align: right">* Campos obligatorios.</p>
+              <div style="text-align: right">
+                <button class="btn btn-default customButton"
+                        ng-click="modalButton=0;closePOIModal()">Cancelar</button>
+                <button class="btn btn-danger customButton" ng-click="modalButton=1">Borrar</button>
+                <button class="btn w3-theme-action customButton" ng-click="modalButton=2">Duplicar</button>
+                <button class="btn btn-success customButton" ng-click="modalButton=3">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
  </div>

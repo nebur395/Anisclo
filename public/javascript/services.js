@@ -87,7 +87,6 @@ angular.module('pirineoPOIApp')
 
             //send the register info to the server
             signUp: function (userObject, callbackSuccess, callbackError) {
-                var that = this;
                 $http({
                     method: 'POST',
                     url: 'users',
@@ -124,7 +123,6 @@ angular.module('pirineoPOIApp')
 
             // Retrieve password user service
             retrievePassword: function (email, callbackSuccess, callbackError) {
-                var that = this;
                 $http({
                     method: 'PUT',
                     url: 'users/retrievePass',
@@ -176,11 +174,10 @@ angular.module('pirineoPOIApp')
     })
 
     // 'settings' service manage the profile settings function of the page with the server
-    .factory('settings', function ($state, $http, auth) {
+    .factory('settings', function ($http, auth) {
         return {
             // change the current user password
             changePassword: function (email, passwords, callbackSuccess, callbackError) {
-                var that = this;
                 $http({
                     method: 'PUT',
                     url: 'users/' + email,
@@ -197,7 +194,6 @@ angular.module('pirineoPOIApp')
 
             // change the current user password
             deleteAccount: function (email, password, callbackError) {
-                var that = this;
                 var temp = {current: password};
                 $http({
                     method: 'DELETE',
@@ -213,6 +209,145 @@ angular.module('pirineoPOIApp')
                 });
             }
 
+        };
+    })
+
+    // 'url' service manage the url settings function of the page with the server
+    .factory('urlService', function ($http) {
+        return {
+            // change the current user password
+            shortUrl: function (url, callbackSuccess, callbackError) {
+                var tmp = {url: url};
+                $http({
+                    method: 'POST',
+                    url: 'url/',
+                    data: JSON.stringify(tmp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.urlShort);
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            }
+        };
+    })
+
+    // 'poiService' service manage the poi settings function of the page with the server
+    .factory('poiService', function ($state, $http, auth) {
+        return {
+            // get the current list of pois
+            getListOfPOIs: function (callback) {
+                $http({
+                    method: 'GET',
+                    url: 'pois/',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callback(data.pois);
+                }).error(function (data) {
+                    alert(data);
+                });
+            },
+
+            // search and filter the list of pois
+            search: function (tags, callback) {
+                $http({
+                    method: 'GET',
+                    url: 'pois/filter',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'tags': JSON.stringify(tags)
+                    }
+                }).success(function (data) {
+                    callback(data.pois);
+                }).error(function (data) {
+                    alert(data);
+                });
+            },
+
+            // add a new poi
+            addPoi: function (poi, callbackSuccess, callbackError) {
+                var poiTemp = {
+                    userEmail: auth.getEmail(),
+                    poi: poi
+                };
+                $http({
+                    method: 'POST',
+                    url: 'pois/',
+                    data: JSON.stringify(poiTemp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(poiTemp.poi);//TODO cambiar por data
+                    alert(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            },
+
+            // modify an existing poi
+            modifyPoi: function (poi, callbackSuccess, callbackError) {
+                var poiTemp = {
+                    userEmail: auth.getEmail(),
+                    poi: poi
+                };
+                $http({
+                    method: 'PUT',
+                    url: 'pois/' + poiTemp.poi._id,
+                    data: JSON.stringify(poiTemp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(poiTemp.poi);//TODO cambiar por data
+                    alert(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            },
+
+            // duplicate a current poi
+            duplicatePoi: function (poi, callbackSuccess, callbackError) {
+                var temp = {
+                    userEmail: auth.getEmail()
+                };
+                $http({
+                    method: 'POST',
+                    url: 'pois/' + poi._id,
+                    data: JSON.stringify(temp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    alert(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            },
+
+            // delete a current poi
+            deletePoi: function (poi, callbackSuccess, callbackError) {
+                var temp = {
+                    userEmail: auth.getEmail()
+                };
+                $http({
+                    method: 'DELETE',
+                    url: 'pois/' + poi._id,
+                    data: JSON.stringify(temp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(poi);
+                    alert(data);
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            }
         };
     });
 

@@ -3,6 +3,73 @@
 }
 
 #starterStyle .container-fluid {
-  padding: 50px 0 0 0;
+  padding: 0;
 }
 
+#starterStyle #selectViewOfPoisAndRoutes {
+  margin-top: 50px;
+  background-color: rgba(255,255,255,0.9);
+  text-align: center;
+  height: 20px;
+  z-index: 100;
+  width: 100%;
+  position: absolute;
+}
+
+#starterStyle #selectViewOfPoisAndRoutes div {
+  cursor: pointer;
+}
+#starterStyle #selectViewOfPoisAndRoutes #viewListPOis {
+  border-right: 1px solid rgba(150,150,150,0.6);
+}
+
+#starterStyle #poiList {
+  width: 30%;
+  height: 70%;
+  position: absolute;
+  background-color: rgb(255,255,255);
+  border-radius: 10px;
+  z-index: 100;
+  top: 80px;
+  left: 10px;
+  overflow-y: auto;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.26),0 2px 10px 0 rgba(0,0,0,0.22)!important;
+}
+
+#starterStyle .modal-content {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position-x: right;
+  background-image: url("../../images/modalHeader.png");
+}
+
+#starterStyle .modal-header {
+  border-bottom: none;
+}
+
+#starterStyle .modal-header h2{
+  font-weight: 600;
+}
+
+#starterStyle .close {
+  opacity: 0.7;
+  color: #fff;
+}
+
+#starterStyle .close:hover {
+  opacity: 0.9;
+}
+
+#starterStyle .modalCustomTheme {
+  background-color: rgba(50, 50, 50, 0.6);
+  color: #fff;
+}
+
+#starterStyle .modalLink {
+  color: #63ece8;
+  font-weight: 600;
+  cursor: pointer;
+}
+#starterStyle .modalLink:hover {
+  color: #23527c;
+}
