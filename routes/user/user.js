@@ -72,16 +72,25 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
 	router.post("/", function(req,res){
 
         // Checks all body fields
         if(!req.body.name || !req.body.lastname || !req.body.email){
-            res.status(404).send("Nombre, apellido o email incorrectos");
+            res.status(404).send({
+                "success": false,
+                "message": "Nombre, apellido o email incorrectos"
+            });
             return;
         }
 
@@ -108,7 +117,10 @@ module.exports = function (app) {
         }, function (err, result){
 
             if(err){
-                res.status(500).send("Error guardando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error guardando datos."
+                });
             }
             else{
                 var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
@@ -156,8 +168,12 @@ module.exports = function (app) {
      *           $ref: '#/definitions/User'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/login", function(req, res){
 
@@ -174,7 +190,10 @@ module.exports = function (app) {
         User.findOne({email: email}, function(err, result){
 
             if (err){
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos."
+                });
                 return;
             }
 
@@ -198,7 +217,10 @@ module.exports = function (app) {
             }
             // If there's no user with that email or the password is incorrect
             else{
-                res.status(404).send("Email o contraseña incorrectos");
+                res.status(404).send({
+                    "success": false,
+                    "message": "Email o contraseña incorrectos"
+                });
             }
         });
     });
@@ -227,10 +249,16 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/retrievePass", function(req, res){
 
@@ -242,11 +270,17 @@ module.exports = function (app) {
 
         User.findOneAndUpdate({email: req.body.email}, {password: hashPass, firstLogin: true}, function(err, result){
             if(err){
-                res.status(500).send("Error recuperando y actualizando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando y actualizando datos"
+                });
                 return;
             }
             if(result===null){
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
             else{
                 var message = "Nueva contraseña generada. Comprueba tu correo para inciar sesión con ella.";
@@ -288,10 +322,16 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/confirm/:email", function(req, res){
 
@@ -304,11 +344,17 @@ module.exports = function (app) {
         console.log(req.params.email);
         User.findOneAndUpdate({email: req.params.email}, {password: hashPass}, function(err, result){
             if(err){
-                res.status(500).send("Error borrando usuario");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error borrando usuario"
+                });
                 return;
             }
             if(result===null){
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
             else{
                 var message = "Confirmación completada. Comprueba tu correo para iniciar sesión con tu contraseña.";
@@ -512,13 +558,20 @@ module.exports = function (app) {
      *           $ref: '#/definitions/User'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email", function(req,res){
         User.findOne({email: req.params.email},function(err,data){
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -526,7 +579,10 @@ module.exports = function (app) {
                 res.status(200).send(data);
             }
             else {
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
         });
     });
@@ -563,22 +619,34 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/:email", function(req,res){
 
         if(!req.body.current || !req.body.new){
-            res.status(404).send("Contraseña incorrecta");
+            res.status(404).send({
+                "success": false,
+                "message": "Contraseña incorrecta"
+            });
             return;
         }
 
         User.findOne({email: req.params.email}, function(err, result){
 
             if (err){
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -597,16 +665,25 @@ module.exports = function (app) {
                 User.update({email: req.params.email}, {password:hashPass, firstLogin: false},function(err,data){
 
                     if(err) {
-                        res.status(500).send({});
+                        res.status(500).send({
+                            "succes": false,
+                            "message": "Error actualizando datos"
+                        });
                         return;
                     }
 
-                    res.status(200).send("Usuario actualizado correctamente");
+                    res.status(200).send({
+                        "success": true,
+                        "message": "Usuario actualizado correctamente"
+                    });
 
                 });
             }
             else{
-                res.status(404).send("Email o contraseña actual incorrectos");
+                res.status(404).send({
+                    "success": false,
+                    "message": "Email o contraseña actual incorrectos"
+                });
             }
         });
     });
@@ -638,23 +715,35 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       404:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.delete("/:email", function(req,res){
         console.log("Email: "+req.params.email);
 
         if(!req.body.current){
-            res.status(404).send("Contraseña incorrecta");
+            res.status(404).send({
+                "success": false,
+                "message": "Contraseña incorrecta"
+            });
             return;
         }
 
         User.findOne({email: req.params.email}, function(err, result){
 
             if (err){
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
             // Hashes the password in order to compare it with the stored one
@@ -669,16 +758,25 @@ module.exports = function (app) {
                 User.remove({email: req.params.email},function(err,result){
 
                     if(err) {
-                        res.status(500).send("Error borrando usuario");
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error borrando usuario"
+                        });
                         return;
                     }
 
-                    res.status(200).send("Usuario eliminado correctamente");
+                    res.status(200).send({
+                        "success": true,
+                        "message": "Usuario eliminado correctamente"
+                    });
                 });
             }
             // If the user doesn't exists or the password is incorrect
             else{
-                res.status(404).send("Email o contraseña incorrectos");
+                res.status(404).send({
+                    "success": false,
+                    "message": "Email o contraseña incorrectos"
+                });
             }
         });
 
@@ -702,7 +800,10 @@ module.exports = function (app) {
                 console.log(error);
             }
             else{
-                res.status(200).send(message);
+                res.status(200).send({
+                    "success": true,
+                    "message": message
+                });
             }
         });
 

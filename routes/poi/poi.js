@@ -36,10 +36,6 @@ module.exports = function (app) {
      *               type: array
      *               items:
      *                $ref: '#/definitions/POI'
-     *       404:
-     *          description: Mensaje de feedback para el usuario.
-     *          schema:
-     *              $ref: '#/definitions/FeedbackMessage'
      *       500:
      *          description: Mensaje de feecback para el usuario.
      *          schema:
@@ -53,7 +49,10 @@ module.exports = function (app) {
         POI.find({}, function(err, result){
 
             if (err){
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -160,13 +159,19 @@ module.exports = function (app) {
 
         // Checks all body fields
         if(!req.body.userEmail || !req.body.poi){
-            res.status(404).send("Usuario o POI incorrecto");
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario o POI incorrectos"
+            });
             return;
         }
         // Checks all POI fields
         if(!req.body.poi.name || !req.body.poi.description || !req.body.poi.tags ||
             !req.body.poi.lat || !req.body.poi.lng){
-            res.status(404).send("Uno o más campos del POI son incorrectos");
+            res.status(404).send({
+                "success": false,
+                "message": "Uno o más campos del POI son incorrectos"
+            });
             return;
         }
 
@@ -174,7 +179,10 @@ module.exports = function (app) {
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -207,7 +215,10 @@ module.exports = function (app) {
                             newPoi.image = imageId;
                             newPoi.save(function(err, result){
                                 if(err){
-                                    res.status(500).send("Error guardando POI");
+                                    res.status(500).send({
+                                        "success": false,
+                                        "message": "Error guardando POI"
+                                    });
                                 }
                                 else{
                                     retrieveImage(imageId, function(data){
@@ -223,7 +234,10 @@ module.exports = function (app) {
                     else{
                         newPoi.save(function(err, result){
                             if(err){
-                                res.status(500).send("Error guardando POI");
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error guardando POI"
+                                });
                             }
                             else{
                                 res.status(200).send({
@@ -236,7 +250,10 @@ module.exports = function (app) {
             }
             // If the user doesn't exists.
             else {
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
         });
 
@@ -272,10 +289,6 @@ module.exports = function (app) {
      *               type: array
      *               items:
      *                $ref: '#/definitions/POI'
-     *       404:
-     *          description: Mensaje de feedback para el usuario.
-     *          schema:
-     *              $ref: '#/definitions/FeedbackMessage'
      *       500:
      *          description: Mensaje de feecback para el usuario.
      *          schema:
@@ -291,7 +304,10 @@ module.exports = function (app) {
             POI.find({"tags": {$in: lowerCaseTags}}, function(err, result){
 
                 if(err) {
-                    res.status(500).send("Error recuperando datos");
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error recuperando datos"
+                    });
                     return;
                 }
 
@@ -475,7 +491,10 @@ module.exports = function (app) {
 
         // Checks all body fields
         if(!req.body.userEmail){
-            res.status(404).send("Usuario incorrecto");
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario incorrecto"
+            });
             return;
         }
 
@@ -483,7 +502,10 @@ module.exports = function (app) {
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -494,7 +516,10 @@ module.exports = function (app) {
                 POI.findById(req.params.id, function(err, poi){
 
                     if(err) {
-                        res.status(500).send("Error recuperando datos");
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
                         return;
                     }
 
@@ -515,23 +540,35 @@ module.exports = function (app) {
                         var duplicatedPoi = new POI(duplicate);
                         duplicatedPoi.save(function(err, result){
                             if(err){
-                                res.status(500).send("Error guardando POI");
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error guardando POI"
+                                });
                             }
                             else{
-                                res.status(200).send("POI duplicado correctamente");
+                                res.status(200).send({
+                                    "success": true,
+                                    "message": "POI duplicado correctamente"
+                                });
                             }
                         });
                     }
                     // If the POI doesn't exists.
                     else{
-                        res.status(404).send("El POI no existe");
+                        res.status(404).send({
+                            "success": false,
+                            "message": "El POI no existe"
+                        });
                     }
                 })
 
             }
             // If the user doesn't exists.
             else{
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
         });
 
@@ -582,7 +619,10 @@ module.exports = function (app) {
 
         // Checks all body fields
         if(!req.body.userEmail){
-            res.status(404).send("Usuario incorrecto");
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario incorrecto"
+            });
             return;
         }
 
@@ -590,7 +630,10 @@ module.exports = function (app) {
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -604,21 +647,30 @@ module.exports = function (app) {
 
                         if(err) {
                             semaphore.leave();
-                            res.status(500).send("Error recuperando y eliminando datos");
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error recuperando y eliminando datos"
+                            });
                             return;
                         }
 
                         // If the POI doesn't exists.
                         if(result===null){
                             semaphore.leave();
-                            res.status(404).send("El POI no existe");
+                            res.status(404).send({
+                                "success": false,
+                                "message": "El POI no existe"
+                            });
                         }
                         // If the POI exists and it's been removed
                         else{
                             // It calls a function that removes the image and url attached to the POI, if any
                             removeUrlAndImage(result, function(){
                                 semaphore.leave();
-                                res.status(200).send("POI eliminado correctamente");
+                                res.status(200).send({
+                                    "success": true,
+                                    "message": "POI eliminado correctamente"
+                                });
                             });
                         }
                     });
@@ -626,7 +678,10 @@ module.exports = function (app) {
             }
             // If the user doesn't exists.
             else{
-                res.status(404).send("El usuario no existe");
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
         });
     });
@@ -694,13 +749,19 @@ module.exports = function (app) {
 
         // Checks all body fields
         if(!req.body.userEmail || !req.body.poi){
-            res.status(404).send("Usuario o POI incorrecto");
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario o POI incorrectos"
+            });
             return;
         }
         // Checks all POI fields
         if(!req.body.poi.name || !req.body.poi.description || !req.body.poi.tags ||
             !req.body.poi.lat || !req.body.poi.lng){
-            res.status(404).send("Uno o más campos del POI son incorrectos");
+            res.status(404).send({
+                "success": false,
+                "message": "Uno o más campos del POI son incorrectos"
+            });
             return;
         }
 
@@ -708,7 +769,10 @@ module.exports = function (app) {
         User.findOne({"email": req.body.userEmail}, function(err, user){
 
             if(err) {
-                res.status(500).send("Error recuperando datos");
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
                 return;
             }
 
@@ -718,7 +782,10 @@ module.exports = function (app) {
                 POI.findOne({"_id":req.params.id, "owner":req.body.userEmail}, function(err, poi){
 
                     if(err) {
-                        res.status(500).send("Error recuperando datos");
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
                         return;
                     }
 
@@ -743,23 +810,35 @@ module.exports = function (app) {
                             poi.save(function(err, result){
 
                                 if(err) {
-                                    res.status(500).send("Error actualizando POI");
+                                    res.status(500).send({
+                                        "success": false,
+                                        "message": "Error actualizando POI"
+                                    });
                                 }
                                 else{
-                                    res.status(200).send("POI actualizado correctamente");
+                                    res.status(200).send({
+                                        "success": true,
+                                        "message": "POI actualizado correctamente"
+                                    });
                                 }
                             });
                         });
                     }
                     // If the POI with that ID and user doesn't exists
                     else{
-                        res.status(404).send("El POI no existe");
+                        res.status(404).send({
+                            "success": false,
+                            "message": "El POI no existe"
+                        });
                     }
                 });
             }
             // If the user doesn't exists.
             else{
-                res.status(404).send("El usuario no existe");
+                rres.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
             }
 
         });
