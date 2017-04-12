@@ -264,7 +264,7 @@ angular.module('pirineoPOIApp')
             search: function (tags, callback) {
                 $http({
                     method: 'GET',
-                    url: 'pois/filter',
+                    url: 'pois/filter/',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
                         'tags': JSON.stringify(tags)
@@ -272,7 +272,7 @@ angular.module('pirineoPOIApp')
                 }).success(function (data) {
                     callback(data.pois);
                 }).error(function (data) {
-                    alert(data);
+                    alert(data.message);
                 });
             },
 
