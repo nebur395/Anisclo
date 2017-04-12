@@ -174,7 +174,7 @@ angular.module('pirineoPOIApp')
     })
 
     // 'settings' service manage the profile settings function of the page with the server
-    .factory('settings', function ($state, $http, auth) {
+    .factory('settings', function ($http, auth) {
         return {
             // change the current user password
             changePassword: function (email, passwords, callbackSuccess, callbackError) {
@@ -209,6 +209,28 @@ angular.module('pirineoPOIApp')
                 });
             }
 
+        };
+    })
+
+    // 'url' service manage the url settings function of the page with the server
+    .factory('urlService', function ($http) {
+        return {
+            // change the current user password
+            shortUrl: function (url, callbackSuccess, callbackError) {
+                var tmp = {url: url};
+                $http({
+                    method: 'POST',
+                    url: 'url/',
+                    data: JSON.stringify(tmp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.urlShort);
+                }).error(function (data) {
+                    callbackError(data);
+                });
+            }
         };
     })
 

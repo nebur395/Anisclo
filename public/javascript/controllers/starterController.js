@@ -1,8 +1,8 @@
 angular.module('pirineoPOIApp')
 
-    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService',
+    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService', 'urlService',
 
-        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService) {
+        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService, urlService) {
 
             $scope.poiList = [];
 
@@ -160,9 +160,11 @@ angular.module('pirineoPOIApp')
                 $("#poiModal").modal("hide");
             };
 
-            //POI CONTROLLER
+            // POI CONTROLLER
             $scope.shortUrl = function (url) {
-              console.log("SHORTED");
+                urlService.shortUrl(url, function (shorted) {
+                  $scope.poiModal.url = shorted;
+              }, showError);
             };
 
             $scope.ownedPoi = function (email) {
