@@ -14,7 +14,36 @@ module.exports = function (app) {
     var POI = app.models.POI;
 
     /**
-     * Returns a list of the existing POIs in the system.
+     * @swagger
+     * /pois:
+     *   get:
+     *     tags:
+     *       - POIs
+     *     summary: Obtener POIs
+     *     description: Devuelve una lista con todos los POIs en el sistema.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Lista con todos los POIs del sistema.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              pois:
+     *               type: array
+     *               items:
+     *                $ref: '#/definitions/POI'
+     *       404:
+     *          description: Mensaje de feedback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *          description: Mensaje de feecback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/", function(req, res){
         
@@ -66,7 +95,63 @@ module.exports = function (app) {
     });
 
     /**
-     * Creates a new POI in the system.
+     * @swagger
+     * /pois:
+     *   post:
+     *     tags:
+     *       - POIs
+     *     summary: Crear POI
+     *     description: Crea un nuevo POI en el sistema.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: userEmail
+     *         description: Email del usuario que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: poi
+     *         description: Información del POI que se va a añadir
+     *         in: body
+     *         required: true
+     *         schema:
+     *          type: object
+     *          properties:
+     *              name:
+     *               type: string
+     *              description:
+     *               type: string
+     *              tags:
+     *               type: string
+     *              lat:
+     *               type: number
+     *               format: double
+     *              lng:
+     *               type: number
+     *               format: double
+     *              url:
+     *               type: string
+     *              image:
+     *               type: string
+     *     responses:
+     *       200:
+     *         description: El POI que se acaba de crear.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              poi:
+     *                $ref: '#/definitions/POI'
+     *       404:
+     *          description: Mensaje de feedback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *          description: Mensaje de feecback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
      */
     router.post("/", function(req, res){
         
@@ -134,7 +219,7 @@ module.exports = function (app) {
                             });
                         });
                     }
-                    // If there's no image nor URL attached to the POI, it stores the POI in the system.
+                    // If there's no image attached to the POI, it stores the POI in the system.
                     else{
                         newPoi.save(function(err, result){
                             if(err){
@@ -158,8 +243,43 @@ module.exports = function (app) {
     });
 
     /**
-     * Searches for every POI that match with the given tags
-     * and returns them.
+     * @swagger
+     * /pois/filter:
+     *   get:
+     *     tags:
+     *       - POIs
+     *     summary: Buscar POIs por tags
+     *     description: Busca los POIs que contengan los tags que se
+     *      han indicado y devuelve una lista con ellos.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: tags
+     *         description: Conjunto de tags separados por un '#'.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Lista con todos los POIs del sistema.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              pois:
+     *               type: array
+     *               items:
+     *                $ref: '#/definitions/POI'
+     *       404:
+     *          description: Mensaje de feedback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *          description: Mensaje de feecback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/filter", function(req, res){
 
@@ -313,8 +433,43 @@ module.exports = function (app) {
     });
 
     /**
-     * Duplicates the desired POI and saves it
-     * in the account with email [userEmail].
+     * @swagger
+     * /pois/{id}:
+     *   post:
+     *     tags:
+     *       - POIs
+     *     summary: Duplicar un POI
+     *     description: Duplica un POI existente y lo añade a los POIs del usuario.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: ID del POI que se va a duplicar.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: userEmail
+     *         description: Email del usuario que va a obtener el duplicado del POI
+     *          y que sirve como identificador.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.post("/:id", function(req, res){
 
@@ -383,8 +538,43 @@ module.exports = function (app) {
     });
 
     /**
-     * Removes the desired POI from the system,
-     * including the attached image and URL, if any.
+     * @swagger
+     * /pois/{id}:
+     *   delete:
+     *     tags:
+     *       - POIs
+     *     summary: Eliminar un POI
+     *     description: Elimina un POI existente del usuario, incluida la imagen adjunta,
+     *      si la hay, y la URL acortada, si se ha acortado.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: ID del POI que se va a eliminar.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: userEmail
+     *         description: Email del usuario propietario del POI que se va a eliminar.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.delete("/:id", function(req, res){
 
@@ -442,7 +632,63 @@ module.exports = function (app) {
     });
 
     /**
-     * Updates an existing POI with new information.
+     * @swagger
+     * /pois/{id}:
+     *   put:
+     *     tags:
+     *       - POIs
+     *     summary: Modificar POI
+     *     description: Modifica un POI existente del usuario con nueva información.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: ID del POI que se va a eliminar.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: userEmail
+     *         description: Email del usuario propietario del POI que se va a modificar.
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: poi
+     *         description: Información que se va a editar en el POI.
+     *         in: body
+     *         required: true
+     *         schema:
+     *          type: object
+     *          properties:
+     *              name:
+     *               type: string
+     *              description:
+     *               type: string
+     *              tags:
+     *               type: string
+     *              lat:
+     *               type: number
+     *               format: double
+     *              lng:
+     *               type: number
+     *               format: double
+     *              url:
+     *               type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/:id", function(req, res){
 

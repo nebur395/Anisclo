@@ -29,6 +29,18 @@ var mongoose = require("mongoose");
  *         required: true
  *         description: True si el usuario es la primera vez que inicia sesión tras haberse
  *           creado la cuenta o cambiado la contraseña.
+ *       favs:
+ *        type: array
+ *        items:
+ *         type: string
+ *        required: true
+ *        description: Lista con los POIs favoritos del usuario
+ *       follows:
+ *        type: array
+ *        items:
+ *         type: string
+ *        required: true
+ *        description: Lista con los usuarios a los que sigue
  */
 
 // Create the Schema
@@ -40,6 +52,7 @@ var userSchema = mongoose.Schema({
     admin: {type: Boolean, required: true},
     firstLogin: {type: Boolean, required: true},
     favs: {type:[mongoose.Schema.Types.ObjectId], default: []},
+    follows: {type:mongoose.Schema.Types.ObjectId, default: null},
     registerDate: {type: Date, default: Date.now}
 });
 
