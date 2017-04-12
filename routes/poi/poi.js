@@ -15,7 +15,7 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /pois:
+     * /pois/:
      *   get:
      *     tags:
      *       - POIs
@@ -95,7 +95,7 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /pois:
+     * /pois/:
      *   post:
      *     tags:
      *       - POIs
@@ -261,7 +261,7 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /pois/filter:
+     * /pois/filter/:
      *   get:
      *     tags:
      *       - POIs
