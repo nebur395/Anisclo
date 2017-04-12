@@ -246,6 +246,11 @@ module.exports = function (app) {
      *         in: body
      *         required: true
      *         type: string
+     *       - name: captcha
+     *         description: Key del recaptcha de google.
+     *         in: body
+     *         required: true
+     *         type: string
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
