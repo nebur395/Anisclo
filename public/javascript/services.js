@@ -310,10 +310,10 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(poiTemp.poi);//TODO cambiar por data
-                    alert(data);
+                    callbackSuccess(poiTemp.poi);
+                    alert(data.message);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
