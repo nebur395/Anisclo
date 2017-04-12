@@ -67,7 +67,7 @@
               Propiedad: Yo
             </div>
 
-            <form role="form" class="form-horizontal" ng-submit="savePOI()">
+            <form role="form" class="form-horizontal" ng-submit="modalSubmit()">
 
               <!-- name input poi -->
               <div class="form-group">
@@ -133,10 +133,11 @@
 
               <p style="font-size: 75%;text-align: right">* Campos obligatorios.</p>
               <div style="text-align: right">
-                <button class="btn btn-default" ng-click="closePOIModal()">Cancelar</button>
-                <button class="btn btn-default" ng-click="closePOIModal()">Borrar</button>
-                <button class="btn btn-default" ng-click="closePOIModal()">Duplicar</button>
-                <button type="submit" class="btn btn-success">Guardar</button>
+                <button class="btn btn-default customButton"
+                        ng-click="modalButton=0;closePOIModal()">Cancelar</button>
+                <button class="btn btn-danger customButton" ng-click="modalButton=1">Borrar</button>
+                <button class="btn w3-theme-action customButton" ng-click="modalButton=2">Duplicar</button>
+                <button class="btn btn-success customButton" ng-click="modalButton=3">Guardar</button>
               </div>
             </form>
           </div>
