@@ -194,9 +194,9 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(data);
+                    callbackSuccess(data.message);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
@@ -213,7 +213,7 @@ angular.module('pirineoPOIApp')
                 }).success(function (data) {
                     auth.logout();
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             }
 
