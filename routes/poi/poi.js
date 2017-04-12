@@ -3,6 +3,7 @@ var grid = require("gridfs-stream");
 var semaphore = require("semaphore")(1);
 var mongoose = require("mongoose");
 var fs = require("fs");
+var async = require("async");
 grid.mongo = mongoose.mongo;
 
 
@@ -41,8 +42,9 @@ module.exports = function (app) {
      *          schema:
      *              $ref: '#/definitions/FeedbackMessage'
      */
+
     router.get("/", function(req, res){
-        
+
         // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
         gfs = grid(mongoose.connection.db);
 
@@ -63,30 +65,31 @@ module.exports = function (app) {
             else{
                 var pois = [];
                 // Iterates all the POIs stored in the system
-                result.forEach(function(poi, index){
+                async.each(result, function(poi, callback){
 
                     // Checks if there's an image attached to the POI and retrieves it if it's the case.
                     if(poi.image!=null){
                         retrieveImage(poi.image, function(data){
-
                             pois.push(poi.createResponse(data));
-
-                            if(index == result.length - 1){
-                                res.status(200).send({
-                                    "pois": pois
-                                });
-                            }
+                            callback();
                         });
                     }
                     else{
                         pois.push(poi.createResponse(""));
-
-                        if(index == result.length - 1){
-                            res.status(200).send({
-                                "pois": pois
-                            });
-                        }
+                        callback();
                     }
+
+                }, function(err){
+                    if (err){
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error creando respuesta"
+                        });
+                        return;
+                    }
+                    res.status(200).send({
+                        "pois": pois
+                    });
                 });
             }
         });
@@ -317,31 +320,32 @@ module.exports = function (app) {
                 }
                 else{
                     var pois = [];
-                    // Iterates all the POIs that match with the tags
-                    result.forEach(function(poi, index){
+                    // Iterates all the POIs stored in the system
+                    async.each(result, function(poi, callback){
 
                         // Checks if there's an image attached to the POI and retrieves it if it's the case.
                         if(poi.image!=null){
                             retrieveImage(poi.image, function(data){
-
                                 pois.push(poi.createResponse(data));
-
-                                if(index == result.length - 1){
-                                    res.status(200).send({
-                                        "pois": pois
-                                    });
-                                }
+                                callback();
                             });
                         }
                         else{
                             pois.push(poi.createResponse(""));
-
-                            if(index == result.length - 1){
-                                res.status(200).send({
-                                    "pois": pois
-                                });
-                            }
+                            callback();
                         }
+
+                    }, function(err){
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "pois": pois
+                        });
                     });
                 }
 
