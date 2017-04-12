@@ -493,6 +493,9 @@ module.exports = function (app) {
      */
     router.post("/:id", function(req, res){
 
+        // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
+        gfs = grid(mongoose.connection.db);
+
         // Checks all body fields
         if(!req.body.userEmail){
             res.status(404).send({
@@ -539,6 +542,8 @@ module.exports = function (app) {
                         delete duplicate.rating;
                         // Sets the new owner of the duplicated POI.
                         duplicate.owner = req.body.userEmail;
+                        // Adds a suffix to indicate that is a duplicate of another POI
+                        duplicate.name += "_duplicado";
 
                         // Creates the POI model objetc and saves it.
                         var duplicatedPoi = new POI(duplicate);
@@ -549,10 +554,18 @@ module.exports = function (app) {
                                     "message": "Error guardando POI"
                                 });
                             }
+                            // If there's an image attached to the duplicated POI
+                            else if(result.image!==null){
+                                retrieveImage(result.image, function(data){
+                                    res.status(200).send({
+                                        "poi": result.createResponse(data)
+                                    });
+                                });
+                            }
+                            // If there's no image attached to the duplicated POI
                             else{
                                 res.status(200).send({
-                                    "success": true,
-                                    "message": "POI duplicado correctamente"
+                                    "poi": result.createResponse("")
                                 });
                             }
                         });
