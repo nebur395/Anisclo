@@ -89,15 +89,15 @@ angular.module('pirineoPOIApp')
             signUp: function (userObject, callbackSuccess, callbackError) {
                 $http({
                     method: 'POST',
-                    url: 'users',
+                    url: 'users/',
                     data: JSON.stringify(userObject),
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(data);
+                    callbackSuccess(data.message);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
