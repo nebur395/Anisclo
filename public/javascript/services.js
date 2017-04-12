@@ -256,7 +256,7 @@ angular.module('pirineoPOIApp')
                 }).success(function (data) {
                     callback(data.pois);
                 }).error(function (data) {
-                    alert(data);
+                    alert(data.message);
                 });
             },
 
@@ -290,10 +290,9 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(poiTemp.poi);//TODO cambiar por data
-                    alert(data);
+                    callbackSuccess(data.poi);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
