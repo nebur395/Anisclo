@@ -352,7 +352,7 @@ angular.module('pirineoPOIApp')
                     callbackSuccess(poi);
                     alert(data);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             }
         };
