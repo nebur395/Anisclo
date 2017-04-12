@@ -15,7 +15,7 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /pois:
+     * /pois/:
      *   get:
      *     tags:
      *       - POIs
@@ -95,7 +95,7 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /pois:
+     * /pois/:
      *   post:
      *     tags:
      *       - POIs
@@ -261,7 +261,7 @@ module.exports = function (app) {
 
     /**
      * @swagger
-     * /pois/filter:
+     * /pois/filter/:
      *   get:
      *     tags:
      *       - POIs
@@ -455,7 +455,8 @@ module.exports = function (app) {
      *     tags:
      *       - POIs
      *     summary: Duplicar un POI
-     *     description: Duplica un POI existente y lo añade a los POIs del usuario.
+     *     description: Duplica un POI existente y lo añade a los POIs del usuario. Al POI duplicado se le añade al
+     *       nombre + "_Duplicado" (p.ej., nombre -> nombre_Duplicado).
      *     consumes:
      *       - application/json
      *       - charset=utf-8
@@ -475,9 +476,12 @@ module.exports = function (app) {
      *         type: string
      *     responses:
      *       200:
-     *         description: Mensaje de feedback para el usuario.
+     *         description: El POI que se acaba de duplicar.
      *         schema:
-     *           $ref: '#/definitions/FeedbackMessage'
+     *           type: object
+     *           properties:
+     *              poi:
+     *                $ref: '#/definitions/POI'
      *       404:
      *         description: Mensaje de feedback para el usuario.
      *         schema:
