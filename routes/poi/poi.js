@@ -3,6 +3,7 @@ var grid = require("gridfs-stream");
 var semaphore = require("semaphore")(1);
 var mongoose = require("mongoose");
 var fs = require("fs");
+var async = require("async");
 grid.mongo = mongoose.mongo;
 
 
@@ -41,8 +42,9 @@ module.exports = function (app) {
      *          schema:
      *              $ref: '#/definitions/FeedbackMessage'
      */
+
     router.get("/", function(req, res){
-        
+
         // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
         gfs = grid(mongoose.connection.db);
 
@@ -63,30 +65,31 @@ module.exports = function (app) {
             else{
                 var pois = [];
                 // Iterates all the POIs stored in the system
-                result.forEach(function(poi, index){
+                async.each(result, function(poi, callback){
 
                     // Checks if there's an image attached to the POI and retrieves it if it's the case.
                     if(poi.image!=null){
                         retrieveImage(poi.image, function(data){
-
                             pois.push(poi.createResponse(data));
-
-                            if(index == result.length - 1){
-                                res.status(200).send({
-                                    "pois": pois
-                                });
-                            }
+                            callback();
                         });
                     }
                     else{
                         pois.push(poi.createResponse(""));
-
-                        if(index == result.length - 1){
-                            res.status(200).send({
-                                "pois": pois
-                            });
-                        }
+                        callback();
                     }
+
+                }, function(err){
+                    if (err){
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error creando respuesta"
+                        });
+                        return;
+                    }
+                    res.status(200).send({
+                        "pois": pois
+                    });
                 });
             }
         });
@@ -317,31 +320,32 @@ module.exports = function (app) {
                 }
                 else{
                     var pois = [];
-                    // Iterates all the POIs that match with the tags
-                    result.forEach(function(poi, index){
+                    // Iterates all the POIs stored in the system
+                    async.each(result, function(poi, callback){
 
                         // Checks if there's an image attached to the POI and retrieves it if it's the case.
                         if(poi.image!=null){
                             retrieveImage(poi.image, function(data){
-
                                 pois.push(poi.createResponse(data));
-
-                                if(index == result.length - 1){
-                                    res.status(200).send({
-                                        "pois": pois
-                                    });
-                                }
+                                callback();
                             });
                         }
                         else{
                             pois.push(poi.createResponse(""));
-
-                            if(index == result.length - 1){
-                                res.status(200).send({
-                                    "pois": pois
-                                });
-                            }
+                            callback();
                         }
+
+                    }, function(err){
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "pois": pois
+                        });
                     });
                 }
 
@@ -493,6 +497,9 @@ module.exports = function (app) {
      */
     router.post("/:id", function(req, res){
 
+        // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
+        gfs = grid(mongoose.connection.db);
+
         // Checks all body fields
         if(!req.body.userEmail){
             res.status(404).send({
@@ -539,6 +546,8 @@ module.exports = function (app) {
                         delete duplicate.rating;
                         // Sets the new owner of the duplicated POI.
                         duplicate.owner = req.body.userEmail;
+                        // Adds a suffix to indicate that is a duplicate of another POI
+                        duplicate.name += "_duplicado";
 
                         // Creates the POI model objetc and saves it.
                         var duplicatedPoi = new POI(duplicate);
@@ -549,10 +558,18 @@ module.exports = function (app) {
                                     "message": "Error guardando POI"
                                 });
                             }
+                            // If there's an image attached to the duplicated POI
+                            else if(result.image!==null){
+                                retrieveImage(result.image, function(data){
+                                    res.status(200).send({
+                                        "poi": result.createResponse(data)
+                                    });
+                                });
+                            }
+                            // If there's no image attached to the duplicated POI
                             else{
                                 res.status(200).send({
-                                    "success": true,
-                                    "message": "POI duplicado correctamente"
+                                    "poi": result.createResponse("")
                                 });
                             }
                         });
