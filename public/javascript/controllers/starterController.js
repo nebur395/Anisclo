@@ -171,6 +171,13 @@ angular.module('pirineoPOIApp')
                 return auth.getEmail() == email;
             };
 
+            $scope.searchPOIs = function () {
+                poiService.search($scope.searhedTags, function (pois) {
+                    $scope.poiList = dataPOIs;
+                    //TODO DARÍO: VOLVER A PINTAR LA LISTA DE POIS TRAS LA BÚSQUEDA
+                });
+            };
+
             // MAP SECTION
 
             $scope.map = {

@@ -252,6 +252,22 @@ angular.module('pirineoPOIApp')
                 });
             },
 
+            // search and filter the list of pois
+            search: function (tags, callback) {
+                $http({
+                    method: 'GET',
+                    url: 'pois/filter',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'tags': JSON.stringify(tags)
+                    }
+                }).success(function (data) {
+                    callback(data.pois);
+                }).error(function (data) {
+                    alert(data);
+                });
+            },
+
             // add a new poi
             addPoi: function (poi, callbackSuccess, callbackError) {
                 var poiTemp = {
