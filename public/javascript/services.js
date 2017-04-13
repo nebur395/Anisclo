@@ -215,36 +215,8 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
-            }
+            },
 
-        };
-    })
-
-    // 'url' service manage the url settings function of the page with the server
-    .factory('urlService', function ($http) {
-        return {
-            // short an url
-            shortUrl: function (url, callbackSuccess, callbackError) {
-                var tmp = {url: url};
-                $http({
-                    method: 'POST',
-                    url: 'url/',
-                    data: JSON.stringify(tmp),
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    }
-                }).success(function (data) {
-                    callbackSuccess(data.urlShort);
-                }).error(function (data) {
-                    callbackError(data);
-                });
-            }
-        };
-    })
-
-    // 'favs' service manage the favs settings function of the page with the server
-    .factory('favService', function ($http, auth) {
-        return {
             // make fav a poi
             favPoi: function (id, callbackSuccess, callbackError) {
                 var tmp = {poiId: id};
@@ -267,6 +239,54 @@ angular.module('pirineoPOIApp')
                     callbackSuccess(data.message);
                 }).error(function (data) {
                     callbackError(data.message);
+                });
+            },
+
+            // follow/unfollow a user
+            followUser: function (email, callbackSuccess, callbackError) {
+                var tmp = {userToFollowEmail: email};
+                $http({
+                    method: 'PUT',
+                    url: 'users/' + auth.getEmail() + '/follow',
+                    data: JSON.stringify(tmp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    var tmp = angular.fromJson(localStorage.userIdentity);
+                    var index = tmp.follows.indexOf(email);
+                    if (index == -1) {
+                        tmp.follows.push(email);
+                    } else {
+                        tmp.follows.splice(index, 1);
+                    }
+                    auth.authenticate(tmp);
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            }
+
+        };
+    })
+
+    // 'url' service manage the url settings function of the page with the server
+    .factory('urlService', function ($http) {
+        return {
+            // short an url
+            shortUrl: function (url, callbackSuccess, callbackError) {
+                var tmp = {url: url};
+                $http({
+                    method: 'POST',
+                    url: 'url/',
+                    data: JSON.stringify(tmp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.urlShort);
+                }).error(function (data) {
+                    callbackError(data);
                 });
             }
         };

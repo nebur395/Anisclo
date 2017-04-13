@@ -1,8 +1,8 @@
 angular.module('pirineoPOIApp')
 
-    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService', 'urlService', 'favService', 'Notification',
+    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService', 'urlService', 'settings', 'Notification',
 
-        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService, urlService, favService, Notification) {
+        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService, urlService, settings, Notification) {
 
             $scope.poiList = [];
 
@@ -189,7 +189,7 @@ angular.module('pirineoPOIApp')
             $scope.$watch('poiModal', function () {
                 if ($scope.poiModal._id != "") {
                     var follows = auth.getFollows();
-                    var index = follows.indexOf($scope.poiModal._id);
+                    var index = follows.indexOf($scope.poiModal.owner);
                     if (index != -1) {
                         $scope.followText = "Dejar de seguir";
                     } else {
@@ -197,11 +197,10 @@ angular.module('pirineoPOIApp')
                     }
                 }
             });
-            $('[data-toggle="popover"]').popover({
-                placement: "left",
-                html: true,
-                content: '<button class="btn w3-theme-action customButton">' +  $scope.followText + '</button>'
-            });
+
+            $scope.followUser = function () {
+                settings.followUser($scope.poiModal.owner,showSuccess,showError);
+            };
 
             // POI ASSESSMENT
             $scope.isFav = function (id) {
@@ -211,7 +210,7 @@ angular.module('pirineoPOIApp')
             };
 
             $scope.favPoi = function (id) {
-                favService.favPoi(id, showSuccess, showError);
+                settings.favPoi(id, showSuccess, showError);
             };
 
             // MAP SECTION
