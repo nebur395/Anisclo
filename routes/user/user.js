@@ -455,9 +455,24 @@ module.exports = function (app) {
 
                     // If the POI exists
                     if(poi){
+                        var isFav = false;
+                        var message = '';
+                        // Checks if the user already has that POI as fav
+                        for(i=0; i<user.favs.length && !isFav; i++){
 
-                        // Adds the POI to the list of favorite POIs of the user and saves it
-                        user.favs.push(req.body.poiId);
+                            // If the user has that POI as fav, it removes it from the favs list
+                            if(user.favs[i] == req.body.poiId){
+                                user.favs.splice(i, 1);
+                                isFav = true;
+                                message = "eliminado de";
+                            }
+                        }
+                        // Adds the POI to the list of favorite POIs of the user
+                        if(!isFav){
+                            user.favs.push(req.body.poiId);
+                            message = "añadido a";
+                        }
+                        // Saves the user with the new list of fav POIs
                         user.save(function(err, result){
                             if(err) {
                                 res.status(500).send({
@@ -468,7 +483,7 @@ module.exports = function (app) {
                             else{
                                 res.status(200).send({
                                     "success": true,
-                                    "message": "POI añadido a favoritos."
+                                    "message": "POI "+message+" favoritos."
                                 });
                             }
                         });
