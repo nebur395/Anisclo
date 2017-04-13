@@ -1,8 +1,8 @@
 angular.module('pirineoPOIApp')
 
-    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService', 'urlService', 'favService',
+    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService', 'urlService', 'favService', 'Notification',
 
-        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService, urlService, favService) {
+        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService, urlService, favService, Notification) {
 
             $scope.poiList = [];
 
@@ -59,6 +59,7 @@ angular.module('pirineoPOIApp')
                     image: poi.image,
                     owner: poi.owner
                 };
+                Notification.clearAll()
             };
 
             $scope.modalButton = 0;
