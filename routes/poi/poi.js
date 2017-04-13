@@ -307,11 +307,9 @@ module.exports = function (app) {
 
         var tags = req.headers["tags"];
         console.log(tags);
-        if(tags.charAt(1)==='#'){
+        if(tags.charAt(0)==='#'){
             // Transforms all the tags to an array with the tags in lowercase
             tagsToArray(tags, function(lowerCaseTags){
-                console.log(lowerCaseTags[0]);
-                console.log(lowerCaseTags[1]);
                 // Searches for the POIs that match with the tags
                 POI.find({"tags": {$in: lowerCaseTags}}, function(err, result){
 
