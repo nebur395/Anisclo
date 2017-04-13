@@ -246,7 +246,7 @@ angular.module('pirineoPOIApp')
     .factory('favService', function ($http, auth) {
         return {
             // make fav a poi
-            favPoi: function (id, callbackError) {
+            favPoi: function (id, callbackSuccess, callbackError) {
                 var tmp = {poiId: id};
                 $http({
                     method: 'PUT',
@@ -257,8 +257,14 @@ angular.module('pirineoPOIApp')
                     }
                 }).success(function (data) {
                     var tmp = angular.fromJson(localStorage.userIdentity);
-                    tmp.favs.push(id);
+                    var index = tmp.favs.indexOf(id);
+                    if (index == -1) {
+                        tmp.favs.push(id);
+                    } else {
+                        tmp.favs.splice(index, 1);
+                    }
                     auth.authenticate(tmp);
+                    callbackSuccess(data.message);
                 }).error(function (data) {
                     callbackError(data.message);
                 });
@@ -270,7 +276,7 @@ angular.module('pirineoPOIApp')
     .factory('poiService', function ($state, $http, auth) {
         return {
             // get the current list of pois
-            getListOfPOIs: function (callback) {
+            getListOfPOIs: function (callbackSuccess, callbackError) {
                 $http({
                     method: 'GET',
                     url: 'pois/',
@@ -278,14 +284,14 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callback(data.pois);
+                    callbackSuccess(data.pois);
                 }).error(function (data) {
-                    alert(data.message);
+                    callbackError(data.message);
                 });
             },
 
             // search and filter the list of pois
-            search: function (tags, callback) {
+            search: function (tags, callbackSuccess, callbackError) {
                 $http({
                     method: 'GET',
                     url: 'pois/filter/',
@@ -294,9 +300,9 @@ angular.module('pirineoPOIApp')
                         'tags': tags
                     }
                 }).success(function (data) {
-                    callback(data.pois);
+                    callbackSuccess(data.pois);
                 }).error(function (data) {
-                    alert(data.message);
+                    callbackError(data.message);
                 });
             },
 
@@ -314,7 +320,7 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(data.poi);
+                    callbackSuccess(data.poi, 'POI añadido correctamente.');
                 }).error(function (data) {
                     callbackError(data.message);
                 });
@@ -334,8 +340,7 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(poiTemp.poi);
-                    alert(data.message);
+                    callbackSuccess(poiTemp.poi, data.message);
                 }).error(function (data) {
                     callbackError(data.message);
                 });
@@ -354,7 +359,7 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(data.poi);
+                    callbackSuccess(data.poi, 'POI duplicado correctamente.');
                 }).error(function (data) {
                     callbackError(data.message);
                 });
@@ -373,8 +378,7 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(poi);
-                    alert(data.message);
+                    callbackSuccess(poi, data.message);
                 }).error(function (data) {
                     callbackError(data.message);
                 });

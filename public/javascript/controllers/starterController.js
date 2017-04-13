@@ -6,28 +6,23 @@ angular.module('pirineoPOIApp')
 
             $scope.poiList = [];
 
-            poiService.getListOfPOIs(function (dataPOIs) {
-                $scope.poiList = dataPOIs;
-            });
-            $scope.emptyPoiList = function () {
-              return $scope.poiList.length == 0;
-            };
-
             // FEEDBACK MESSAGES
 
-            // feedback handling variables
-            $scope.error = false;
-            $scope.errorMsg = "";
-
-            // hide the error mensage
-            $scope.hideError = function () {
-                $scope.errorMsg = "";
-                $scope.error = false;
-            };
             // show the error mensage
-            var showError = function (error) {
-                $scope.errorMsg = error;
-                $scope.error = true;
+            var showError = function (message) {
+                Notification.error('&#10008' + message);
+            };
+
+            // show the error mensage
+            var showSuccess = function (message) {
+                Notification.success('&#10004' + message);
+            };
+
+            poiService.getListOfPOIs(function (dataPOIs) {
+                $scope.poiList = dataPOIs;
+            }, showError);
+            $scope.emptyPoiList = function () {
+              return $scope.poiList.length == 0;
             };
 
             // MODAL POI SECTION
@@ -47,7 +42,6 @@ angular.module('pirineoPOIApp')
             // open modal with [POI] information
             $scope.openPOIModal = function (poi) {
                 $("#poiModal").modal("show");
-                $scope.hideError();
                 $scope.poiModal = {
                     _id: poi._id,
                     name: poi.name,
@@ -59,7 +53,6 @@ angular.module('pirineoPOIApp')
                     image: poi.image,
                     owner: poi.owner
                 };
-                Notification.clearAll()
             };
 
             $scope.modalButton = 0;
@@ -83,7 +76,7 @@ angular.module('pirineoPOIApp')
             $scope.savePOI = function () {
                 if ($scope.poiModal._id == "") { // It is a new POI
                     poiService.addPoi($scope.poiModal,
-                        function (poi) {
+                        function (poi, message) {
                             $scope.poiList.push(poi);
                             var marker= {};
                             marker.coords = {};
@@ -92,10 +85,11 @@ angular.module('pirineoPOIApp')
                             console.log("Saving marker: " + marker.coords.latitude + " ; " + marker.coords.longitude);
                             $scope.map.markers.push(marker);
                             $scope.closePOIModal();
+                            showSuccess(message);
                         }, showError);
                 } else { // It is an existing POI
                     poiService.modifyPoi($scope.poiModal,
-                        function (poi) {
+                        function (poi, message) {
                             $scope.closePOIModal();
 
                             console.log("modifying poi: "+poi._id);
@@ -120,6 +114,7 @@ angular.module('pirineoPOIApp')
                              }*/
                             //TODO DARÍO: BORRAR EL POI ANTERIOR ($scope.poiList[index]) Y PINTAR EL NUEVO (poi)
                             $scope.poiList[index] = poi;
+                            showSuccess(message);
                             //$scope.$apply();
                         }, showError);
                 }
@@ -128,21 +123,23 @@ angular.module('pirineoPOIApp')
             // duplicate poi
             $scope.duplicatePOI = function () {
                 poiService.duplicatePoi($scope.poiModal,
-                    function (poi) {
+                    function (poi, message) {
                         $scope.poiList.push(poi);
                         $scope.closePOIModal();
+                        showSuccess(message);
                     }, showError);
             };
 
             // delete poi
             $scope.deletePOI = function () {
                 poiService.deletePoi($scope.poiModal,
-                    function (poi) {
+                    function (poi, message) {
                         $scope.closePOIModal();
 
                         //TODO DARÍO: BORRAR EL MARKER DEL POI (POI)
                         var index = $scope.poiList.map(function(tmp) {return tmp._id;}).indexOf(poi._id);
                         $scope.poiList.splice(index, 1);
+                        showSuccess(message);
                     }, showError);
             };
 
@@ -177,12 +174,12 @@ angular.module('pirineoPOIApp')
                 if ($scope.searhedTags.trim() == "" ) {
                     poiService.getListOfPOIs(function (dataPOIs) {
                         $scope.poiList = dataPOIs;
-                    });
+                    }, showError);
                 } else {
                     poiService.search($scope.searhedTags, function (pois) {
                         $scope.poiList = pois;
                         //TODO DARÍO: VOLVER A PINTAR LA LISTA DE POIS TRAS LA BÚSQUEDA
-                    });
+                    }, showError);
                 }
             };
 
@@ -194,7 +191,7 @@ angular.module('pirineoPOIApp')
             };
 
             $scope.favPoi = function (id) {
-                favService.favPoi(id, showError);
+                favService.favPoi(id, showSuccess, showError);
             };
 
             // MAP SECTION

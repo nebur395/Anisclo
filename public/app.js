@@ -8,6 +8,13 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
         });
     })
 
+    .config(function(NotificationProvider) {
+        NotificationProvider.setOptions({
+            positionX: 'center',
+            maxCount: 4
+        });
+    })
+
     .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
 

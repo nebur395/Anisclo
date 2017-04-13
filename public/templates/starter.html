@@ -95,39 +95,36 @@
           </div>
           <div class="modal-body modalCustomTheme">
 
-            <!-- this div will show only when an error occurs -->
-            <div ng-if="error" class="alert alert-danger feedbackMessages">
-              <strong>&#10008</strong> {{errorMsg}}
-            </div>
+            <div class="row">
+              <!-- pois assessment -->
+              <div class="col-xs-6">
+                <p ng-hide="poiModal._id==0">
+                  <i class="fa fa-star-o fa-lg" ng-click="favPoi(poiModal._id)"
+                     ng-hide="isFav(poiModal._id)" style="cursor:pointer"></i>
+                  <i class="fa fa-star fa-lg" ng-click="favPoi(poiModal._id)"
+                     ng-hide="!isFav(poiModal._id)" style="color:#ffeb3b;cursor:pointer"></i>
+                  Valorar poi</p><!-- TODO DARÍO: cambiar este 'valorar po' por lo que vayas a meter para valorar el POI -->
+              </div>
 
-            <!-- pois assessment -->
-            <div class="col-xs-6" ng-hide="poiModal._id==0" style="padding-left: 0">
-              <p>
-                <i class="fa fa-star-o fa-lg" ng-click="favPoi(poiModal._id)"
-                   ng-hide="isFav(poiModal._id)" style="cursor:pointer"></i>
-                <i class="fa fa-star fa-lg" ng-click="favPoi(poiModal._id)"
-                   ng-hide="!isFav(poiModal._id)" style="color:#ffeb3b;cursor:pointer"></i>
-                Valorar poi</p><!-- TODO DARÍO: cambiar este <p></p> por lo que vayas a meter para valorar el POI -->
-            </div>
-
-            <!-- owner poi -->
-            <div ng-hide="ownedPoi(poiModal.owner)" class="col-xs-6"
-                 style="font-weight:600;text-align:right">
-              Propiedad: <span class="modalLink" ng-click="goUser(poiModal.owner)">
+              <!-- owner poi -->
+              <div ng-hide="ownedPoi(poiModal.owner) || poiModal._id==0" class="col-xs-6"
+                   style="font-weight:600;text-align:right">
+                Propiedad: <span class="modalLink" ng-click="goUser(poiModal.owner)">
               {{poiModal.owner}}</span>
-            </div>
-            <div ng-hide="!ownedPoi(poiModal.owner)" class="col-xs-6"
-                 style="font-weight:600;text-align:right;margin-bottom:2%">
-              Propiedad: Yo
+              </div>
+              <div ng-hide="!ownedPoi(poiModal.owner) || poiModal._id==0" class="col-xs-6"
+                   style="font-weight:600;text-align:right;margin-bottom:2%">
+                Propiedad: Yo
+              </div>
             </div>
 
-            <form role="form" class="form-horizontal" ng-submit="modalSubmit()" style="margin-top:2%">
+            <form role="form" class="form-horizontal" ng-submit="modalSubmit()">
 
               <!-- name input poi -->
               <div class="form-group">
                 <label for="namePOI" class="control-label col-xs-2"><strong>Nombre*:</strong></label>
                 <div class="col-xs-10">
-                  <input id="namePOI" type="text" ng-model="poiModal.name" required ng-click="hideError()"
+                  <input id="namePOI" type="text" ng-model="poiModal.name" required
                          class="form-control" placeholder="Introduce el nombre del POI" />
                 </div>
               </div>
@@ -137,7 +134,7 @@
                 <label for="tagsPOI"
                        class="control-label col-xs-2"><strong>Etiquetas*:</strong></label>
                 <div class="col-xs-10">
-                  <input id="tagsPOI" type="text" ng-model="poiModal.tags" required ng-click="hideError()"
+                  <input id="tagsPOI" type="text" ng-model="poiModal.tags" required
                          class="form-control" placeholder="P.ej., #Etiqueta1#Etiqueta2" />
                 </div>
               </div>
@@ -148,13 +145,13 @@
                 <label for="latPOI" class="control-label col-xs-2"><strong>Lat*:</strong></label>
                 <div class="col-xs-4">
                   <input id="latPOI" type="text" ng-model="poiModal.lat" required
-                         class="form-control" placeholder="Latitud" ng-click="hideError()"/>
+                         class="form-control" placeholder="Latitud" />
                 </div>
                 <!-- longitude input poi -->
                 <label for="lngPOI" class="control-label col-xs-2"><strong>Lng*:</strong></label>
                 <div class="col-xs-4">
                   <input id="lngPOI" type="text" ng-model="poiModal.lng" required
-                         class="form-control" placeholder="Latitud" ng-click="hideError()"/>
+                         class="form-control" placeholder="Latitud" />
                 </div>
               </div>
 
@@ -162,7 +159,7 @@
               <div class="form-group">
                 <label for="descriptionPOI" class="control-label col-xs-2"><strong>Descripción*:</strong></label>
                 <div class="col-xs-10">
-                  <textarea id="descriptionPOI" rows="5" style="max-width: 100%;" ng-click="hideError()"
+                  <textarea id="descriptionPOI" rows="5" style="max-width: 100%;"
                             ng-model="poiModal.description" class="form-control" required
                             placeholder="Introduce una descripción"></textarea>
                 </div>
@@ -172,7 +169,7 @@
               <div class="form-group">
                 <label for="urlPOI" class="control-label col-xs-2"><strong>Url:</strong></label>
                 <div class="col-xs-8">
-                  <input id="urlPOI" type="text" ng-model="poiModal.url" ng-click="hideError()"
+                  <input id="urlPOI" type="text" ng-model="poiModal.url"
                          class="form-control" placeholder="Url asociada al POI" />
                 </div>
                 <!-- short url poi -->
