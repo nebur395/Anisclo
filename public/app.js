@@ -24,7 +24,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             }
         })
 
-        //starter screen
+        //profile screen
         .state('profile', {
             url: "/profile",
             templateUrl: "templates/profile.html",
@@ -32,6 +32,32 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             onEnter: function($state, manageState){
                 var correctState = manageState.manageLoggedState("profile");
                 if (correctState != "profile") {
+                    $state.go(correctState);
+                }
+            }
+        })
+
+        //favsList screen
+        .state('favs', {
+            url: "/favs",
+            templateUrl: "templates/favsList.html",
+            controller: "favsListCtrl",
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageLoggedState("favs");
+                if (correctState != "favs") {
+                    $state.go(correctState);
+                }
+            }
+        })
+
+        //followList screen
+        .state('follows', {
+            url: "/follows",
+            templateUrl: "templates/followList.html",
+            controller: "followListCtrl",
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageLoggedState("follows");
+                if (correctState != "follows") {
                     $state.go(correctState);
                 }
             }

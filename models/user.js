@@ -34,13 +34,13 @@ var mongoose = require("mongoose");
  *        items:
  *         type: string
  *        required: true
- *        description: Lista con los POIs favoritos del usuario
+ *        description: Lista con los ID de los POIs favoritos del usuario.
  *       follows:
  *        type: array
  *        items:
  *         type: string
  *        required: true
- *        description: Lista con los usuarios a los que sigue
+ *        description: Lista con los ID de los usuarios a los que sigue.
  */
 
 // Create the Schema

@@ -61,6 +61,14 @@ angular.module('pirineoPOIApp')
                 return _identity.firstLogin;
             },
 
+            getFavs: function () {
+                return _identity.favs;
+            },
+
+            getFollows: function () {
+                return _identity.follows;
+            },
+
             //send the login info to the server
             login: function (user, password, callback) {
                 var that = this;
@@ -81,7 +89,7 @@ angular.module('pirineoPOIApp')
                         $state.go('starter');
                     }
                 }).error(function (data) {
-                    callback(data);
+                    callback(data.message);
                 });
             },
 
@@ -89,15 +97,15 @@ angular.module('pirineoPOIApp')
             signUp: function (userObject, callbackSuccess, callbackError) {
                 $http({
                     method: 'POST',
-                    url: 'users',
+                    url: 'users/',
                     data: JSON.stringify(userObject),
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(data);
+                    callbackSuccess(data.message);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
@@ -117,7 +125,7 @@ angular.module('pirineoPOIApp')
                     that.authenticate(tmp);
                     $state.go('starter');
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
@@ -131,9 +139,9 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(data);
+                    callbackSuccess(data.message);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             }
         };
@@ -186,9 +194,9 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(data);
+                    callbackSuccess(data.message);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
@@ -205,7 +213,7 @@ angular.module('pirineoPOIApp')
                 }).success(function (data) {
                     auth.logout();
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             }
 
@@ -215,7 +223,7 @@ angular.module('pirineoPOIApp')
     // 'url' service manage the url settings function of the page with the server
     .factory('urlService', function ($http) {
         return {
-            // change the current user password
+            // short an url
             shortUrl: function (url, callbackSuccess, callbackError) {
                 var tmp = {url: url};
                 $http({
@@ -229,6 +237,30 @@ angular.module('pirineoPOIApp')
                     callbackSuccess(data.urlShort);
                 }).error(function (data) {
                     callbackError(data);
+                });
+            }
+        };
+    })
+
+    // 'favs' service manage the favs settings function of the page with the server
+    .factory('favService', function ($http, auth) {
+        return {
+            // make fav a poi
+            favPoi: function (id, callbackError) {
+                var tmp = {poiId: id};
+                $http({
+                    method: 'PUT',
+                    url: 'users/' + auth.getEmail() + '/fav',
+                    data: JSON.stringify(tmp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    var tmp = angular.fromJson(localStorage.userIdentity);
+                    tmp.favs.push(id);
+                    auth.authenticate(tmp);
+                }).error(function (data) {
+                    callbackError(data.message);
                 });
             }
         };
@@ -248,7 +280,7 @@ angular.module('pirineoPOIApp')
                 }).success(function (data) {
                     callback(data.pois);
                 }).error(function (data) {
-                    alert(data);
+                    alert(data.message);
                 });
             },
 
@@ -256,7 +288,7 @@ angular.module('pirineoPOIApp')
             search: function (tags, callback) {
                 $http({
                     method: 'GET',
-                    url: 'pois/filter',
+                    url: 'pois/filter/',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
                         'tags': JSON.stringify(tags)
@@ -264,7 +296,7 @@ angular.module('pirineoPOIApp')
                 }).success(function (data) {
                     callback(data.pois);
                 }).error(function (data) {
-                    alert(data);
+                    alert(data.message);
                 });
             },
 
@@ -282,10 +314,9 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(poiTemp.poi);//TODO cambiar por data
-                    alert(data);
+                    callbackSuccess(data.poi);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
@@ -303,10 +334,10 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess(poiTemp.poi);//TODO cambiar por data
-                    alert(data);
+                    callbackSuccess(poiTemp.poi);
+                    alert(data.message);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
@@ -323,10 +354,9 @@ angular.module('pirineoPOIApp')
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
                 }).success(function (data) {
-                    callbackSuccess();
-                    alert(data);
+                    callbackSuccess(data.poi);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             },
 
@@ -344,9 +374,9 @@ angular.module('pirineoPOIApp')
                     }
                 }).success(function (data) {
                     callbackSuccess(poi);
-                    alert(data);
+                    alert(data.message);
                 }).error(function (data) {
-                    callbackError(data);
+                    callbackError(data.message);
                 });
             }
         };

@@ -279,7 +279,7 @@ module.exports = function (app) {
      *     parameters:
      *       - name: tags
      *         description: Conjunto de tags separados por un '#'.
-     *         in: body
+     *         in: header
      *         required: true
      *         type: string
      *     responses:

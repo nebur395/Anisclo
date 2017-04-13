@@ -20,8 +20,8 @@
         </div>
       </form><!--END: SEARCH POI INPUT -->
 
-      <!-- LIST OF POIS -->
       <div class="divider"></div>
+      <!-- LIST OF POIS -->
       <ul class="list-group" ng-hide="emptyPoiList()" style="margin-bottom:0">
         <li class="list-group-item" ng-repeat="poi in poiList track by $index"
             ng-click="openPOIModal(poi)" style="cursor:pointer">
@@ -30,22 +30,47 @@
       <p ng-hide="!emptyPoiList()">No hay POIs que mostrar</p>
     </div>
 
+    <!-- ROUTES SECTION -->
     <div id="routesSection" class="text-center" ng-hide="hideRoutes">
       <div style="padding:5%;padding-bottom:0">
         <button class="btn w3-theme-action customButton" type="submit" ng-hide="true"
-                style="width: 100%;padding:6px 12px!important;">
+                style="width: 100%;padding:6px 12px!important;"><!--TODO CAMBIAR CONDICIÓN PARA CUANDO ESTÉ CREADA O NO LA RUTA -->
           <i class="glyphicon glyphicon-plus-sign"></i> Nueva ruta
         </button>
         <button class="btn w3-theme-action customButton" type="submit" ng-hide="false"
-                style="width: 100%;padding:6px 12px!important;">
+                style="width: 100%;padding:6px 12px!important;"><!--TODO CAMBIAR CONDICIÓN PARA CUANDO ESTÉ CREADA O NO LA RUTA -->
           <i class="glyphicon glyphicon-ok"></i> Crear ruta
         </button>
       </div>
 
-      <!-- LIST OF POIS -->
+      <form ng-submit="routeByID()"><!-- CREATE ROUTE BY ID -->
+        <div class="input-group" style="padding:5%;padding-bottom:0">
+          <input type="text" class="form-control" placeholder="ID de la ruta"
+                 ng-model="routeID">
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              <i class="glyphicon glyphicon-ok"></i>
+            </button>
+          </div>
+        </div>
+      </form><!--END: CREATE ROUTE BY ID -->
       <div class="divider"></div>
+      <!-- ROUTE LIST -->
+      <!-- ROUTE GPS -->
+      <div class="divider"></div>
+      <form ng-submit="sendRoute()"><!-- SEND ROUTE -->
+        <div class="input-group" style="padding:5%;padding-top:0">
+          <input type="text" class="form-control" placeholder="ID de la ruta"
+                 ng-model="sendRouteEmail">
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              <i class="glyphicon glyphicon-send"></i>
+            </button>
+          </div>
+        </div>
+      </form><!--END: SEND ROUTE -->
 
-    </div>
+    </div><!-- END: ROUTES SECTION -->
 
     <!-- GOOGLE MAPS SECTION -->
 
@@ -75,17 +100,28 @@
               <strong>&#10008</strong> {{errorMsg}}
             </div>
 
-            <!-- owner poi -->
-            <div ng-hide="ownedPoi(poiModal.owner)" class="col-xs-12"
-                 style="font-weight:600;text-align:right;margin-bottom:2%">
-              Propiedad <span class="modalLink" ng-click="goUser(poiModal.owner)">{{poiModal.owner}}</span>
+            <!-- pois assessment -->
+            <div class="col-xs-6" ng-hide="poiModal._id==0" style="padding-left: 0">
+              <p>
+                <i class="fa fa-star-o fa-lg" ng-click="favPoi(poiModal._id)"
+                   ng-hide="isFav(poiModal._id)" style="cursor:pointer"></i>
+                <i class="fa fa-star fa-lg" ng-click="favPoi(poiModal._id)"
+                   ng-hide="!isFav(poiModal._id)" style="color:#ffeb3b;cursor:pointer"></i>
+                Valorar poi</p><!-- TODO DARÍO: cambiar este <p></p> por lo que vayas a meter para valorar el POI -->
             </div>
-            <div ng-hide="!ownedPoi(poiModal.owner)" class="col-xs-12"
+
+            <!-- owner poi -->
+            <div ng-hide="ownedPoi(poiModal.owner)" class="col-xs-6"
+                 style="font-weight:600;text-align:right">
+              Propiedad: <span class="modalLink" ng-click="goUser(poiModal.owner)">
+              {{poiModal.owner}}</span>
+            </div>
+            <div ng-hide="!ownedPoi(poiModal.owner)" class="col-xs-6"
                  style="font-weight:600;text-align:right;margin-bottom:2%">
               Propiedad: Yo
             </div>
 
-            <form role="form" class="form-horizontal" ng-submit="modalSubmit()">
+            <form role="form" class="form-horizontal" ng-submit="modalSubmit()" style="margin-top:2%">
 
               <!-- name input poi -->
               <div class="form-group">

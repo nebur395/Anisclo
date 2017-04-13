@@ -1,8 +1,8 @@
 angular.module('pirineoPOIApp')
 
-    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService', 'urlService',
+    .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService', 'urlService', 'favService',
 
-        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService, urlService) {
+        function ($scope, $state, auth, uiGmapGoogleMapApi, poiService, urlService, favService) {
 
             $scope.poiList = [];
 
@@ -128,6 +128,7 @@ angular.module('pirineoPOIApp')
             $scope.duplicatePOI = function () {
                 poiService.duplicatePoi($scope.poiModal,
                     function (poi) {
+                        $scope.poiList.push(poi);
                         $scope.closePOIModal();
                     }, showError);
             };
@@ -172,10 +173,27 @@ angular.module('pirineoPOIApp')
             };
 
             $scope.searchPOIs = function () {
-                poiService.search($scope.searhedTags, function (pois) {
-                    $scope.poiList = dataPOIs;
-                    //TODO DARÍO: VOLVER A PINTAR LA LISTA DE POIS TRAS LA BÚSQUEDA
-                });
+                if ($scope.searhedTags.trim() == "" ) {
+                    poiService.getListOfPOIs(function (dataPOIs) {
+                        $scope.poiList = dataPOIs;
+                    });
+                } else {
+                    poiService.search($scope.searhedTags, function (pois) {
+                        $scope.poiList = pois;
+                        //TODO DARÍO: VOLVER A PINTAR LA LISTA DE POIS TRAS LA BÚSQUEDA
+                    });
+                }
+            };
+
+            // POI ASSESSMENT
+            $scope.isFav = function (id) {
+              var favs = auth.getFavs();
+              var index = favs.indexOf(id);
+              return index != -1;
+            };
+
+            $scope.favPoi = function (id) {
+                favService.favPoi(id, showError);
             };
 
             // MAP SECTION
