@@ -212,7 +212,8 @@ module.exports = function (app) {
                         "lastname": result.lastname,
                         "firstLogin": result.firstLogin,
                         "admin": result.admin,
-                        "favs": result.favs
+                        "favs": result.favs,
+                        "follows": result.follows
                 });
             }
             // If there's no user with that email or the password is incorrect
@@ -455,22 +456,19 @@ module.exports = function (app) {
 
                     // If the POI exists
                     if(poi){
-                        var isFav = false;
+
                         var message = '';
                         // Checks if the user already has that POI as fav
-                        for(i=0; i<user.favs.length && !isFav; i++){
-
-                            // If the user has that POI as fav, it removes it from the favs list
-                            if(user.favs[i] == req.body.poiId){
-                                user.favs.splice(i, 1);
-                                isFav = true;
-                                message = "eliminado de";
-                            }
-                        }
-                        // Adds the POI to the list of favorite POIs of the user
-                        if(!isFav){
+                        var isFav = user.favs.indexOf(req.body.poiId);
+                        // If the user doesn't have that POI as fav, it adds it to the favs list
+                        if(isFav == -1){
                             user.favs.push(req.body.poiId);
                             message = "añadido a";
+                        }
+                        // If the user has that POI as fav, it removes it from the favs list
+                        else{
+                            user.favs.splice(isFav, 1);
+                            message = "eliminado de";
                         }
                         // Saves the user with the new list of fav POIs
                         user.save(function(err, result){
@@ -528,7 +526,7 @@ module.exports = function (app) {
      *         in: path
      *         required: true
      *         type: string
-     *       - name: followingUserEmail
+     *       - name: userToFollowEmail
      *         description: Email del usuario al que se va a seguir que sirve como identificador.
      *         in: body
      *         required: true
@@ -549,6 +547,91 @@ module.exports = function (app) {
      */
     router.put("/:email/follow", function(req, res){
 
+        // Checks all body fields
+        if(!req.body.userToFollowEmail){
+            res.status(404).send({
+                "success": false,
+                "message": "El email del usuario al que desea seguir no es válido"
+            });
+            return;
+        }
+
+        // Checks if the user exists
+        User.findOne({"email":req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos."
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Checks if the user to be followed exists
+                User.findOne({"email":req.body.userToFollowEmail}, function(err, userToFollow){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos."
+                        });
+                        return;
+                    }
+
+                    // If the user to be followed exists
+                    if(userToFollow){
+
+                        var message = '';
+                        // Checks if the user is already following the other user
+                        var following = user.follows.indexOf(req.body.userToFollowEmail);
+                        // If it's not already following the user
+                        if(following == -1){
+                            // Adds the user to the following list and saves it
+                            user.follows.push(req.body.userToFollowEmail);
+                            message = "añadido a";
+                        }
+                        // If the user is already on the following list
+                        else{
+                            user.follows.splice(following, 1);
+                            message = "eliminado de";
+                        }
+                        user.save(function(err, result){
+
+                            if(err) {
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error guardando datos."
+                                });
+                            }
+                            else{
+                                res.status(200).send({
+                                    "success": true,
+                                    "message": "Usuario "+message+" la lista de seguimientos"
+                                });
+                            }
+                        });
+                    }
+                    // If the user to be followed doesn't exists
+                    else{
+                        res.status(404).send({
+                            "success": false,
+                            "message": "El usuario al que desea seguir no existe."
+                        });
+                    }
+                });
+
+            }
+            // If the user doesn't exists
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe."
+                });
+            }
+        });
     });
 
     /**
