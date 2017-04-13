@@ -223,7 +223,7 @@ angular.module('pirineoPOIApp')
     // 'url' service manage the url settings function of the page with the server
     .factory('urlService', function ($http) {
         return {
-            // change the current user password
+            // short an url
             shortUrl: function (url, callbackSuccess, callbackError) {
                 var tmp = {url: url};
                 $http({
@@ -237,6 +237,30 @@ angular.module('pirineoPOIApp')
                     callbackSuccess(data.urlShort);
                 }).error(function (data) {
                     callbackError(data);
+                });
+            }
+        };
+    })
+
+    // 'favs' service manage the favs settings function of the page with the server
+    .factory('favService', function ($http, auth) {
+        return {
+            // make fav a poi
+            favPoi: function (id, callbackError) {
+                var tmp = {poiId: id};
+                $http({
+                    method: 'PUT',
+                    url: 'users/' + auth.getEmail() + '/fav',
+                    data: JSON.stringify(tmp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    var tmp = angular.fromJson(localStorage.userIdentity);
+                    tmp.favs.push(id);
+                    auth.authenticate(tmp);
+                }).error(function (data) {
+                    callbackError(data.message);
                 });
             }
         };

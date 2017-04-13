@@ -100,18 +100,28 @@
               <strong>&#10008</strong> {{errorMsg}}
             </div>
 
+            <!-- pois assessment -->
+            <div class="col-xs-6" ng-hide="poiModal._id==0" style="padding-left: 0">
+              <p>
+                <i class="fa fa-star-o fa-lg" ng-click="favPoi(poiModal._id)"
+                   ng-hide="isFav(poiModal._id)" style="cursor:pointer"></i>
+                <i class="fa fa-star fa-lg" ng-click="favPoi(poiModal._id)"
+                   ng-hide="!isFav(poiModal._id)" style="color:#ffeb3b;cursor:pointer"></i>
+                Valorar poi</p><!-- TODO DARÍO: cambiar este <p></p> por lo que vayas a meter para valorar el POI -->
+            </div>
+
             <!-- owner poi -->
-            <div ng-hide="ownedPoi(poiModal.owner)" class="col-xs-12"
-                 style="font-weight:600;text-align:right;margin-bottom:2%">
+            <div ng-hide="ownedPoi(poiModal.owner)" class="col-xs-6"
+                 style="font-weight:600;text-align:right">
               Propiedad: <span class="modalLink" ng-click="goUser(poiModal.owner)">
               {{poiModal.owner}}</span>
             </div>
-            <div ng-hide="!ownedPoi(poiModal.owner)" class="col-xs-12"
+            <div ng-hide="!ownedPoi(poiModal.owner)" class="col-xs-6"
                  style="font-weight:600;text-align:right;margin-bottom:2%">
               Propiedad: Yo
             </div>
 
-            <form role="form" class="form-horizontal" ng-submit="modalSubmit()">
+            <form role="form" class="form-horizontal" ng-submit="modalSubmit()" style="margin-top:2%">
 
               <!-- name input poi -->
               <div class="form-group">
