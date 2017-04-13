@@ -173,10 +173,16 @@ angular.module('pirineoPOIApp')
             };
 
             $scope.searchPOIs = function () {
-                poiService.search($scope.searhedTags, function (pois) {
-                    $scope.poiList = dataPOIs;
-                    //TODO DARÍO: VOLVER A PINTAR LA LISTA DE POIS TRAS LA BÚSQUEDA
-                });
+                if ($scope.searhedTags.trim() == "" ) {
+                    poiService.getListOfPOIs(function (dataPOIs) {
+                        $scope.poiList = dataPOIs;
+                    });
+                } else {
+                    poiService.search($scope.searhedTags, function (pois) {
+                        $scope.poiList = pois;
+                        //TODO DARÍO: VOLVER A PINTAR LA LISTA DE POIS TRAS LA BÚSQUEDA
+                    });
+                }
             };
 
             // MAP SECTION

@@ -350,7 +350,7 @@ angular.module('pirineoPOIApp')
                     }
                 }).success(function (data) {
                     callbackSuccess(poi);
-                    alert(data);
+                    alert(data.message);
                 }).error(function (data) {
                     callbackError(data.message);
                 });
