@@ -59,7 +59,9 @@ module.exports = function (app) {
             }
 
             if (result.length==0){
-                res.status(200).send(result);
+                res.status(200).send({
+                    "pois":result
+                });
             }
 
             else{
@@ -304,10 +306,12 @@ module.exports = function (app) {
     router.get("/filter", function(req, res){
 
         var tags = req.headers["tags"];
-        if(tags.charAt(0)==='#'){
+        console.log(tags);
+        if(tags.charAt(1)==='#'){
             // Transforms all the tags to an array with the tags in lowercase
             tagsToArray(tags, function(lowerCaseTags){
-
+                console.log(lowerCaseTags[0]);
+                console.log(lowerCaseTags[1]);
                 // Searches for the POIs that match with the tags
                 POI.find({"tags": {$in: lowerCaseTags}}, function(err, result){
 
@@ -321,7 +325,9 @@ module.exports = function (app) {
 
                     // If no POI match with the tags, it returns an empty array
                     if (result.length==0){
-                        res.status(200).send(result);
+                        res.status(200).send({
+                            "pois":result
+                        });
                     }
                     else{
                         var pois = [];
