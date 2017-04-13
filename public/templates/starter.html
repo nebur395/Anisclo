@@ -108,16 +108,16 @@
 
               <!-- owner poi -->
               <div ng-hide="ownedPoi(poiModal.owner) || poiModal._id==0" class="col-xs-6"
-                   style="font-weight:600;text-align:right">
-                Propiedad: <span data-toggle="popover" class="modalLink">{{poiModal.owner}}</span>
+                   style="font-weight:600;text-align:right">Propiedad: <!-- POPOVER SECTION -->
+                <span data-placement="left" class="modalLink ng-scope" popover>
+                  <div id="popover-content" class="hide">
+                    <button class="btn w3-theme-action customButton" ng-click="followUser()">
+                      {{followText}}</button></div>
+                  {{poiModal.owner}}
+                </span><!-- END: POPOVER SECTION -->
               </div>
               <div ng-hide="!ownedPoi(poiModal.owner) || poiModal._id==0" class="col-xs-6"
-                   style="font-weight:600;text-align:right;margin-bottom:2%">
-                Propiedad: <span data-placement="bottom" class="modalLink ng-scope" popover>
-                <div id="popover-head" class="hide">New quote</div>
-                 <div id="popover-content" class="hide">
-                <button class="btn w3-theme-action customButton" ng-click="followUser()">{{followText}}</button></div>
-                {{poiModal.owner}}</span>
+                   style="font-weight:600;text-align:right;margin-bottom:2%">Propiedad: Yo
               </div>
             </div>
 

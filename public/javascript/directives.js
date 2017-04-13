@@ -18,11 +18,9 @@ angular.module('pirineoPOIApp')
 
                 var content = $("#popover-content").html();
                 var compileContent = $compile(content)(scope);
-                var title = $("#popover-head").html();
                 var options = {
                     content: compileContent,
-                    html: true,
-                    title: title
+                    html: true
                 };
 
                 $(elem).popover(options);

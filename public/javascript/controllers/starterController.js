@@ -199,7 +199,16 @@ angular.module('pirineoPOIApp')
             });
 
             $scope.followUser = function () {
-                settings.followUser($scope.poiModal.owner,showSuccess,showError);
+                settings.followUser($scope.poiModal.owner,function(message) {
+                    var follows = auth.getFollows();
+                    var index = follows.indexOf($scope.poiModal.owner);
+                    if (index != -1) {
+                        $scope.followText = "Dejar de seguir";
+                    } else {
+                        $scope.followText = "Seguir usuario";
+                    }
+                    showSuccess(message);
+                },showError);
             };
 
             // POI ASSESSMENT
