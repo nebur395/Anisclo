@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 
+mongoose.Promise = global.Promise;
 /**
  * @swagger
  * definition:
@@ -52,7 +53,7 @@ var userSchema = mongoose.Schema({
     admin: {type: Boolean, required: true},
     firstLogin: {type: Boolean, required: true},
     favs: {type:[mongoose.Schema.Types.ObjectId], default: []},
-    follows: {type:mongoose.Schema.Types.ObjectId, default: null},
+    follows: {type:[String], default: []},
     registerDate: {type: Date, default: Date.now}
 });
 
