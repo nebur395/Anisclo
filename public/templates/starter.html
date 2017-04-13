@@ -109,12 +109,11 @@
               <!-- owner poi -->
               <div ng-hide="ownedPoi(poiModal.owner) || poiModal._id==0" class="col-xs-6"
                    style="font-weight:600;text-align:right">
-                Propiedad: <span class="modalLink" ng-click="goUser(poiModal.owner)">
-              {{poiModal.owner}}</span>
+                Propiedad: <span data-toggle="popover" class="modalLink">{{poiModal.owner}}</span>
               </div>
               <div ng-hide="!ownedPoi(poiModal.owner) || poiModal._id==0" class="col-xs-6"
                    style="font-weight:600;text-align:right;margin-bottom:2%">
-                Propiedad: Yo
+                Propiedad: <span data-toggle="popover" class="modalLink">{{poiModal.owner}}</span>
               </div>
             </div>
 

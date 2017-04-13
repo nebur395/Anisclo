@@ -183,6 +183,26 @@ angular.module('pirineoPOIApp')
                 }
             };
 
+            // POI's owner user follow/unfollow SECTION
+            // Watches to control if the user have selected a location
+            $scope.followText = "Seguir usuario";
+            $scope.$watch('poiModal', function () {
+                if ($scope.poiModal._id != "") {
+                    var follows = auth.getFollows();
+                    var index = follows.indexOf($scope.poiModal._id);
+                    if (index != -1) {
+                        $scope.followText = "Dejar de seguir";
+                    } else {
+                        $scope.followText = "Seguir usuario";
+                    }
+                }
+            });
+            $('[data-toggle="popover"]').popover({
+                placement: "left",
+                html: true,
+                content: '<button class="btn w3-theme-action customButton">' +  $scope.followText + '</button>'
+            });
+
             // POI ASSESSMENT
             $scope.isFav = function (id) {
               var favs = auth.getFavs();
