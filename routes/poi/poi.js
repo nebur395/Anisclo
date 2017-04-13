@@ -59,7 +59,9 @@ module.exports = function (app) {
             }
 
             if (result.length==0){
-                res.status(200).send(result);
+                res.status(200).send({
+                    "pois":result
+                });
             }
 
             else{
@@ -292,6 +294,10 @@ module.exports = function (app) {
      *               type: array
      *               items:
      *                $ref: '#/definitions/POI'
+     *       404:
+     *          description: Mensaje de feedback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
      *       500:
      *          description: Mensaje de feecback para el usuario.
      *          schema:
@@ -300,57 +306,67 @@ module.exports = function (app) {
     router.get("/filter", function(req, res){
 
         var tags = req.headers["tags"];
-        // Transforms all the tags to an array with the tags in lowercase
-        tagsToArray(tags, function(lowerCaseTags){
+        console.log(tags);
+        if(tags.charAt(0)==='#'){
+            // Transforms all the tags to an array with the tags in lowercase
+            tagsToArray(tags, function(lowerCaseTags){
+                // Searches for the POIs that match with the tags
+                POI.find({"tags": {$in: lowerCaseTags}}, function(err, result){
 
-            // Searches for the POIs that match with the tags
-            POI.find({"tags": {$in: lowerCaseTags}}, function(err, result){
-
-                if(err) {
-                    res.status(500).send({
-                        "success": false,
-                        "message": "Error recuperando datos"
-                    });
-                    return;
-                }
-
-                // If no POI match with the tags, it returns an empty array
-                if (result.length==0){
-                    res.status(200).send(result);
-                }
-                else{
-                    var pois = [];
-                    // Iterates all the POIs stored in the system
-                    async.each(result, function(poi, callback){
-
-                        // Checks if there's an image attached to the POI and retrieves it if it's the case.
-                        if(poi.image!=null){
-                            retrieveImage(poi.image, function(data){
-                                pois.push(poi.createResponse(data));
-                                callback();
-                            });
-                        }
-                        else{
-                            pois.push(poi.createResponse(""));
-                            callback();
-                        }
-
-                    }, function(err){
-                        if (err){
-                            res.status(500).send({
-                                "success": false,
-                                "message": "Error creando respuesta"
-                            });
-                            return;
-                        }
-                        res.status(200).send({
-                            "pois": pois
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
                         });
-                    });
-                }
+                        return;
+                    }
 
+                    // If no POI match with the tags, it returns an empty array
+                    if (result.length==0){
+                        res.status(200).send({
+                            "pois":result
+                        });
+                    }
+                    else{
+                        var pois = [];
+                        // Iterates all the POIs stored in the system
+                        async.each(result, function(poi, callback){
+
+                            // Checks if there's an image attached to the POI and retrieves it if it's the case.
+                            if(poi.image!=null){
+                                retrieveImage(poi.image, function(data){
+                                    pois.push(poi.createResponse(data));
+                                    callback();
+                                });
+                            }
+                            else{
+                                pois.push(poi.createResponse(""));
+                                callback();
+                            }
+
+                        }, function(err){
+                            if (err){
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error creando respuesta"
+                                });
+                                return;
+                            }
+                            res.status(200).send({
+                                "pois": pois
+                            });
+                        });
+                    }
+
+                });
             });
-        });
+        }
+        else{
+            res.status(404).send({
+                "success": false,
+                "message": "Tags incorrectos"
+            });
+        }
     });
 
     /**
@@ -680,7 +696,7 @@ module.exports = function (app) {
                             semaphore.leave();
                             res.status(404).send({
                                 "success": false,
-                                "message": "El POI no existe"
+                                "message": "El POI no existe o no eres su propietario"
                             });
                         }
                         // If the POI exists and it's been removed
@@ -849,7 +865,7 @@ module.exports = function (app) {
                     else{
                         res.status(404).send({
                             "success": false,
-                            "message": "El POI no existe"
+                            "message": "El POI no existe o no eres su propietario"
                         });
                     }
                 });
@@ -992,12 +1008,17 @@ module.exports = function (app) {
         });
     }
 
+    /**
+     * Takes a string of tags separated by the character
+     * "#" and splits it to create an array of tags.
+     */
     function tagsToArray(tags, callback){
         var tagsArray = tags.split("#");
         tagsArray.splice(0,1);
         var lowerCaserTags = [];
         tagsArray.forEach(function(tag, index){
-            lowerCaserTags.push(tag.toLowerCase());
+            var temp = tag.trim();
+            lowerCaserTags.push(temp.toLowerCase());
 
             if(index == tagsArray.length-1){
                 return callback(lowerCaserTags);
