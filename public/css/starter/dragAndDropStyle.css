@@ -48,7 +48,6 @@
   display: none;
 }
 
-/* descomentar en caso de ver que al moverlos de la lista de pois desaparecen
-.nestedDemo .toolbox .dndDraggingSource {
+#poiList .dndDraggingSource {
   opacity: 1.0;
-}*/
+}
