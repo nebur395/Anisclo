@@ -222,6 +222,23 @@ angular.module('pirineoPOIApp')
                 settings.favPoi(id, showSuccess, showError);
             };
 
+            //ROUTES SECTION
+            $scope.poisInRoute = [];
+            $scope.gpsInfo = [];
+            $scope.editingRoute = true; //true if user is editing a new route
+            $scope.makeNewRoute = function () {
+              //TODO función para empezar a editar una nueva ruta
+            };
+            $scope.makeRoute = function () {
+                //TODO función para crear la ruta que se está editando
+            };
+            $scope.routeByID = function () {
+              //TODO función para crear una ruta a partir del input [routeID]
+            };
+            $scope.sendRoute = function () {
+                //TODO función para envíar por correo una ruta a partir del input [sendRouteEmail]
+            };
+
             // MAP SECTION
 
             $scope.map = {

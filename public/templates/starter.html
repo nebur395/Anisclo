@@ -24,7 +24,9 @@
       <!-- LIST OF POIS -->
       <ul class="list-group" ng-hide="emptyPoiList()" style="margin-bottom:0">
         <li class="list-group-item" ng-repeat="poi in poiList track by $index"
-            ng-click="openPOIModal(poi)" style="cursor:pointer">
+            ng-click="openPOIModal(poi)" style="cursor:pointer"
+            dnd-draggable="poi"
+            dnd-effect-allowed="copy">
           {{poi.name}}</li>
       </ul>
       <p ng-hide="!emptyPoiList()">No hay POIs que mostrar</p>
@@ -33,12 +35,12 @@
     <!-- ROUTES SECTION -->
     <div id="routesSection" class="text-center" ng-hide="hideRoutes">
       <div style="padding:5%;padding-bottom:0">
-        <button class="btn w3-theme-action customButton" type="submit" ng-hide="true"
-                style="width: 100%;padding:6px 12px!important;"><!--TODO CAMBIAR CONDICIÓN PARA CUANDO ESTÉ CREADA O NO LA RUTA -->
+        <button class="btn w3-theme-action customButton" type="submit" ng-hide="editingRoute"
+                style="width: 100%;padding:6px 12px!important;" ng-click="makeNewRoute()"><!--TODO CAMBIAR CONDICIÓN PARA CUANDO ESTÉ CREADA O NO LA RUTA -->
           <i class="glyphicon glyphicon-plus-sign"></i> Nueva ruta
         </button>
-        <button class="btn w3-theme-action customButton" type="submit" ng-hide="false"
-                style="width: 100%;padding:6px 12px!important;"><!--TODO CAMBIAR CONDICIÓN PARA CUANDO ESTÉ CREADA O NO LA RUTA -->
+        <button class="btn w3-theme-action customButton" type="submit" ng-hide="!editingRoute"
+                style="width: 100%;padding:6px 12px!important;" ng-click="makeRoute()"><!--TODO CAMBIAR CONDICIÓN PARA CUANDO ESTÉ CREADA O NO LA RUTA -->
           <i class="glyphicon glyphicon-ok"></i> Crear ruta
         </button>
       </div>
@@ -56,6 +58,20 @@
       </form><!--END: CREATE ROUTE BY ID -->
       <div class="divider"></div>
       <!-- ROUTE LIST -->
+      <div id="dropPoisSection">
+        <ul dnd-list="poisInRoute" class="list-group">
+          <li class="list-group-item" ng-repeat="poi in poisInRoute" style="cursor:move"
+              dnd-effect-allowed="move"
+              dnd-draggable="poi"
+              dnd-moved="poisInRoute.splice($index, 1)">
+            {{poi.name}}</li>
+        </ul>
+      </div>
+      <div id="trashDropPoisSection">
+        <ul dnd-list="[]" class="list-group" style="margin-bottom:0">
+          <li class="list-group-item"><i class="fa fa-trash"></i> Suelta aquí para borrar</li>
+        </ul>
+      </div>
       <!-- ROUTE GPS -->
       <div class="divider"></div>
       <form ng-submit="sendRoute()"><!-- SEND ROUTE -->
