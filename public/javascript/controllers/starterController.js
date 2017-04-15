@@ -6,15 +6,16 @@ angular.module('pirineoPOIApp')
 
             $scope.poiList = [];
             $scope.markersBackup = [];
+            $scope.firstLoad;
 
             // FEEDBACK MESSAGES
 
-            // show the error mensage
+            // show the error message
             var showError = function (message) {
                 Notification.error('&#10008' + message);
             };
 
-            // show the error mensage
+            // show the error message
             var showSuccess = function (message) {
                 Notification.success('&#10004' + message);
             };
@@ -321,7 +322,6 @@ angular.module('pirineoPOIApp')
 
             // MAP SECTION
 
-
             $scope.map = {
                 control: {},
                 center: {latitude: 45, longitude: -73}, zoom: 8,
@@ -359,14 +359,22 @@ angular.module('pirineoPOIApp')
                             };
                             $scope.openPOIModal(poi);
                         });
+                    },
+                    //So it tries to load whenever tiles change, but it will only do if it's the first load
+                    //This is to prevent the markers not loading when changing view bug
+                    tilesloaded: function(){
+                        if($scope.firstLoad==true){
+                            $scope.firstLoad= false;
+                            console.log("pintando TODOS los markers");
+                            $scope.paintMarkers();
+                        }
                     }
                 }
 
             };
             $scope.options = {scrollwheel: true, streetViewControl: false, mapTypeControl: false};
-            uiGmapGoogleMapApi.then(function (maps) {
-                $scope.directionsService = new maps.DirectionsService;
-                $scope.directionsDisplay = new maps.DirectionsRenderer;
+            // Paint all markers
+            $scope.paintMarkers = function(){
                 var marker = {};
                 marker.coords = {};
                 for(var i=0; i<$scope.poiList.length; i++){
@@ -377,6 +385,15 @@ angular.module('pirineoPOIApp')
                     marker = {};
                     marker.coords = {};
                 }
+            };
+            //Execute this code when view is loaded
+            $scope.$on('$viewContentLoaded', function(){
+                console.log("view loaded, waiting for gmaps");
+                uiGmapGoogleMapApi.then(function (maps) {
+                    $scope.firstLoad = true;
+                    console.log("gmaps ready, rendering markers");
+                    $scope.directionsService = new maps.DirectionsService;
+                    $scope.directionsDisplay = new maps.DirectionsRenderer;
+                });
             });
-
         }]);
