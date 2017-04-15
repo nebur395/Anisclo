@@ -260,45 +260,60 @@ angular.module('pirineoPOIApp')
             $scope.poisInRoute = [];
             $scope.gpsInfo = [];
             $scope.editingRoute = true; //true if user is editing a new route
+            /**
+             *
+             * @param poisReq: Array[POI]
+             * @param travelModeReq: 'DRIVING' OR 'WALKING' OR 'BICYCLING' OR 'TRANSIT'
+             */
+            $scope.paintRoute = function(poisReq, travelModeReq){
+                var waypointsReq = [];
+                for(var i=1;i<($scope.poisInRoute.length -1);i++) {
+                    waypointsReq.push(
+                        {
+                            location: new google.maps.LatLng($scope.poisInRoute[i].lat, $scope.poisInRoute[i].lng)
+                        }
+                    );
+                }
+                var request = {
+                    origin: {lat: poisReq[0].lat, lng: poisReq[0].lng},
+                    destination: {lat: poisReq[poisReq.length-1].lat,
+                        lng: poisReq[poisReq.length-1].lng},
+                    travelMode: travelModeReq,
+                    waypoints : waypointsReq,
+                    optimizeWaypoints: true
+                };
+                $scope.directionsService.route(request,function(response,status){
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        console.log("pintando la ruta");
+                        console.log("directions:"+response.routes[0].legs[0].steps.length);
+                        $scope.gpsInfo = response.routes[0];
+                        console.log(response.routes[0].legs);
+                        $scope.directionsDisplay.setDirections(response);
+                        $scope.directionsDisplay.setMap($scope.map.control.getGMap());
+                    } else {
+                        showError('Google route unsuccessful!');
+                    }
+                })
+            };
+
             $scope.makeNewRoute = function () {
               //TODO función para empezar a editar una nueva ruta
+                //esto debería borrar la ruta que habia pintada
+                $scope.directionsDisplay.setMap(null);
+                //Call paintRoute with POIs for the new route and travel mode
+                $scope.paintRoute($scope.poisInRoute, 'DRIVING');
             };
 
             $scope.makeRoute = function () {
                 //TODO función para crear la ruta que se está editando
                 console.log("creando ruta con " +$scope.poisInRoute.length + " pois");
-                var waypointsRequest = [];
-                var j = 0;
-                for(var i=1;i<($scope.poisInRoute.length -1);i++){
-                    waypointsRequest.push(
-                        {
-                            location: new google.maps.LatLng($scope.poisInRoute[i].lat, $scope.poisInRoute[i].lng)
-                        }
-                    );
-                    j++;
-                }
-                var request = {
-                    origin: {lat: $scope.poisInRoute[0].lat, lng: $scope.poisInRoute[0].lng},
-                    destination: {lat: $scope.poisInRoute[$scope.poisInRoute.length-1].lat,
-                        lng: $scope.poisInRoute[$scope.poisInRoute.length-1].lng},
-                    travelMode: 'DRIVING',
-                    waypoints : waypointsRequest,
-                    optimizeWaypoints: true
-                };
-                //$scope.directionsDisplay.setMap($scope.map);
-                $scope.directionsService.route(request,function(response,status){
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        console.log("pintando la ruta");
-                        console.log("directions:"+response.routes[0].legs[0].steps.length);
-                        $scope.directionsDisplay.setDirections(response);
-                        $scope.directionsDisplay.setMap($scope.map.control.getGMap());
-                    } else {
-                        alert('Google route unsuccessful!');
-                    }
-                })
+                $scope.paintRoute($scope.poisInRoute,'DRIVING');
             };
             $scope.routeByID = function () {
+                $scope.poisByID = [];
               //TODO función para crear una ruta a partir del input [routeID]
+                //Call paintRoute with the desired pois
+                $scope.paintRoute($scope.poisByID,'DRIVING');
             };
             $scope.sendRoute = function () {
                 //TODO función para envíar por correo una ruta a partir del input [sendRouteEmail]
