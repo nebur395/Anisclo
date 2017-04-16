@@ -404,6 +404,75 @@ angular.module('pirineoPOIApp')
                 });
             }
         };
+    })
+
+    // 'routes' service manage the routes settings function of the page with the server
+    .factory('routesService', function ($http) {
+        return {
+            // save a route in the server
+            saveRoute: function (route, callbackSuccess, callbackError) {
+                var idRoutes = [];
+                for (i=0;i<route.routePOIs.length;i++) {
+                    idRoutes.push(route.routePOIs[i]._id);
+                }
+                route.routePOIs = idRoutes;
+                var routeInfoTemp = {
+                    distance: {text: "", value: 0}, duration: {text: "", value: 0}
+                };
+                var metaDataRoute = [];
+                for (i=0;i<route.routeInfo.length;i++) {
+                    routeInfoTemp.distance.text = route.routeInfo[i].distance.text;
+                    routeInfoTemp.distance.value = route.routeInfo[i].distance.value;
+                    routeInfoTemp.duration.text = route.routeInfo[i].duration.text;
+                    routeInfoTemp.duration.value = route.routeInfo[i].duration.value;
+                    metaDataRoute.push(routeInfoTemp);
+                }
+                route.routeInfo = metaDataRoute;
+                $http({
+                    method: 'POST',
+                    url: 'routes/',
+                    data: JSON.stringify(route),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routeID);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Send a route by email
+            sendRouteByEmail: function (routeId, emails, callbackSuccess, callbackError) {
+                $http({
+                    method: 'POST',
+                    url: 'routes/' + routeId + '/sendRoute/',
+                    data: JSON.stringify(emails),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the info of an [routeId] route
+            findRoute: function (routeId, callbackSuccess, callbackError) {
+                $http({
+                    method: 'POST',
+                    url: 'routes/' + routeId + '/',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            }
+        };
     });
 
 
