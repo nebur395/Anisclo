@@ -457,6 +457,21 @@ angular.module('pirineoPOIApp')
                     callbackError(data.message);
                 });
             },
+
+            // Get the info of an [routeId] route
+            findRoute: function (routeId, callbackSuccess, callbackError) {
+                $http({
+                    method: 'POST',
+                    url: 'routes/' + routeId + '/',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            }
         };
     });
 
