@@ -487,7 +487,7 @@ module.exports = function (app) {
                         });
                     }
 
-                    // If the POI doesn't exists
+                    // If the POI doesn't exist
                     else{
                         res.status(404).send({
                             "success": false,
@@ -496,7 +496,7 @@ module.exports = function (app) {
                     }
                 });
             }
-            // If the user doesn't exists
+            // If the user doesn't exist
             else{
                 res.status(404).send({
                     "success": false,
@@ -614,7 +614,7 @@ module.exports = function (app) {
                             }
                         });
                     }
-                    // If the user to be followed doesn't exists
+                    // If the user to be followed doesn't exist
                     else{
                         res.status(404).send({
                             "success": false,
@@ -624,67 +624,11 @@ module.exports = function (app) {
                 });
 
             }
-            // If the user doesn't exists
+            // If the user doesn't exist
             else{
                 res.status(404).send({
                     "success": false,
                     "message": "El usuario no existe."
-                });
-            }
-        });
-    });
-
-    /**
-     * @swagger
-     * /users/{email}:
-     *   get:
-     *     tags:
-     *       - Users
-     *     summary: Buscar usuario
-     *     description: Busca un usuario por el email en el sistema y devuelve su información de
-     *       perfil.
-     *     consumes:
-     *       - application/json
-     *       - charset=utf-8
-     *     produces:
-     *       - application/json
-     *     parameters:
-     *       - name: email
-     *         description: Email del usuario que sirve como identificador.
-     *         in: path
-     *         required: true
-     *         type: string
-     *     responses:
-     *       200:
-     *         description: Información de perfil del usuario.
-     *         schema:
-     *           $ref: '#/definitions/User'
-     *       404:
-     *         description: Mensaje de feedback para el usuario.
-     *         schema:
-     *           $ref: '#/definitions/FeedbackMessage'
-     *       500:
-     *         description: Mensaje de feedback para el usuario.
-     *         schema:
-     *           $ref: '#/definitions/FeedbackMessage'
-     */
-    router.get("/:email", function(req,res){
-        User.findOne({email: req.params.email},function(err,data){
-            if(err) {
-                res.status(500).send({
-                    "success": false,
-                    "message": "Error recuperando datos"
-                });
-                return;
-            }
-
-            if(data){
-                res.status(200).send(data);
-            }
-            else {
-                res.status(404).send({
-                    "success": false,
-                    "message": "El usuario no existe"
                 });
             }
         });
@@ -873,7 +817,7 @@ module.exports = function (app) {
                     });
                 });
             }
-            // If the user doesn't exists or the password is incorrect
+            // If the user doesn't exist or the password is incorrect
             else{
                 res.status(404).send({
                     "success": false,

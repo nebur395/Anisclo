@@ -253,7 +253,7 @@ module.exports = function (app) {
                     }
                 });
             }
-            // If the user doesn't exists.
+            // If the user doesn't exist.
             else {
                 res.status(404).send({
                     "success": false,
@@ -590,7 +590,7 @@ module.exports = function (app) {
                             }
                         });
                     }
-                    // If the POI doesn't exists.
+                    // If the POI doesn't exist.
                     else{
                         res.status(404).send({
                             "success": false,
@@ -600,7 +600,7 @@ module.exports = function (app) {
                 })
 
             }
-            // If the user doesn't exists.
+            // If the user doesn't exist.
             else{
                 res.status(404).send({
                     "success": false,
@@ -691,7 +691,7 @@ module.exports = function (app) {
                             return;
                         }
 
-                        // If the POI doesn't exists.
+                        // If the POI doesn't exist.
                         if(result===null){
                             semaphore.leave();
                             res.status(404).send({
@@ -713,7 +713,7 @@ module.exports = function (app) {
                     });
                 });
             }
-            // If the user doesn't exists.
+            // If the user doesn't exist.
             else{
                 res.status(404).send({
                     "success": false,
@@ -861,7 +861,7 @@ module.exports = function (app) {
                             });
                         });
                     }
-                    // If the POI with that ID and user doesn't exists
+                    // If the POI with that ID and user doesn't exist
                     else{
                         res.status(404).send({
                             "success": false,
@@ -870,7 +870,7 @@ module.exports = function (app) {
                     }
                 });
             }
-            // If the user doesn't exists.
+            // If the user doesn't exist
             else{
                 rres.status(404).send({
                     "success": false,
