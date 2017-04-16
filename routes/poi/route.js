@@ -367,7 +367,7 @@ module.exports = function (app) {
 
             if(route){
                 var pois = [];
-                async.each(route.routePOIs, function(poiId, callback){
+                async.eachSeries(route.routePOIs, function(poiId, callback){
 
                     POI.findById(poiId, function(err, poi){
 

@@ -142,7 +142,19 @@
                      ng-hide="isFav(poiModal._id)" style="cursor:pointer"></i>
                   <i class="fa fa-star fa-lg" ng-click="favPoi(poiModal._id)"
                      ng-hide="!isFav(poiModal._id)" style="color:#ffeb3b;cursor:pointer"></i>
-                  Valorar poi</p><!-- TODO DARÍO: cambiar este 'valorar po' por lo que vayas a meter para valorar el POI -->
+                  <form name="valorarForm" ng-hide="poiModal._id == ''">
+                    <label for="valorarPOI"> Valorar POI: </label>
+                    <select id="valorarPOI" name="Valorar POI" ng-model="valorar" onchange="angular.element(this).scope().newRate(event)">
+                      <option value=""></option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select><br>
+                  </form>
+                </p>
               </div>
 
               <!-- owner poi -->
@@ -221,8 +233,11 @@
               </div>
               <!-- image poi -->
               <div style="max-width: 200px;margin:auto">
-                <!-- TODO DARÍO: Tienes que sustituir el <p></p> por el botón de subir imagen que vayas a hacer. El ng-hide lo tienes que mantener-->
-                <p ng-hide="!((poiModal.image=='') && (poiModal._id == ''))">sube imagen </p>
+                <input
+                  type="file" onchange="angular.element(this).scope().newImage(event)"
+                  accept="image/*" ng-hide="!((poiModal.image=='') && (poiModal._id == ''))">
+                  Subir imagen
+                </input>
                 <img ng-hide="poiModal.image==''" class="img-responsive img-thumbnail" data-ng-src="data:image/png;base64,{{poiModal.image}}"/>
               </div>
 

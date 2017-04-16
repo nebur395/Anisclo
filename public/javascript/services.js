@@ -402,6 +402,26 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
+            },
+
+            // rate a current poi
+            ratePoi: function (poi, rate, callbackSuccess, callbackError) {
+                var temp = {
+                    id: poi._id,
+                    rating: rate
+                };
+                $http({
+                    method: 'PUT',
+                    url: 'pois/' + poi._id + '/rate',
+                    data: JSON.stringify(temp),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
             }
         };
     })

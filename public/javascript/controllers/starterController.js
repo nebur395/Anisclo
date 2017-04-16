@@ -39,6 +39,48 @@ angular.module('pirineoPOIApp')
                 }
             };
 
+            // IMAGE SECTION
+
+            $scope.newImage = function(e){
+                var file    = e.target.files[0];
+                var reader  = new FileReader();
+
+                reader.onloadend = function () {
+                    //parse metadata
+                    var data_url = reader.result;
+                    var matches = data_url.match(/^data:.+\/(.+);base64,(.*)$/);
+                    var data = matches[2]; //keep only base64 data
+                    $scope.poiModal.image = data;
+                    $scope.$apply();
+                };
+
+                if (file) {
+                    if(file.name.toUpperCase().includes(".JPG") || file.name.toUpperCase().includes(".PNG")){
+                        reader.readAsDataURL(file);
+                    }
+                    else showError("Formato de imagen inválido. Por favor envía una imagen JPG o PNG.");
+
+                } else {
+                    //$scope.poiModal.image = "";
+                    showError("Error inesperado, inténtelo de nuevo");
+                }
+            };
+
+            // RATE SECTION
+
+            $scope.valorarPOI = function(){
+                //$scope.valorar = poiService.getRate($scope.poiModal);
+                $scope.valorar;
+            };
+
+            $scope.newRate = function(event){
+                console.log("valorando poi con un "+event.target.value);
+                poiService.ratePoi($scope.poiModal,event.target.value,function(message){
+                    showSuccess(message);
+                },function (message) {
+                    showError(message);
+                });
+            };
             // MODAL POI SECTION
 
             $scope.poiModal = {    // temporal POI data on modals
