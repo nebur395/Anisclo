@@ -334,8 +334,17 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Datos de la ruta solicitada.
-     *         schema:
-     *           $ref: '#/definitions/POI'
+     *         type: object
+     *         properties:
+     *           travelMode:
+     *             type: string
+     *             description:  |
+     *               Modo de transporte de la ruta. Valor discreto entre: 'DRIVING' OR 'WALKING' OR
+     *               'BICYCLING' OR 'TRANSIT'
+     *           routePOIs:
+     *             type: array
+     *             items:
+     *               $ref: '#/definitions/POI'
      *       404:
      *         description: Mensaje de feecback para el usuario.
      *         schema:
