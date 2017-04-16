@@ -50,8 +50,6 @@ angular.module('pirineoPOIApp')
                     var data_url = reader.result;
                     var matches = data_url.match(/^data:.+\/(.+);base64,(.*)$/);
                     var data = matches[2]; //keep only base64 data
-                    console.log(data);
-
                     $scope.poiModal.image = data;
                     $scope.$apply();
                 };
@@ -68,6 +66,27 @@ angular.module('pirineoPOIApp')
                 }
             };
 
+            // RATE SECTION
+
+            $scope.valorarPOI = function(){
+                //$scope.valorar = poiService.getRate($scope.poiModal);
+                $scope.valorar;
+                console.log("valorando poi con un "+$scope.valorar);
+                poiService.ratePoi($scope.poiModal,$scope.valorar,function(message){
+                    showSuccess(message);
+                },function (message) {
+                    showError(message);
+                });
+            };
+
+            $scope.newRate = function(event){
+                console.log("valorando poi con un "+event.target.value);
+                poiService.ratePoi($scope.poiModal,event.target.value,function(message){
+                    showSuccess(message);
+                },function (message) {
+                    showError(message);
+                });
+            };
             // MODAL POI SECTION
 
             $scope.poiModal = {    // temporal POI data on modals
