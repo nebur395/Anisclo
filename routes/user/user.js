@@ -487,7 +487,7 @@ module.exports = function (app) {
                         });
                     }
 
-                    // If the POI doesn't exists
+                    // If the POI doesn't exist
                     else{
                         res.status(404).send({
                             "success": false,
@@ -496,7 +496,7 @@ module.exports = function (app) {
                     }
                 });
             }
-            // If the user doesn't exists
+            // If the user doesn't exist
             else{
                 res.status(404).send({
                     "success": false,
@@ -614,7 +614,7 @@ module.exports = function (app) {
                             }
                         });
                     }
-                    // If the user to be followed doesn't exists
+                    // If the user to be followed doesn't exist
                     else{
                         res.status(404).send({
                             "success": false,
@@ -624,7 +624,7 @@ module.exports = function (app) {
                 });
 
             }
-            // If the user doesn't exists
+            // If the user doesn't exist
             else{
                 res.status(404).send({
                     "success": false,
@@ -873,7 +873,7 @@ module.exports = function (app) {
                     });
                 });
             }
-            // If the user doesn't exists or the password is incorrect
+            // If the user doesn't exist or the password is incorrect
             else{
                 res.status(404).send({
                     "success": false,

@@ -1,9 +1,12 @@
-
+var express = require('express');
+var async = require("async");
 
 module.exports = function (app) {
 
     var router = express.Router();
     var User = app.models.User;
+    var POI = app.models.POI;
+    var Route = app.models.Route;
 
     /**
      * @swagger
@@ -32,12 +35,12 @@ module.exports = function (app) {
      *         required: true
      *         type: string
      *       - name: routePOIs
-     *         description: Lista de los POIs que componen la ruta para poder reproducirla.
+     *         description: Lista de los IDs de los POIs que componen la ruta para poder reproducirla.
      *         in: body
      *         required: true
      *         type: array
      *         items:
-     *           $ref: '#/definitions/POI'
+     *           type: string
      *       - name: routeInfo
      *         description: Una lista que contiene información asociada a la ruta. Por cada
      *           tramo de la misma, su duración y distancia.
@@ -86,6 +89,106 @@ module.exports = function (app) {
      */
     router.post("/", function(req, res){
 
+        // Checks all body fields // || !req.body.routeInfo
+        if(!req.body.userEmail || !req.body.travelMode || !req.body.routePOIs){
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario, modo de viaje, POIs o información de la ruta no válidos"
+            });
+            return;
+        }
+
+        // Checks the travel mode of the route is within the supported modes
+        if(!req.body.travelMode==="DRIVING" || !req.body.travelMode==="WALKING" ||
+            !req.body.travelMode==="BICYCLING" || !req.body.travelMode==="TRANSIT"){
+            res.status(404).send({
+                "success": false,
+                "message": "Modo de viaje incorrecto"
+            });
+            return;
+        }
+
+        // Checks if the user that is creating the route exists
+        User.findOne({"email":req.body.userEmail}, function(err, user){
+
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Checks if all the POIs within the route exist
+                async.each(req.body.routePOIs, function(poiId, callback){
+
+                    POI.findById(poiId, function(err, poi){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error recuperando datos"
+                            });
+                            return;
+                        }
+
+                        // If the POI exists, it continues to check the rest
+                        if(poi){
+                            callback();
+                        }
+                        // If the POI doesn't exist, an error is thrown.
+                        else{
+                            var error = "El POI '"+poiId+"' no existe";
+                            callback(error);
+                        }
+                    });
+
+                }, function(err){
+                    if (err){
+                        res.status(400).send({
+                            "success": false,
+                            "message": err
+                        });
+                        return;
+                    }
+
+                    // If all the POIs exist, the new route is created and saved
+                    Route.create({
+
+                        owner: req.body.userEmail,
+                        travelMode: req.body.travelMode,
+                        routePOIs: req.body.routePOIs,
+                        routeInfo: req.body.routeInfo
+
+                    }, function(err, result){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error guardando datos"
+                            });
+                            return;
+                        }
+
+                        res.status(200).send({
+                            "routeID": result._id
+                        });
+                    });
+
+                });
+
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
+        });
     });
 
     return router;
