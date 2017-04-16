@@ -1,10 +1,10 @@
 angular.module('pirineoPOIApp')
 
     .controller('starterCtrl', ['$scope', '$state', 'auth', 'uiGmapGoogleMapApi', 'poiService', 'urlService',
-        'settings', 'Notification', '$sce',
+        'settings', 'Notification', '$sce', 'routesService',
 
         function ($scope, $state, auth, uiGmapGoogleMapApi, poiService, urlService, settings,
-                  Notification, $sce) {
+                  Notification, $sce, routesService) {
 
             $scope.poiList = [];
             $scope.markersBackup = [];
@@ -262,6 +262,9 @@ angular.module('pirineoPOIApp')
             //ROUTES SECTION
             $scope.poisInRoute = [];
             $scope.gpsInfo = [];
+            $scope.routeSteps = [];
+            $scope.currentIdRoute = "";
+            $scope.travelMode = 'DRIVING';
             $scope.editingRoute = true; //true if user is editing a new route
             /**
              *
@@ -289,10 +292,11 @@ angular.module('pirineoPOIApp')
                     if (status === google.maps.DirectionsStatus.OK) {
                         console.log("pintando la ruta");
                         console.log("directions:"+response.routes[0].legs[0].steps.length);
+                        $scope.gpsInfo = response.routes[0].legs;
                         for (i=0;i<response.routes[0].legs.length;i++) {
                             for (j=0;j<response.routes[0].legs[i].steps.length;j++) {
                                 var renderedHtml = $sce.trustAsHtml(response.routes[0].legs[i].steps[j].instructions);
-                                $scope.gpsInfo.push(renderedHtml);
+                                $scope.routeSteps.push(renderedHtml);
                             }
                         }
                         console.log(response.routes[0].legs);
@@ -316,14 +320,24 @@ angular.module('pirineoPOIApp')
             // Makes a route with the current drag&drop POIs
             $scope.makeRoute = function () {
                 console.log("creando ruta con " +$scope.poisInRoute.length + " pois");
-                $scope.paintRoute($scope.poisInRoute,'DRIVING');
+                $scope.paintRoute($scope.poisInRoute,$scope.travelMode);
                 $scope.editingRoute = false;
+                var routeTemp = {
+                    userEmail: auth.getEmail(),
+                    travelMode: $scope.travelMode,
+                    routeInfo: $scope.gpsInfo,
+                    routePOIs: $scope.poisInRoute
+                };
+                routesService.saveRoute(routeTemp, function (idRoute) {
+                    $scope.currentIdRoute = idRoute;
+                    showSuccess('Ruta creada correctamente');
+                }, showError);
             };
             $scope.routeByID = function () {
                 $scope.poisByID = [];
               //TODO función para crear una ruta a partir del input [routeID]
                 //Call paintRoute with the desired pois
-                $scope.paintRoute($scope.poisByID,'DRIVING');
+                $scope.paintRoute($scope.poisByID,$scope.travelMode);
             };
             $scope.sendRoute = function () {
                 //TODO función para envíar por correo una ruta a partir del input [sendRouteEmail]
