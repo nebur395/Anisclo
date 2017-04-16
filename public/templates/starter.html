@@ -60,6 +60,16 @@
 
       <!-- ROUTE LIST -->
       <div ng-hide="!editingRoute">
+        <div class="text-center row" style="margin-bottom: 5%">
+          <i class="fa fa-car fa-2x col-xs-3" ng-click="travelMode='DRIVING'"
+             ng-class="{'travelButton': travelMode=='DRIVING'}" style="cursor:pointer"></i>
+          <i class="fa fa-bus fa-2x col-xs-3" ng-click="travelMode='TRANSIT'"
+             ng-class="{'travelButton': travelMode=='TRANSIT'}" style="cursor:pointer"></i>
+          <i class="fa fa-male fa-2x col-xs-3" ng-click="travelMode='WALKING'"
+             ng-class="{'travelButton': travelMode=='WALKING'}" style="cursor:pointer"></i>
+          <i class="fa fa-bicycle fa-2x col-xs-3" ng-click="travelMode='BICYCLING'"
+             ng-class="{'travelButton': travelMode=='BICYCLING'}" style="cursor:pointer"></i>
+        </div>
         <div id="dropPoisSection">
           <ul dnd-list="poisInRoute" class="list-group">
             <li class="list-group-item" ng-repeat="poi in poisInRoute" style="cursor:move"

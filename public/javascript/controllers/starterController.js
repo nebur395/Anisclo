@@ -328,8 +328,8 @@ angular.module('pirineoPOIApp')
             $scope.makeRoute = function () {
                 console.log("creando ruta con " +$scope.poisInRoute.length + " pois");
                 if ($scope.poisInRoute.length > 0) {
-                    $scope.paintRoute($scope.poisInRoute,$scope.travelMode);
                     $scope.paintRoute($scope.poisInRoute,$scope.travelMode, function () {
+                        $scope.editingRoute = false;
                         var routeTemp = {
                             userEmail: auth.getEmail(),
                             travelMode: $scope.travelMode,
@@ -341,7 +341,6 @@ angular.module('pirineoPOIApp')
                             showSuccess('Ruta creada correctamente');
                         }, showError);
                     });
-                    $scope.editingRoute = false;
                 } else {
                     showError('No se han incluido POIs a la ruta que se intenta crear.');
                 }
