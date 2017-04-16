@@ -71,12 +71,6 @@ angular.module('pirineoPOIApp')
             $scope.valorarPOI = function(){
                 //$scope.valorar = poiService.getRate($scope.poiModal);
                 $scope.valorar;
-                console.log("valorando poi con un "+$scope.valorar);
-                poiService.ratePoi($scope.poiModal,$scope.valorar,function(message){
-                    showSuccess(message);
-                },function (message) {
-                    showError(message);
-                });
             };
 
             $scope.newRate = function(event){
