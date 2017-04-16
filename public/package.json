@@ -21,6 +21,7 @@
     "angular-drag-and-drop-lists": "^2.1.0",
     "angular-google-maps": "^2.4.1",
     "angular-recaptcha": "^4.0.4",
+    "angular-sanitize": "^1.6.4",
     "angular-simple-logger": "^0.1.7",
     "angular-ui-notification": "^0.3.6",
     "lodash": "^4.17.4"
