@@ -200,7 +200,11 @@
               <!-- image poi -->
               <div style="max-width: 200px;margin:auto">
                 <!-- TODO DARÍO: Tienes que sustituir el <p></p> por el botón de subir imagen que vayas a hacer. El ng-hide lo tienes que mantener-->
-                <p ng-hide="!((poiModal.image=='') && (poiModal._id == ''))">sube imagen </p>
+                <input
+                  type="file" onchange="angular.element(this).scope().newImage(event)"
+                  accept="image/*" ng-hide="!((poiModal.image=='') && (poiModal._id == ''))">
+                  Subir imagen
+                </input>
                 <img ng-hide="poiModal.image==''" class="img-responsive img-thumbnail" data-ng-src="data:image/png;base64,{{poiModal.image}}"/>
               </div>
 
