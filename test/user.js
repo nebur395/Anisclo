@@ -428,62 +428,6 @@ describe('User', function(){
         });
     });
 
-
-    describe("#getUser()", function(){
-
-        var getUserErrorMessage = "El usuario no existe";
-
-        it('should return the profile of the user making a GET request to /:email', function(done){
-
-            chai.request(server)
-                .get('/users/'+email)
-                .end(function(err, result){
-
-                    result.should.have.status(200);
-                    result.body.should.be.a('object');
-                    result.body.should.have.property('email');
-                    result.body.email.should.equal(email);
-                    result.body.should.have.property('name');
-                    result.body.name.should.equal(name);
-                    result.body.should.have.property('lastname');
-                    result.body.lastname.should.equal(lastname);
-                    result.body.should.have.property('password');
-                    result.body.password.should.equal(hashPass);
-                    result.body.should.have.property('firstLogin');
-                    result.body.firstLogin.should.equal(true);
-                    result.body.should.have.property('favs');
-                    result.body.favs.should.be.an.instanceOf(Array);
-                    result.body.favs.should.have.lengthOf(0);
-                    result.body.should.have.property('admin');
-                    result.body.admin.should.equal(false);
-
-                    done();
-
-                });
-
-        });
-
-        it('should return an error message making a GET request to /users/:email since the user doesn\'t exist', function(done){
-
-            chai.request(server)
-                .get('/users/falseEmail')
-                .end(function(err, result){
-
-                    result.should.have.status(404);
-                    result.body.should.be.a('object');
-                    result.body.should.have.property('success');
-                    result.body.success.should.equal(false);
-                    result.body.should.have.property('message');
-                    result.body.message.should.equal(getUserErrorMessage);
-
-                    done();
-
-                });
-        });
-    });
-
-
-
     describe("#changePass()", function(){
 
         var updateSuccessMessage = "Usuario actualizado correctamente";
