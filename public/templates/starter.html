@@ -137,14 +137,17 @@
             <div class="row">
               <!-- pois assessment -->
               <div class="col-xs-6">
-                <p ng-hide="poiModal._id==0">
-                  <i class="fa fa-star-o fa-lg" ng-click="favPoi(poiModal._id)"
+                <div ng-hide="poiModal._id==''">
+                  <i class="fa fa-star-o fa-lg col-xs-2" ng-click="favPoi(poiModal._id)"
                      ng-hide="isFav(poiModal._id)" style="cursor:pointer"></i>
-                  <i class="fa fa-star fa-lg" ng-click="favPoi(poiModal._id)"
+                  <i class="fa fa-star fa-lg col-xs-2" ng-click="favPoi(poiModal._id)"
                      ng-hide="!isFav(poiModal._id)" style="color:#ffeb3b;cursor:pointer"></i>
-                  <form name="valorarForm" ng-hide="poiModal._id == ''">
-                    <label for="valorarPOI"> Valorar POI: </label>
-                    <select id="valorarPOI" name="Valorar POI" ng-model="valorar" onchange="angular.element(this).scope().newRate(event)">
+                  <form role="form" name="valorarForm" class="form-horizontal col-xs-10">
+                    <label for="valorarPOI" class="control-label col-xs-8"
+                           style="padding-top: 0"> Valorar POI: </label>
+                    <select id="valorarPOI" name="Valorar POI" ng-model="valorar"
+                            class="form-control col-xs-4" style="max-width: 60px;margin-top: -7px"
+                            onchange="angular.element(this).scope().newRate(event)">
                       <option value=""></option>
                       <option value="0">0</option>
                       <option value="1">1</option>
@@ -152,9 +155,9 @@
                       <option value="3">3</option>
                       <option value="4">4</option>
                       <option value="5">5</option>
-                    </select><br>
+                    </select>
                   </form>
-                </p>
+                </div>
               </div>
 
               <!-- owner poi -->
@@ -233,16 +236,13 @@
               </div>
               <!-- image poi -->
               <div style="max-width: 200px;margin:auto">
-                <input
-                  type="file" onchange="angular.element(this).scope().newImage(event)"
-                  accept="image/*" ng-hide="!((poiModal.image=='') && (poiModal._id == ''))">
-                  Subir imagen
-                </input>
+                <input type="file" onchange="angular.element(this).scope().newImage(event)"
+                  accept="image/*" ng-hide="!((poiModal.image=='') && (poiModal._id == ''))" />
                 <img ng-hide="poiModal.image==''" class="img-responsive img-thumbnail" data-ng-src="data:image/png;base64,{{poiModal.image}}"/>
               </div>
 
-              <p style="font-size: 75%;text-align: right">* Campos obligatorios.</p>
-              <div style="text-align: right">
+              <p style="font-size: 75%;text-align: center">* Campos obligatorios.</p>
+              <div class="text-center">
                 <button class="btn btn-default customButton"
                         ng-click="modalButton=0;closePOIModal()">Cancelar</button>
                 <button class="btn btn-danger customButton" ng-click="modalButton=1">Borrar</button>
