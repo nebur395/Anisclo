@@ -461,7 +461,7 @@ angular.module('pirineoPOIApp')
             // Get the info of an [routeId] route
             findRoute: function (routeId, callbackSuccess, callbackError) {
                 $http({
-                    method: 'POST',
+                    method: 'GET',
                     url: 'routes/' + routeId + '/',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8'

@@ -335,7 +335,7 @@ module.exports = function (app) {
      *       200:
      *         description: Datos de la ruta solicitada.
      *         schema:
-     *           $ref: '#/definitions/Route'
+     *           $ref: '#/definitions/POI'
      *       404:
      *         description: Mensaje de feecback para el usuario.
      *         schema:

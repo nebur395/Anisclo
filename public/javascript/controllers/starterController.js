@@ -273,10 +273,10 @@ angular.module('pirineoPOIApp')
              */
             $scope.paintRoute = function(poisReq, travelModeReq, callback){
                 var waypointsReq = [];
-                for(var i=1;i<($scope.poisInRoute.length -1);i++) {
+                for(var i=1;i<(poisReq.length -1);i++) {
                     waypointsReq.push(
                         {
-                            location: new google.maps.LatLng($scope.poisInRoute[i].lat, $scope.poisInRoute[i].lng)
+                            location: new google.maps.LatLng(poisReq[i].lat, poisReq[i].lng)
                         }
                     );
                 }
