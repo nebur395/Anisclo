@@ -271,7 +271,7 @@ angular.module('pirineoPOIApp')
              * @param poisReq: Array[POI]
              * @param travelModeReq: 'DRIVING' OR 'WALKING' OR 'BICYCLING' OR 'TRANSIT'
              */
-            $scope.paintRoute = function(poisReq, travelModeReq){
+            $scope.paintRoute = function(poisReq, travelModeReq, callback){
                 var waypointsReq = [];
                 for(var i=1;i<($scope.poisInRoute.length -1);i++) {
                     waypointsReq.push(
@@ -302,6 +302,9 @@ angular.module('pirineoPOIApp')
                         console.log(response.routes[0].legs);
                         $scope.directionsDisplay.setDirections(response);
                         $scope.directionsDisplay.setMap($scope.map.control.getGMap());
+                        if (callback) {
+                            callback();
+                        }
                     } else {
                         showError('Google route unsuccessful!');
                     }
@@ -315,23 +318,29 @@ angular.module('pirineoPOIApp')
                 $scope.directionsDisplay.setMap(null);
                 $scope.poisInRoute = [];
                 $scope.editingRoute = true;
+                $scope.gpsInfo = [];
+                $scope.routeSteps = [];
+                $scope.currentIdRoute = "";
+                $scope.sendRouteEmail = "";
             };
 
             // Makes a route with the current drag&drop POIs
             $scope.makeRoute = function () {
                 console.log("creando ruta con " +$scope.poisInRoute.length + " pois");
                 $scope.paintRoute($scope.poisInRoute,$scope.travelMode);
+                $scope.paintRoute($scope.poisInRoute,$scope.travelMode, function () {
+                    var routeTemp = {
+                        userEmail: auth.getEmail(),
+                        travelMode: $scope.travelMode,
+                        routeInfo: $scope.gpsInfo,
+                        routePOIs: $scope.poisInRoute
+                    };
+                    routesService.saveRoute(routeTemp, function (idRoute) {
+                        $scope.currentIdRoute = idRoute;
+                        showSuccess('Ruta creada correctamente');
+                    }, showError);
+                });
                 $scope.editingRoute = false;
-                var routeTemp = {
-                    userEmail: auth.getEmail(),
-                    travelMode: $scope.travelMode,
-                    routeInfo: $scope.gpsInfo,
-                    routePOIs: $scope.poisInRoute
-                };
-                routesService.saveRoute(routeTemp, function (idRoute) {
-                    $scope.currentIdRoute = idRoute;
-                    showSuccess('Ruta creada correctamente');
-                }, showError);
             };
             $scope.routeByID = function () {
                 $scope.poisByID = [];
@@ -340,6 +349,11 @@ angular.module('pirineoPOIApp')
                 $scope.paintRoute($scope.poisByID,$scope.travelMode);
             };
             $scope.sendRoute = function () {
+                var emailsTemp = {
+                    ownerEmail: auth.getEmail(),
+                    receiverEmail: $scope.sendRouteEmail
+                };
+                routesService.sendRouteByEmail($scope.currentIdRoute, emailsTemp, showSuccess, showError);
                 //TODO función para envíar por correo una ruta a partir del input [sendRouteEmail]
             };
 

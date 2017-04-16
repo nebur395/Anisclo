@@ -440,7 +440,23 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
-            }
+            },
+
+            // Send a route by email
+            sendRouteByEmail: function (routeId, emails, callbackSuccess, callbackError) {
+                $http({
+                    method: 'POST',
+                    url: 'routes/' + routeId + '/sendRoute/',
+                    data: JSON.stringify(emails),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
         };
     });
 
