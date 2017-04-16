@@ -4,6 +4,7 @@ var semaphore = require("semaphore")(1);
 var mongoose = require("mongoose");
 var fs = require("fs");
 var async = require("async");
+var Readable = require('stream').Readable;
 grid.mongo = mongoose.mongo;
 
 
@@ -213,10 +214,13 @@ module.exports = function (app) {
                     // Checks if there's an image attached to the POI.
                     if(req.body.poi.image){
                         // TODO: Extraer nombre y path de la request
-                        var name = "imagen";
-                        var path = "./image.jpg";
+                        var name = req.body.poi.name + "_image";
+
+                        var imageStream = new Readable();
+                        imageStream.push(req.body.poi.image);
+                        imageStream.push(null);
                         // Stores the image in the system and adds it to the POI
-                        storeImage(name, path, function(imageId){
+                        storeImage(name, imageStream, function(imageId){
                             newPoi.image = imageId;
                             newPoi.save(function(err, result){
                                 if(err){
@@ -885,11 +889,11 @@ module.exports = function (app) {
     /**
      *  Stores a new image in the system.
      */
-    function storeImage(name, path, callback){
+    function storeImage(name, readStream, callback){
         var writestream = gfs.createWriteStream({
             filename: name
         });
-        fs.createReadStream(path).pipe(writestream);
+        readStream.pipe(writestream);
         writestream.on('close', function(file){
             return callback(file._id)
         });
@@ -915,7 +919,7 @@ module.exports = function (app) {
         });
 
         readstream.on("end", function(){
-            return callback(buffer.toString('base64'));
+            return callback(buffer.toString());
         });
     }
 
