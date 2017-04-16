@@ -221,15 +221,37 @@ module.exports = function (app) {
      *         description: Datos de la ruta solicitada.
      *         schema:
      *           $ref: '#/definitions/Route'
+     *       404:
+     *         description: Mensaje de feecback para el usuario.
+     *         schema:
+     *              $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feecback para el usuario.
      *         schema:
      *              $ref: '#/definitions/FeedbackMessage'
      */
-    router.get("/id", function(req, res){
+    router.get("/:id", function(req, res){
+        Route.findById(req.params.id, function(err, route){
 
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
 
+            if(route){
 
+                res.status(200).send(route.createResponse());
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "La ruta no existe"
+                });
+            }
+        });
     });
 
     return router;

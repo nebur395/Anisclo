@@ -16,7 +16,7 @@ var mongoose = require("mongoose");
  *       travelMode:
  *         type: string
  *         required: true
- *         description: Modo de viaje para la ruta
+ *         description: Modo de viaje para la ruta.
  */
 
 // Create the Schema
