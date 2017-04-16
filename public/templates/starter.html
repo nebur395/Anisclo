@@ -132,7 +132,7 @@
                      ng-hide="isFav(poiModal._id)" style="cursor:pointer"></i>
                   <i class="fa fa-star fa-lg" ng-click="favPoi(poiModal._id)"
                      ng-hide="!isFav(poiModal._id)" style="color:#ffeb3b;cursor:pointer"></i>
-                  <form name="valorarForm">
+                  <form name="valorarForm" ng-hide="poiModal._id == ''">
                     <label for="valorarPOI"> Valorar POI: </label>
                     <select id="valorarPOI" name="Valorar POI" ng-model="valorar" onchange="angular.element(this).scope().newRate(event)">
                       <option value=""></option>
