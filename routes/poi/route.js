@@ -75,13 +75,17 @@ module.exports = function (app) {
      *
      *     responses:
      *       200:
-     *         description: Mensaje de feecback para el usuario.
+     *         description: ID de la ruta creada.
      *         type: object
      *         properties:
      *           routeID:
      *             type: string
      *             description: ID de la ruta guardada en el sistema para poder reproducirla
      *               posteriormente.
+     *       404:
+     *         description: Mensaje de feecback para el usuario.
+     *         schema:
+     *              $ref: '#/definitions/FeedbackMessage'
      *       500:
      *         description: Mensaje de feecback para el usuario.
      *         schema:
@@ -148,7 +152,7 @@ module.exports = function (app) {
 
                 }, function(err){
                     if (err){
-                        res.status(400).send({
+                        res.status(404).send({
                             "success": false,
                             "message": err
                         });
@@ -189,6 +193,43 @@ module.exports = function (app) {
                 });
             }
         });
+    });
+
+
+    /**
+     * @swagger
+     * /routes/:
+     *   get:
+     *     tags:
+     *       - Routes
+     *     summary: Listar POIs y modo de viaje de una ruta
+     *     description: Lista todos los POIs que conforman una ruta, así
+     *      como el modo de viaje de la misma.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: Id de la ruta.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Datos de la ruta solicitada.
+     *         schema:
+     *           $ref: '#/definitions/Route'
+     *       500:
+     *         description: Mensaje de feecback para el usuario.
+     *         schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/id", function(req, res){
+
+
+
     });
 
     return router;

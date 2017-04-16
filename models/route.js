@@ -3,8 +3,8 @@ var mongoose = require("mongoose");
 /**
  * @swagger
  * definition:
- *   POI:
- *     description: Schema del modelo de POI que representa un POI público del sistema.
+ *   Route:
+ *     description: Schema del modelo de Route que representa un una ruta pública del sistema.
  *     type: object
  *     properties:
  *       routePOIs:
