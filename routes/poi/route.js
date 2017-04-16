@@ -1,5 +1,7 @@
 var express = require('express');
 var async = require("async");
+var ip = require('ip');
+var nodemailer = require('nodemailer');
 
 module.exports = function (app) {
 
@@ -93,8 +95,8 @@ module.exports = function (app) {
      */
     router.post("/", function(req, res){
 
-        // Checks all body fields // || !req.body.routeInfo
-        if(!req.body.userEmail || !req.body.travelMode || !req.body.routePOIs){
+        // Checks all body fields
+        if(!req.body.userEmail || !req.body.travelMode || !req.body.routePOIs || !req.body.routeInfo){
             res.status(404).send({
                 "success": false,
                 "message": "Usuario, modo de viaje, POIs o información de la ruta no válidos"
@@ -195,10 +197,123 @@ module.exports = function (app) {
         });
     });
 
+    /**
+     * @swagger
+     * /routes/{id}/sendRoute/:
+     *   post:
+     *     tags:
+     *       - Routes
+     *     summary: Enviar email con un ruta
+     *     description: Envía un email a la dirección indicada con
+     *      el ID de una ruta para poder introducirla y mostrarla
+     *      en la app.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         description: Id de la ruta.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: ownerEmail
+     *         description: Email del usuario que envía la ruta (y que la ha creado).
+     *         in: body
+     *         required: true
+     *         type: string
+     *       - name: receiverEmail
+     *         description: Email del usuario al que se le envía la ruta.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feecback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feecback para el usuario.
+     *         schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feecback para el usuario.
+     *         schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     */
+    router.post("/:id/sendRoute", function(req, res){
+
+        // Checks all body fields
+        if(!req.body.ownerEmail || !req.body.receiverEmail){
+            res.status(404).send({
+                "success": false,
+                "message": "Uno o los dos emails no son válidos"
+            });
+            return;
+        }
+
+        User.findOne({"email":req.body.ownerEmail}, function(err, owner){
+
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            if(owner){
+
+                Route.findOne({"_id":req.params.id, "owner":req.body.ownerEmail}, function(err, route){
+
+                    if (err){
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    if(route){
+                        var ipAddr = ip.address();
+                        var urlLogin = "http://"+ipAddr+":8080";
+                        var urlSignUp = "http://"+ipAddr+":8080/#/signUp";
+                        var mailOptions = {
+                            from: 'No-Reply <verif.anisclo@gmail.com>',
+                            to: req.body.receiverEmail,
+                            subject: '[Pirineo\'s POI] Someone has sent you a route!',
+                            html: 'Hello there!</p>' +
+                            '<p>The user '+req.body.ownerEmail+' has sent you a route!</p>' +
+                            '<p>Check it out <a href='+urlLogin+' target="_blank">here</a> using the following code to create the route!</p>' +
+                            '<p>Route\'s code: '+req.params.id+'</p>' +
+                            '<p>Still don\'t have an account on Pirineo\'s POI? Enter <a href='+urlSignUp+' target="_blank">here</a> to create one!</p>' +
+                            '<p>The Pirineo\'s POI team.</p>'
+                        };
+                        sendEmail(mailOptions, res);
+                    }
+                    else{
+                        res.status(404).send({
+                            "success": false,
+                            "message": "La ruta no existe"
+                        });
+                    }
+
+                });
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario propietario de la ruta no existe"
+                });
+            }
+        });
+    });
+
 
     /**
      * @swagger
-     * /routes/:
+     * /routes/{id}/:
      *   get:
      *     tags:
      *       - Routes
@@ -253,6 +368,33 @@ module.exports = function (app) {
             }
         });
     });
+
+    /**
+     * Sets up the SMTP server and sends an email
+     * with [mailOptions].
+     */
+    function sendEmail(mailOptions, res){
+
+        var smtpTransport = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+                user: "verif.anisclo@gmail.com",
+                pass: "AniscloPOI"
+            }
+        });
+        smtpTransport.sendMail(mailOptions,function(error,response){
+            if(error){
+                console.log(error);
+            }
+            else{
+                res.status(200).send({
+                    "success": true,
+                    "message": "Ruta enviada correctamente"
+                });
+            }
+        });
+
+    }
 
     return router;
 };
