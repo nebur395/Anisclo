@@ -357,8 +357,43 @@ module.exports = function (app) {
             }
 
             if(route){
+                var pois = [];
+                async.each(route.routePOIs, function(poiId, callback){
 
-                res.status(200).send(route.createResponse());
+                    POI.findById(poiId, function(err, poi){
+
+                        if (err){
+                            res.status(404).send({
+                                "success": false,
+                                "message": "Error recuperando datos"
+                            });
+                            return;
+                        }
+                        if(poi){
+                            pois.push(poi.createResponse(""));
+                            callback();
+                        }
+                        else{
+                            var error = "El POI "+poiId+" no existe."
+                            callback(error);
+                        }
+
+                    });
+
+                }, function(err){
+
+                    if (err){
+                        res.status(404).send({
+                            "success": false,
+                            "message": err
+                        });
+                        return;
+                    }
+                    res.status(200).send({
+                       "routePOIs": pois,
+                        "travelMode": route.travelMode
+                    });
+                });
             }
             else{
                 res.status(404).send({
