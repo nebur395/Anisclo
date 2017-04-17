@@ -16,7 +16,9 @@ var mongoose = require("mongoose");
  *       travelMode:
  *         type: string
  *         required: true
- *         description: Modo de viaje para la ruta.
+ *         description: |
+ *           Modo de transporte de la ruta. Valor discreto entre: 'DRIVING' OR 'WALKING' OR
+ *           'BICYCLING' OR 'TRANSIT'
  */
 
 // Create the Schema

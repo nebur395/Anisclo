@@ -334,8 +334,17 @@ module.exports = function (app) {
      *     responses:
      *       200:
      *         description: Datos de la ruta solicitada.
-     *         schema:
-     *           $ref: '#/definitions/Route'
+     *         type: object
+     *         properties:
+     *           travelMode:
+     *             type: string
+     *             description:  |
+     *               Modo de transporte de la ruta. Valor discreto entre: 'DRIVING' OR 'WALKING' OR
+     *               'BICYCLING' OR 'TRANSIT'
+     *           routePOIs:
+     *             type: array
+     *             items:
+     *               $ref: '#/definitions/POI'
      *       404:
      *         description: Mensaje de feecback para el usuario.
      *         schema:
@@ -358,7 +367,7 @@ module.exports = function (app) {
 
             if(route){
                 var pois = [];
-                async.each(route.routePOIs, function(poiId, callback){
+                async.eachSeries(route.routePOIs, function(poiId, callback){
 
                     POI.findById(poiId, function(err, poi){
 

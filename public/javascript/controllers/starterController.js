@@ -72,11 +72,7 @@ angular.module('pirineoPOIApp')
             };
 
             $scope.newRate = function(event){
-                poiService.ratePoi($scope.poiModal,event.target.value,function(message){
-                    showSuccess(message);
-                },function (message) {
-                    showError(message);
-                });
+                poiService.ratePoi($scope.poiModal,event.target.value, showSuccess, showError);
             };
             // MODAL POI SECTION
 
@@ -175,7 +171,6 @@ angular.module('pirineoPOIApp')
                         showSuccess(message);
                     }, showError);
             };
-
 
             // delete poi
             $scope.deletePOI = function () {
@@ -314,10 +309,10 @@ angular.module('pirineoPOIApp')
              */
             $scope.paintRoute = function(poisReq, travelModeReq, callback){
                 var waypointsReq = [];
-                for(var i=1;i<($scope.poisInRoute.length -1);i++) {
+                for(var i=1;i<(poisReq.length -1);i++) {
                     waypointsReq.push(
                         {
-                            location: new google.maps.LatLng($scope.poisInRoute[i].lat, $scope.poisInRoute[i].lng)
+                            location: new google.maps.LatLng(poisReq[i].lat, poisReq[i].lng)
                         }
                     );
                 }
@@ -365,8 +360,8 @@ angular.module('pirineoPOIApp')
             // Makes a route with the current drag&drop POIs
             $scope.makeRoute = function () {
                 if ($scope.poisInRoute.length > 0) {
-                    $scope.paintRoute($scope.poisInRoute,$scope.travelMode);
                     $scope.paintRoute($scope.poisInRoute,$scope.travelMode, function () {
+                        $scope.editingRoute = false;
                         var routeTemp = {
                             userEmail: auth.getEmail(),
                             travelMode: $scope.travelMode,
@@ -378,7 +373,6 @@ angular.module('pirineoPOIApp')
                             showSuccess('Ruta creada correctamente');
                         }, showError);
                     });
-                    $scope.editingRoute = false;
                 } else {
                     showError('No se han incluido POIs a la ruta que se intenta crear.');
                 }

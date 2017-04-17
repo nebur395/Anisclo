@@ -24,7 +24,7 @@
 }
 
 #starterStyle #poiList {
-  width: 40%;
+  width: 30%;
   height: 70%;
   position: absolute;
   background-color: rgb(255,255,255);
@@ -37,7 +37,7 @@
 }
 
 #starterStyle #routesSection {
-  width: 40%;
+  width: 30%;
   height: 70%;
   position: absolute;
   background-color: rgb(255,255,255);
@@ -87,6 +87,6 @@
   color: #23527c;
 }
 
-#starterStyle .popover-content {
-
+#starterStyle .travelButton {
+  color: #5cb85c;
 }
