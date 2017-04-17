@@ -1,0 +1,31 @@
+<div class="accordionCard">
+  <button class="accordion" ng-click="showCard = !showCard" ng-class="{active: showCard}">
+    {{poi.name}}
+  </button>
+  <div class="panel" ng-class="{show: showCard}">
+    <div class="col-lg-4" align="center" ng-hide="poi.image == ''">
+      <img class="img-responsive img-thumbnail text-center" style="max-width: 200pt;max-height: 200pt" data-ng-src="data:image/png;base64,{{poi.image}}">
+      <br>
+    </div>
+    <div class="panel-body">
+      <label for="desc" class="control-label col-xs-2"><strong>Descripción:</strong></label>
+      <p id="desc">{{poi.description}}</p>
+      <label for="tags" class="control-label col-xs-2"><strong>Tags:</strong></label>
+      <p id="tags">{{poi.tags}}</p>
+      <label for="loc" class="control-label col-xs-2"><strong>Ubicación:</strong></label>
+      <div id="loc" class="panel-group">
+        <label for="lat" class="control-label col-xs-1"><strong>Lat:</strong></label>
+        <div id="lat" class="col-xs-3">{{poi.lat}}</div>
+        <label for="lng" class="control-label col-xs-1"><strong>Lng:</strong></label>
+        <div id="lng" class="col-xs-3">{{poi.lng}}</div>
+      </div>
+      <br>
+      <div ng-hide="poi.url == ''">
+        <label for="url" class="control-label col-xs-2"><strong>Url:</strong></label>
+        <a id="url" target="_blank" href="{{poi.url}}">{{poi.url}} </a>
+      </div>
+
+    </div>
+
+  </div>
+</div>

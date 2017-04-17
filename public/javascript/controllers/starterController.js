@@ -7,7 +7,6 @@ angular.module('pirineoPOIApp')
                   Notification, $sce, routesService) {
 
             $scope.poiList = [];
-            $scope.markersBackup = [];
             $scope.firstLoad;
 
             // FEEDBACK MESSAGES
@@ -33,7 +32,6 @@ angular.module('pirineoPOIApp')
                 for(var i=0;i<$scope.map.markers.length;i++){
                     if($scope.map.markers[i].coords.latitude == lat
                         && $scope.map.markers[i].coords.longitude == lng){
-                        console.log("encontrado marker: "+$scope.map.markers[i].getPosition());
                         return $scope.map.markers[i];
                     }
                 }
@@ -74,7 +72,6 @@ angular.module('pirineoPOIApp')
             };
 
             $scope.newRate = function(event){
-                console.log("valorando poi con un "+event.target.value);
                 poiService.ratePoi($scope.poiModal,event.target.value, showSuccess, showError);
             };
             // MODAL POI SECTION
@@ -134,7 +131,6 @@ angular.module('pirineoPOIApp')
                             marker.coords = {};
                             marker.coords.latitude = poi.lat;
                             marker.coords.longitude = poi.lng;
-                            console.log("Saving marker: " + marker.coords.latitude + " ; " + marker.coords.longitude);
                             $scope.map.markers.push(marker);
                             $scope.closePOIModal();
                             showSuccess(message);
@@ -143,13 +139,11 @@ angular.module('pirineoPOIApp')
                     poiService.modifyPoi($scope.poiModal,
                         function (poi, message) {
                             $scope.closePOIModal();
-                            console.log("modifying poi: "+poi._id);
                             var index = $scope.poiList.map(function(tmp) {return tmp._id;}).indexOf(poi._id);
                             for(var j=0;j<$scope.map.markers.length;j++){
                                 //if found marker, change location
                                  if($scope.map.markers[j].coords.latitude == $scope.poiList[index].lat
                                      && $scope.map.markers[j].coords.longitude == $scope.poiList[index].lng){
-                                 console.log("changing marker location for poi");
                                      var marker = {
                                      coords: {
                                      latitude: poi.lat,
@@ -180,6 +174,9 @@ angular.module('pirineoPOIApp')
 
             // delete poi
             $scope.deletePOI = function () {
+                if(auth.getFavs().indexOf($scope.poiModal._id) != -1){
+                    $scope.favPoi($scope.poiModal._id);
+                }
                 poiService.deletePoi($scope.poiModal,
                     function (poi, message) {
                         $scope.closePOIModal();
@@ -187,7 +184,6 @@ angular.module('pirineoPOIApp')
                             //if found marker
                             if($scope.map.markers[j].coords.latitude == poi.lat
                                 && $scope.map.markers[j].coords.longitude == poi.lng){
-                                console.log("borrando poi: "+$scope.map.markers[j].coords.latitude + "," + $scope.map.markers[j].coords.longitude);
                                 var index = $scope.map.markers.indexOf($scope.map.markers[j]);
                                 $scope.map.markers.splice(index,1);
                             }
@@ -225,30 +221,32 @@ angular.module('pirineoPOIApp')
                 return auth.getEmail() == email;
             };
 
+            $scope.poisToMarker = function(pois){
+                var markers = [];
+                for(var i=0;i<pois.length;i++){
+                    var marker = {
+                        coords: {
+                            latitude: pois[i].lat,
+                            longitude: pois[i].lng
+                        }
+                    };
+                    markers.push(marker);
+                }
+                return markers;
+            };
+
             $scope.searchPOIs = function () {
                 if ($scope.searchedTags.trim() == "" ) {
                     poiService.getListOfPOIs(function (dataPOIs) {
-                        //in case of blank search, restore all markers, in case there were any before the search
-                        if($scope.markersBackup.length > 0){
-                            $scope.map.markers = $scope.markersBackup;
-                        }
-                        $scope.poiList = dataPOIs;
+                        //in case of blank search, restore all markers
+                            $scope.map.markers = $scope.poisToMarker(dataPOIs);
+                            $scope.poiList = dataPOIs;
                     }, showError);
                 } else {
                     poiService.search($scope.searchedTags, function (pois) {
                         $scope.poiList = pois;
-                        $scope.markersBackup = $scope.map.markers; //save actual markers
-                        var markersSearch = [];
-                        for(var i=0;i<pois.length;i++){
-                            var marker = {
-                                coords: {
-                                    latitude: pois[i].lat,
-                                    longitude: pois[i].lng
-                                }
-                            };
-                            markersSearch.push(marker);
-                        }
-                        $scope.map.markers = markersSearch;
+                        $scope.map.markers = $scope.poisToMarker(pois);
+
                     }, showError);
                 }
             };
@@ -328,8 +326,6 @@ angular.module('pirineoPOIApp')
                 };
                 $scope.directionsService.route(request,function(response,status){
                     if (status === google.maps.DirectionsStatus.OK) {
-                        console.log("pintando la ruta");
-                        console.log("directions:"+response.routes[0].legs[0].steps.length);
                         $scope.gpsInfo = response.routes[0].legs;
                         for (i=0;i<response.routes[0].legs.length;i++) {
                             for (j=0;j<response.routes[0].legs[i].steps.length;j++) {
@@ -337,7 +333,6 @@ angular.module('pirineoPOIApp')
                                 $scope.routeSteps.push(renderedHtml);
                             }
                         }
-                        console.log(response.routes[0].legs);
                         $scope.directionsDisplay.setDirections(response);
                         $scope.directionsDisplay.setMap($scope.map.control.getGMap());
                         if (callback) {
@@ -364,7 +359,6 @@ angular.module('pirineoPOIApp')
 
             // Makes a route with the current drag&drop POIs
             $scope.makeRoute = function () {
-                console.log("creando ruta con " +$scope.poisInRoute.length + " pois");
                 if ($scope.poisInRoute.length > 0) {
                     $scope.paintRoute($scope.poisInRoute,$scope.travelMode, function () {
                         $scope.editingRoute = false;
@@ -411,11 +405,9 @@ angular.module('pirineoPOIApp')
                     click: function(marker, eventName, model, eventArgs){
                         var e = marker.getPosition();
                         var poi;
-                        console.log("esto es el poi:"+e);
                         for(var i=0;i<$scope.poiList.length;i++){
                             if($scope.poiList[i].lat == e.lat() && $scope.poiList[i].lng == e.lng()){
                                 poi = $scope.poiList[i];
-                                console.log("encontrado poi: "+poi.lat+" ; "+poi.lng);
                                 break;
                             }
                         }
@@ -445,7 +437,6 @@ angular.module('pirineoPOIApp')
                     tilesloaded: function(){
                         if($scope.firstLoad==true){
                             $scope.firstLoad= false;
-                            console.log("pintando TODOS los markers");
                             $scope.paintMarkers();
                         }
                     }
@@ -460,7 +451,6 @@ angular.module('pirineoPOIApp')
                 for(var i=0; i<$scope.poiList.length; i++){
                     marker.coords.latitude = $scope.poiList[i].lat;
                     marker.coords.longitude = $scope.poiList[i].lng;
-                    console.log("painting marker: " + marker.coords.latitude + " ; " + marker.coords.longitude);
                     $scope.map.markers.push(marker);
                     marker = {};
                     marker.coords = {};
@@ -468,10 +458,9 @@ angular.module('pirineoPOIApp')
             };
             //Execute this code when view is loaded
             $scope.$on('$viewContentLoaded', function(){
-                console.log("view loaded, waiting for gmaps");
+
                 uiGmapGoogleMapApi.then(function (maps) {
                     $scope.firstLoad = true;
-                    console.log("gmaps ready, rendering markers");
                     $scope.directionsService = new maps.DirectionsService;
                     $scope.directionsDisplay = new maps.DirectionsRenderer;
                 });

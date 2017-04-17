@@ -422,6 +422,21 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
+            },
+
+            // get a single poi
+            getPoi: function(id, callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'pois/' + id,
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.poi);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
             }
         };
     })
