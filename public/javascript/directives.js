@@ -28,12 +28,22 @@ angular.module('pirineoPOIApp')
         }
     })
 
-    // include the 'favsList.html' into the <poiCard> tag
+    // include the 'cards.html' into the <poiCard> tag
     .directive('favCards', function () {
         return {
             restrict: 'E',
             templateUrl: 'templates/components/cards.html',
             controller: 'favsListCtrl',
+            scope: true
+        }
+    })
+
+    // include the 'cardsUser.html' into the <poiCard> tag
+    .directive('followCards', function () {
+        return {
+            restrict: 'E',
+            templateUrl: 'templates/components/cardsUser.html',
+            controller: 'followListCtrl',
             scope: true
         }
     });
