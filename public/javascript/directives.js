@@ -26,5 +26,15 @@ angular.module('pirineoPOIApp')
                 $(elem).popover(options);
             }
         }
+    })
+
+    // include the 'favsList.html' into the <poiCard> tag
+    .directive('favCards', function () {
+        return {
+            restrict: 'E',
+            templateUrl: 'templates/components/cards.html',
+            controller: 'favsListCtrl',
+            scope: true
+        }
     });
 

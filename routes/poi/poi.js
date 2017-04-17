@@ -99,6 +99,8 @@ module.exports = function (app) {
 
     });
 
+
+
     /**
      * @swagger
      * /pois/:
@@ -882,6 +884,81 @@ module.exports = function (app) {
                 });
             }
 
+        });
+
+    });
+
+    /**
+     * @swagger
+     * /pois/{id}:
+     *   get:
+     *     tags:
+     *       - POIs
+     *     summary: Obtener POI
+     *     description: Devuelve el POI identificado con la id dada.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Objeto POI.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              poi:
+     *               type: object
+     *               properties:
+     *                  name:
+     *                      type: string
+     *                  description:
+     *                      type: string
+     *                  tags:
+     *                      type: string
+     *                  lat:
+     *                      type: number
+     *                      format: double
+     *                  lng:
+     *                      type: number
+     *                      format: double
+     *                  url:
+     *                      type: string
+     *                  image:
+     *                      type: string
+     *       500:
+     *          description: Mensaje de feecback para el usuario.
+     *          schema:
+     *              $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/:id", function(req, res){
+
+        // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
+        gfs = grid(mongoose.connection.db);
+        POI.findOne({"_id": req.params.id}, function(err, result){
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+            else{
+                // Checks if there's an image attached to the POI and retrieves it if it's the case.
+                if(result.image!=null){
+                    retrieveImage(result.image, function(data){
+                        res.status(200).send({
+                            "poi":result.createResponse(data)
+                        });
+                    });
+                }
+                else{
+                    res.status(200).send({
+                        "poi":result.createResponse("")
+                    });
+                }
+
+            }
         });
 
     });
