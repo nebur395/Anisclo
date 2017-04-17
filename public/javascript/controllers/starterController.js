@@ -7,7 +7,6 @@ angular.module('pirineoPOIApp')
                   Notification, $sce, routesService) {
 
             $scope.poiList = [];
-            $scope.markersBackup = [];
             $scope.firstLoad;
 
             // FEEDBACK MESSAGES
@@ -229,30 +228,33 @@ angular.module('pirineoPOIApp')
                 return auth.getEmail() == email;
             };
 
+            $scope.poisToMarker = function(pois){
+                var markers = [];
+                for(var i=0;i<pois.length;i++){
+                    var marker = {
+                        coords: {
+                            latitude: pois[i].lat,
+                            longitude: pois[i].lng
+                        }
+                    };
+                    markers.push(marker);
+                }
+                return markers;
+            };
+
             $scope.searchPOIs = function () {
                 if ($scope.searchedTags.trim() == "" ) {
                     poiService.getListOfPOIs(function (dataPOIs) {
-                        //in case of blank search, restore all markers, in case there were any before the search
-                        if($scope.markersBackup.length > 0){
-                            $scope.map.markers = $scope.markersBackup;
-                        }
-                        $scope.poiList = dataPOIs;
+                        console.log(dataPOIs);
+                        //in case of blank search, restore all markers
+                            $scope.map.markers = $scope.poisToMarker(dataPOIs);
+                            $scope.poiList = dataPOIs;
                     }, showError);
                 } else {
                     poiService.search($scope.searchedTags, function (pois) {
                         $scope.poiList = pois;
-                        $scope.markersBackup = $scope.map.markers; //save actual markers
-                        var markersSearch = [];
-                        for(var i=0;i<pois.length;i++){
-                            var marker = {
-                                coords: {
-                                    latitude: pois[i].lat,
-                                    longitude: pois[i].lng
-                                }
-                            };
-                            markersSearch.push(marker);
-                        }
-                        $scope.map.markers = markersSearch;
+                        $scope.map.markers = $scope.poisToMarker(pois);
+
                     }, showError);
                 }
             };
