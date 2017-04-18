@@ -34,8 +34,8 @@ var swaggerSpec = swaggerJSDoc(options);
 
 app.use(express.static('./public'));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.json({limit: '20mb'}));
+app.use(bodyParser.urlencoded({limit: '20mb', extended : true}));
 
 // serve swagger
 app.get('/swagger.json', function(req, res) {

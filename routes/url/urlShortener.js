@@ -36,7 +36,6 @@ module.exports = function (app){
      *          properties:
      *              urlShort:
      *                  type: string
-     *
      *       404:
      *         description: Mensaje de feedback para el usuario.
      *         schema:
