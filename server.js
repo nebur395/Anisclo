@@ -25,7 +25,7 @@ var options = {
     // import swaggerDefinitions
     swaggerDefinition: swaggerDefinition,
     // path to the API docs
-    apis: ['./routes/user/*.js', './routes/poi/*.js',
+    apis: ['./routes/user/*.js', './routes/poi/*.js', './routes/url/*.js',
         './models/user.js', './models/poi.js', './models/route.js']
 };
 
