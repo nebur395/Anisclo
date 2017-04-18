@@ -1,8 +1,12 @@
 var express = require('express');
+var bs58 = require("bs58");
+var ip = require('ip');
 
 module.exports = function (app){
 
     var router = express.Router();
+
+    var Url = app.models.Url;
 
     /**
      * @swagger
@@ -30,7 +34,7 @@ module.exports = function (app){
      *         schema:
      *          type: object
      *          properties:
-     *              url:
+     *              urlShort:
      *                  type: string
      *
      *       404:
@@ -44,6 +48,36 @@ module.exports = function (app){
      */
     router.post("/", function(req, res){
 
+        // Checks all body fields
+        if(!req.body.url){
+            res.status(404).send({
+                "success": false,
+                "message": "URL no válida"
+            });
+            return;
+        }
+
+        Url.create({
+
+            originalUrl: req.body.url
+
+        }, function(err, result){
+
+            if(err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error guardando datos"
+                });
+            }
+            else{
+                var encodedId = bs58.encode(new Buffer(result._id.toString(), 'hex'));
+                var ipAddr = ip.address();
+                var shortUrl = "http://"+ipAddr+":8080/url/"+encodedId;
+                res.status(200).send({
+                   "urlShort": shortUrl
+                });
+            }
+        });
     });
 
     /**
@@ -78,6 +112,27 @@ module.exports = function (app){
      */
     router.get("/:id", function(req, res){
 
+        var urlId = new Buffer(bs58.decode(req.params.id)).toString('hex');
+        Url.findById(urlId, function(err, url){
+
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            if(url){
+                res.redirect(url.originalUrl);
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "La URL no existe"
+                });
+            }
+        })
     });
 
     return router;
