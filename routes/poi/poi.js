@@ -5,6 +5,7 @@ var mongoose = require("mongoose");
 var fs = require("fs");
 var async = require("async");
 var Readable = require('stream').Readable;
+var bs58 = require("bs58");
 grid.mongo = mongoose.mongo;
 
 
@@ -14,6 +15,7 @@ module.exports = function (app) {
 
     var User = app.models.User;
     var POI = app.models.POI;
+    var Url = app.models.Url;
 
     /**
      * @swagger
@@ -1002,8 +1004,12 @@ module.exports = function (app) {
             }
             // If there's no other POIs that have this URL attached
             if(result==0){
-                //TODO: borrar la URL de su colección
-                return callback();
+                var lastSlash = url.lastIndexOf("/");
+                var encodedUrlId = url.substring(lastSlash+1);
+                var urlId = new Buffer(bs58.decode(encodedUrlId)).toString('hex');
+                Url.findByIdAndRemove(urlId, function(err, result){
+                    return callback();
+                });
             }
             // If any other POI have this URL attached
             else{
