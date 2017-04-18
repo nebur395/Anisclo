@@ -1,6 +1,6 @@
 var chai = require('chai');
 var chaiHttp = require('chai-http');
-var shoudl = chai.should();
+var should = chai.should();
 var server = require('../server.js');
 var User = server.models.User;
 

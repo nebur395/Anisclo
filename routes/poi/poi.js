@@ -141,8 +141,11 @@ module.exports = function (app) {
      *               format: double
      *              url:
      *               type: string
+     *               required: false
      *              image:
      *               type: string
+     *               required: false
+     *               description: base64-encoded image
      *     responses:
      *       200:
      *         description: El POI que se acaba de crear.
@@ -196,34 +199,55 @@ module.exports = function (app) {
 
             // If the user exists.
             if(user){
-                // Transforms all the tags to an array with the tags in lowercase
-                tagsToArray(req.body.poi.tags, function(lowerCaseTags){
-                    // Creates a new POI with the basic and required info.
-                    var newPoi = new POI({
+                if(req.body.poi.tags.charAt(0)==='#'){
+                    // Transforms all the tags to an array with the tags in lowercase
+                    tagsToArray(req.body.poi.tags, function(lowerCaseTags){
+                        // Creates a new POI with the basic and required info.
+                        var newPoi = new POI({
 
-                        name: req.body.poi.name,
-                        description: req.body.poi.description,
-                        tags: lowerCaseTags,
-                        lat: req.body.poi.lat,
-                        lng: req.body.poi.lng,
-                        owner: req.body.userEmail
-                    });
+                            name: req.body.poi.name,
+                            description: req.body.poi.description,
+                            tags: lowerCaseTags,
+                            lat: req.body.poi.lat,
+                            lng: req.body.poi.lng,
+                            owner: req.body.userEmail
+                        });
 
-                    if(req.body.poi.url){
-                        newPoi.url = req.body.poi.url;
-                    }
+                        if(req.body.poi.url){
+                            newPoi.url = req.body.poi.url;
+                        }
 
-                    // Checks if there's an image attached to the POI.
-                    if(req.body.poi.image){
-                        // TODO: Extraer nombre y path de la request
-                        var name = req.body.poi.name + "_image";
+                        // Checks if there's an image attached to the POI.
+                        if(req.body.poi.image){
+                            // TODO: Extraer nombre y path de la request
+                            var name = req.body.poi.name + "_image";
 
-                        var imageStream = new Readable();
-                        imageStream.push(req.body.poi.image);
-                        imageStream.push(null);
-                        // Stores the image in the system and adds it to the POI
-                        storeImage(name, imageStream, function(imageId){
-                            newPoi.image = imageId;
+                            // Creates a readable stream with the image string that is in base64
+                            var imageStream = new Readable();
+                            imageStream.push(req.body.poi.image);
+                            imageStream.push(null);
+                            // Stores the image in the system and adds it to the POI
+                            storeImage(name, imageStream, function(imageId){
+                                newPoi.image = imageId;
+                                newPoi.save(function(err, result){
+                                    if(err){
+                                        res.status(500).send({
+                                            "success": false,
+                                            "message": "Error guardando POI"
+                                        });
+                                    }
+                                    else{
+                                        retrieveImage(imageId, function(data){
+                                            res.status(200).send({
+                                                "poi":result.createResponse(data)
+                                            });
+                                        });
+                                    }
+                                });
+                            });
+                        }
+                        // If there's no image attached to the POI, it stores the POI in the system.
+                        else{
                             newPoi.save(function(err, result){
                                 if(err){
                                     res.status(500).send({
@@ -232,32 +256,20 @@ module.exports = function (app) {
                                     });
                                 }
                                 else{
-                                    retrieveImage(imageId, function(data){
-                                        res.status(200).send({
-                                            "poi":result.createResponse(data)
-                                        });
+                                    res.status(200).send({
+                                        "poi":result.createResponse("")
                                     });
                                 }
                             });
-                        });
-                    }
-                    // If there's no image attached to the POI, it stores the POI in the system.
-                    else{
-                        newPoi.save(function(err, result){
-                            if(err){
-                                res.status(500).send({
-                                    "success": false,
-                                    "message": "Error guardando POI"
-                                });
-                            }
-                            else{
-                                res.status(200).send({
-                                    "poi":result.createResponse("")
-                                });
-                            }
-                        });
-                    }
-                });
+                        }
+                    });
+                }
+                else{
+                    res.status(404).send({
+                        "success": false,
+                        "message": "Tags incorrectos"
+                    });
+                }
             }
             // If the user doesn't exist.
             else {
@@ -834,38 +846,45 @@ module.exports = function (app) {
 
                     // If the POI with that ID and user exists
                     if(poi){
+                        if(req.body.poi.tags.charAt(0)==='#'){
+                            // Transforms all the tags to an array with the tags in lowercase
+                            tagsToArray(req.body.poi.tags, function(lowerCaseTags){
+                                // Updates every modifiable field in the POI
+                                poi.name = req.body.poi.name;
+                                poi.description = req.body.poi.description;
+                                poi.tags = lowerCaseTags;
+                                poi.lat = req.body.poi.lat;
+                                poi.lng = req.body.poi.lng;
 
-                        // Transforms all the tags to an array with the tags in lowercase
-                        tagsToArray(req.body.poi.tags, function(lowerCaseTags){
-                            // Updates every modifiable field in the POI
-                            poi.name = req.body.poi.name;
-                            poi.description = req.body.poi.description;
-                            poi.tags = lowerCaseTags;
-                            poi.lat = req.body.poi.lat;
-                            poi.lng = req.body.poi.lng;
-
-                            // Checks if the request have a new URL for the POI, since it's an optional field
-                            if(req.body.poi.url){
-                                poi.url = req.body.poi.url;
-                            }
-
-                            // Saves the POI with the new info
-                            poi.save(function(err, result){
-
-                                if(err) {
-                                    res.status(500).send({
-                                        "success": false,
-                                        "message": "Error actualizando POI"
-                                    });
+                                // Checks if the request have a new URL for the POI, since it's an optional field
+                                if(req.body.poi.url){
+                                    poi.url = req.body.poi.url;
                                 }
-                                else{
-                                    res.status(200).send({
-                                        "success": true,
-                                        "message": "POI actualizado correctamente"
-                                    });
-                                }
+
+                                // Saves the POI with the new info
+                                poi.save(function(err, result){
+
+                                    if(err) {
+                                        res.status(500).send({
+                                            "success": false,
+                                            "message": "Error actualizando POI"
+                                        });
+                                    }
+                                    else{
+                                        res.status(200).send({
+                                            "success": true,
+                                            "message": "POI actualizado correctamente"
+                                        });
+                                    }
+                                });
                             });
-                        });
+                        }
+                        else{
+                            res.status(404).send({
+                                "success": false,
+                                "message": "Tags incorrectos"
+                            });
+                        }
                     }
                     // If the POI with that ID and user doesn't exist
                     else{
