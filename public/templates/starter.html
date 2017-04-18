@@ -2,9 +2,11 @@
   <div class="container-fluid">
 
     <div id="selectViewOfPoisAndRoutes">
-      <div class="col-xs-6 w3-text-theme" id="viewListPOis" ng-click="hidePOIs = !hidePOIs">
+      <div class="col-xs-6 w3-text-theme" id="viewListPOis" ng-click="hidePOIs = !hidePOIs"
+           name="showHidePOIsList">
         Mostrar/ocultar POIs</div>
-      <div class="col-xs-6 w3-text-theme" ng-click="hideRoutes = !hideRoutes">
+      <div class="col-xs-6 w3-text-theme" ng-click="hideRoutes = !hideRoutes"
+           name="showHideRoutesSection">
         Mostrar/ocultar Rutas</div>
     </div>
 
@@ -230,14 +232,15 @@
                          class="form-control" placeholder="Url asociada al POI" />
                 </div>
                 <!-- short url poi -->
-                <div class="col-xs-2 modalLink" ng-click="shortUrl(poiModal.url)">
+                <div class="col-xs-2 modalLink" ng-click="shortUrl(poiModal.url)" name="shortURL">
                   Acortar
                 </div>
               </div>
               <!-- image poi -->
               <div style="max-width: 200px;margin:auto">
                 <input type="file" onchange="angular.element(this).scope().newImage(event)"
-                  accept="image/*" ng-hide="!((poiModal.image=='') && (poiModal._id == ''))" />
+                  accept="image/*" ng-hide="!((poiModal.image=='') && (poiModal._id == ''))"
+                       name="inputImagePOI"/>
                 <img ng-hide="poiModal.image==''" class="img-responsive img-thumbnail" data-ng-src="data:image/png;base64,{{poiModal.image}}"/>
               </div>
 
