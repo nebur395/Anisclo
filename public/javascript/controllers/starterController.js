@@ -157,6 +157,7 @@ angular.module('pirineoPOIApp')
                             $scope.map.center.latitude= poi.lat;
                             $scope.map.center.longitude= poi.lng;
                             $scope.poiList[index] = poi;
+                            $scope.paintMarkers(); //To make sure the edit applies
                             showSuccess(message);
                         }, showError);
                 }
@@ -180,16 +181,10 @@ angular.module('pirineoPOIApp')
                 poiService.deletePoi($scope.poiModal,
                     function (poi, message) {
                         $scope.closePOIModal();
-                        for(var j=0;j<$scope.map.markers.length;j++){
-                            //if found marker
-                            if($scope.map.markers[j].coords.latitude == poi.lat
-                                && $scope.map.markers[j].coords.longitude == poi.lng){
-                                var index = $scope.map.markers.indexOf($scope.map.markers[j]);
-                                $scope.map.markers.splice(index,1);
-                            }
-                        }
                         var del = $scope.poiList.map(function(tmp) {return tmp._id;}).indexOf(poi._id);
                         $scope.poiList.splice(del, 1);
+                        $scope.map.markers = $scope.poisToMarker($scope.poiList);
+                        $scope.paintMarkers();
                         showSuccess(message);
                     }, showError);
             };
@@ -346,7 +341,6 @@ angular.module('pirineoPOIApp')
 
             // Reset the actual route and infogps in order to create a new one
             $scope.makeNewRoute = function () {
-              //TODO función para empezar a editar una nueva ruta
                 //esto debería borrar la ruta que habia pintada
                 $scope.directionsDisplay.setMap(null);
                 $scope.poisInRoute = [];
@@ -398,7 +392,7 @@ angular.module('pirineoPOIApp')
 
             $scope.map = {
                 control: {},
-                center: {latitude: 45, longitude: -73}, zoom: 8,
+                center: {latitude: 42.55870726267185, longitude: 0.050683021545410156}, zoom: 8,
 
                 markers: [],
                 markersEvents: {
