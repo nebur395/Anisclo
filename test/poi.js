@@ -718,7 +718,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             duplicatedPoi.poi.name += "_modified";
 
             chai.request(server)
@@ -742,7 +741,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             duplicatedPoi.name += "_modified";
             delete duplicatedPoi.userEmail;
 
@@ -767,7 +765,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             delete duplicatedPoi.poi;
 
             chai.request(server)
@@ -791,7 +788,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             delete duplicatedPoi.poi.name;
 
             chai.request(server)
@@ -815,7 +811,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             delete duplicatedPoi.poi.description;
 
             chai.request(server)
@@ -839,7 +834,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             delete duplicatedPoi.poi.tags;
 
             chai.request(server)
@@ -863,7 +857,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             duplicatedPoi.poi.tags = "test#POITEST";
 
             chai.request(server)
@@ -887,7 +880,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             delete duplicatedPoi.poi.lat;
 
             chai.request(server)
@@ -911,7 +903,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             delete duplicatedPoi.poi.lng;
 
             chai.request(server)
@@ -935,7 +926,6 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = poiId;
             duplicatedPoi.poi.name += "_modified";
             duplicatedPoi.userEmail = "fakeEmail";
 
@@ -960,12 +950,35 @@ describe('POI', function(){
 
             // Duplicates de poi object
             var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
-            duplicatedPoi._id = '58f7301f33073d1a24bc22e6';
             duplicatedPoi.poi.name += "_modified";
 
 
             chai.request(server)
                 .put('/pois/'+'58f7301f33073d1a24bc22e6')
+                .send(duplicatedPoi)
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingPoiorNotOwnerErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message making a PUT request to /pois/id since the user isn\'t the POI\'s owner', function(done){
+
+            // Duplicates de poi object
+            var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
+            duplicatedPoi.poi.name += "_modified";
+            duplicatedPoi.userEmail = email2;
+
+            chai.request(server)
+                .put('/pois/'+poiId)
                 .send(duplicatedPoi)
                 .end(function(err, result){
 
