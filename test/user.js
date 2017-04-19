@@ -13,7 +13,7 @@ describe('User', function(){
 
     var name = "Testing";
     var lastname = "Test";
-    var email = "test@email.com";
+    var email = "testUser@email.com";
     var password = "testPass";
     var hashPass = require('crypto')
         .createHash('sha1')

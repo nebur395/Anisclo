@@ -786,6 +786,7 @@ module.exports = function (app) {
      *               format: double
      *              url:
      *               type: string
+     *               required: false
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
@@ -897,7 +898,7 @@ module.exports = function (app) {
             }
             // If the user doesn't exist
             else{
-                rres.status(404).send({
+                res.status(404).send({
                     "success": false,
                     "message": "El usuario no existe"
                 });
