@@ -958,28 +958,29 @@ module.exports = function (app) {
         // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
         gfs = grid(mongoose.connection.db);
         POI.findOne({"_id": req.params.id}, function(err, result){
-            if (err){
+            if (err) {
                 res.status(500).send({
                     "success": false,
                     "message": "Error recuperando datos"
                 });
-                return;
-            }
-            else{
+            } else if (result) {
                 // Checks if there's an image attached to the POI and retrieves it if it's the case.
-                if(result.image!=null){
+                if(result.image!=null) {
                     retrieveImage(result.image, function(data){
                         res.status(200).send({
                             "poi":result.createResponse(data)
                         });
                     });
-                }
-                else{
+                } else {
                     res.status(200).send({
                         "poi":result.createResponse("")
                     });
                 }
-
+            } else {
+                res.status(404).send({
+                    "success": false,
+                    "message": "El POI buscado no existe"
+                });
             }
         });
 
