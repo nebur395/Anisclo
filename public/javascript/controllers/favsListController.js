@@ -25,7 +25,7 @@ angular.module('pirineoPOIApp')
                 console.log(pois[i]);
                 poiService.getPoi(pois[i],function (poi) {
                     $scope.poiList.push(poi);
-                });
+                }, showError);
             }
             console.log($scope.poiList);
         });
