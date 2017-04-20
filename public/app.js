@@ -45,6 +45,19 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             }
         })
 
+        // user stats screen
+        .state('userStats', {
+            url: "/userStats",
+            templateUrl: "templates/userStats.html",
+            controller: "userStatsCtrl",
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageLoggedState("userStats");
+                if (correctState != "userStats") {
+                    $state.go(correctState);
+                }
+            }
+        })
+
         //favsList screen
         .state('favs', {
             url: "/favs",

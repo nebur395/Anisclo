@@ -25,12 +25,17 @@
         <!-- sign up button -->
         <li ng-if="!logged"><a href="#/signUp"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>
           Registrarse</a></li>
-        <!-- log out button -->
+
+
+        <!-- view follos button -->
         <li ng-if="logged"><a href="#/follows"><i class="fa fa-users fa-lg" aria-hidden="true"></i>
           Ver siguiendo</a></li>
-        <!-- log out button -->
+        <!-- view favs button -->
         <li ng-if="logged"><a href="#/favs"><i class="fa fa-star fa-lg" aria-hidden="true"></i>
           Ver favoritos</a></li>
+        <!-- view stats button -->
+        <li ng-if="logged"><a href="#/userStats"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
+          Estadísticas</a></li>
         <!-- log out button -->
         <li ng-if="logged"><a href="#/profile"><i class="fa fa-cogs fa-lg" aria-hidden="true"></i>
           Cuenta</a></li>

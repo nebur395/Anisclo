@@ -1,3 +1,5 @@
-/**
- * Created by ruben on 20/04/17.
- */
+angular.module('pirineoPOIApp')
+
+    .controller('userStatsCtrl', ['$scope', function ($scope) {
+
+    }]);
