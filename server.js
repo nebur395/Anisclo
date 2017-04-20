@@ -25,7 +25,7 @@ var options = {
     // import swaggerDefinitions
     swaggerDefinition: swaggerDefinition,
     // path to the API docs
-    apis: ['./routes/user/*.js', './routes/poi/*.js',
+    apis: ['./routes/user/*.js', './routes/poi/*.js', './routes/url/*.js',
         './models/user.js', './models/poi.js', './models/route.js']
 };
 
@@ -34,8 +34,8 @@ var swaggerSpec = swaggerJSDoc(options);
 
 app.use(express.static('./public'));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.json({limit: '20mb'}));
+app.use(bodyParser.urlencoded({limit: '20mb', extended : true}));
 
 // serve swagger
 app.get('/swagger.json', function(req, res) {
