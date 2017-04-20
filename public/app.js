@@ -1,5 +1,5 @@
 angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgoogle-maps', 'dndLists',
-                                'ui-notification', 'ngSanitize'])
+                                'ui-notification', 'ngSanitize', 'chart.js'])
 
     .config(function(uiGmapGoogleMapApiProvider) {
         uiGmapGoogleMapApiProvider.configure({

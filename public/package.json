@@ -18,12 +18,14 @@
   "homepage": "https://github.com/nebur395/Anisclo#readme",
   "dependencies": {
     "angular-base64": "^2.0.5",
+    "angular-chart.js": "^1.1.1",
     "angular-drag-and-drop-lists": "^2.1.0",
     "angular-google-maps": "^2.4.1",
     "angular-recaptcha": "^4.0.4",
     "angular-sanitize": "^1.6.4",
     "angular-simple-logger": "^0.1.7",
     "angular-ui-notification": "^0.3.6",
+    "chart.js": "^2.5.0",
     "lodash": "^4.17.4"
   }
 }
