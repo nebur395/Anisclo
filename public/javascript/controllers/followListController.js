@@ -12,10 +12,12 @@ angular.module('pirineoPOIApp')
             Notification.success('&#10004' + message);
         };
 
-
-
         $scope.allPoiList = [];
         $scope.poiList = [];
+
+        $scope.isEmpty = function() {
+            return $scope.poiList.length == 0;
+        };
 
         $scope.$on('$viewContentLoaded', function(){
             var follows = auth.getFollows();

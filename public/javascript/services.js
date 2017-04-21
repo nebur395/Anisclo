@@ -435,6 +435,12 @@ angular.module('pirineoPOIApp')
                 }).success(function (data) {
                     callbackSuccess(data.poi);
                 }).error(function (data) {
+                    var tmp = angular.fromJson(localStorage.userIdentity);
+                    var index = tmp.favs.indexOf(id);
+                    if (index != -1) {
+                        tmp.favs.splice(index, 1);
+                    }
+                    auth.authenticate(tmp);
                     callbackError(data.message);
                 });
             }
