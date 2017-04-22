@@ -1,5 +1,113 @@
 <div id="userStatsStyle">
   <div class="container">
 
+    <h1 id="firstContent" class="text-center">Estadísticas de la cuenta</h1>
+
+    <!-- Most rated owned POI -->
+    <div class="row">
+      <div class="col-sm-4"><p class="text-justify">Top 5 POI de los POI de tu cuenta que más
+        valoración tienen.</p></div>
+      <div class="col-sm-8">
+        <canvas class="chart chart-bar" chart-data="data1Stat" chart-labels="labels1Stat"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Most favorite owned POI -->
+    <div class="row">
+      <div class="col-sm-8">
+        <canvas class="chart chart-bar" chart-data="data2Stat" chart-labels="labels2Stat"></canvas>
+      </div>
+      <div class="col-sm-4"><p class="text-justify">Top 5 de los POI de tu cuenta que más
+        veces le han dado favorito.</p></div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Evolution of POIs creation date -->
+    <div class="row">
+      <div class="col-sm-4"><p class="text-justify">Evolución de los POI que has ido creando en
+        tu cuenta a lo largo del último año.</p></div>
+      <div class="col-sm-8">
+        <canvas class="chart chart-line" chart-data="data3tat" chart-labels="labels3Stat"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Most POI-populated location -->
+    <div class="row">
+      <div class="col-sm-8">
+        <canvas class="chart chart-pie" chart-data="data4Stat" chart-labels="labels4Stat"
+                chart-options="options4Stat"></canvas>
+      </div>
+      <div class="col-sm-4"><p class="text-justify">Localización en los que has creado más  POI.</p></div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Most duplicated owned POI -->
+    <div class="row">
+      <div class="col-sm-4"><p class="text-justify">Top 5 de los POI que más veces han duplicado
+      de tu cuenta.</p></div>
+      <div class="col-sm-8">
+        <canvas class="chart chart-bar" chart-data="data5Stat" chart-labels="labels5Stat"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Number of followers -->
+    <div class="row">
+      <div class="col-sm-12"><p class="text-justify">La cuenta tiene un total de {{follows}}
+        seguidores.</p></div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Longest routes by distance -->
+    <div class="row">
+      <div class="col-sm-8">
+        <canvas class="chart chart-bar" chart-data="data6Stat" chart-labels="labels6Stat"></canvas>
+      </div>
+      <div class="col-sm-4"><p class="text-justify">Top 5 de las rutas de tu cuenta que tienen
+        más longitud.</p></div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Longest routes by time -->
+    <div class="row">
+      <div class="col-sm-4"><p class="text-justify">Top 5 de las rutas de tu cuenta que tienen
+        más duración.</p></div>
+      <div class="col-sm-8">
+        <canvas class="chart chart-bar" chart-data="data7Stat" chart-labels="labels7Stat"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Number of routes with the same amount of POIs -->
+    <div class="row">
+      <div class="col-sm-8">
+        <canvas class="chart chart-line" chart-data="data8Stat" chart-options="options8Stat"></canvas>
+      </div>
+      <div class="col-sm-4"><p class="text-justify">Estadística que muestra el número de rutas (eje
+        y) que poseen un número de POIs (eje x).</p></div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Most frequent transportation -->
+    <div class="row">
+      <div class="col-sm-4"><p class="text-justify">Las rutas clasificadas dependiendo del
+        método de transporte utilizado en ellas.</p></div>
+      <div class="col-sm-8">
+        <canvas class="chart chart-radar" chart-data="data9Stat" chart-labels="labels9Stat"
+                chart-options="options9Stat"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Most recreated routes -->
+    <div class="row">
+      <div class="col-sm-8">
+        <canvas class="chart chart-bar" chart-data="data10Stat" chart-labels="labels10Stat"></canvas>
+      </div>
+      <div class="col-sm-4"><p class="text-justify">Top 5 de las rutas de tu cuenta que más veces
+        han recreado otros usuarios a partir de su ID.</p></div>
+    </div>
   </div>
 </div>
