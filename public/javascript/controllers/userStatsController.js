@@ -104,24 +104,22 @@ angular.module('pirineoPOIApp')
         }, showError);
 
         // Number of routes with the same amount of POIs
-        $scope.data8Stat = [[
-            {
-                x: 2,
-                y: 20},
-            {
-                x: 3,
-                y: 10},
-            {
-                x: 5,
-                y: 1}]];
-        $scope.options8Stat = {
-            scales: {
-                xAxes: [{
-                    type: 'linear',
-                    position: 'bottom'
-                }]
+        $scope.labels8Stat = [];
+        $scope.data8Stat = [[]];
+        userStats.getPoisInRoutes(function (list) {
+            list.sort(function(a, b){
+                var x = a.rank.toLocaleLowerCase();
+                var y = b.rank.toLocaleLowerCase();
+                if (x < y) {return -1;}
+                if (x > y) {return 1;}
+                return 0;
+            });
+            for (i=0;i<list.length - 1;i++) {
+                $scope.labels8Stat.push(list[i].rank);
+                $scope.data8Stat[0].push(list[i].routesNumber);
             }
-        };
+        }, showError);
+
 
         // Longest routes by time
         $scope.labels9Stat = ['En coche ', 'Transporte público', 'A pie', 'En bicicleta'];

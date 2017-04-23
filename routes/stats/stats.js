@@ -427,7 +427,7 @@ module.exports = function(app){
      *       - Stats
      *     summary: Lista del número de rutas por el número de POIs.
      *     description: Obtiene una lista del número de rutas que tienen
-     *      un determinado número de POIs en rangos de 5.
+     *      un determinado número de POIs en rangos de 5. El último rango es 31+.
      *     consumes:
      *       - application/json
      *       - charset=utf-8
@@ -453,7 +453,7 @@ module.exports = function(app){
      *                  routesNumber:
      *                   type: integer
      *                   description: Número de rutas
-     *                  rango:
+     *                  rank:
      *                   type: string
      *                   description: Rango del número de POIs
      *       404:

@@ -639,11 +639,11 @@ angular.module('pirineoPOIApp')
                 });
             },
 
-            // Number of routes with the same amount of POIs
+            // Get the number of routes with the same amount of POIs
             getPoisInRoutes: function (callbackSuccess, callbackError) {
                 $http({
                     method: 'GET',
-                    url: 'stats/' + auth.getEmail() + '/longestRoutes',
+                    url: 'stats/' + auth.getEmail() + '/poisInRoutes',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8'
                     }
@@ -651,11 +651,13 @@ angular.module('pirineoPOIApp')
                     callbackSuccess(data.routes);
                 }).error(function (data) {
                     var poi = [
-                        {routeId:"poi1", duration: 12},
-                        {routeId:"poi2", duration: 12},
-                        {routeId:"poi3", duration: 32},
-                        {routeId:"poi4", duration: 22},
-                        {routeId:"poi5", duration: 4}
+                        {rank:"1-5", routesNumber: 10},
+                        {rank:"6-10", routesNumber: 5},
+                        {rank:"11-15", routesNumber: 2},
+                        {rank:"31+", routesNumber: 1},
+                        {rank:"21-25", routesNumber: 0},
+                        {rank:"16-20", routesNumber: 1},
+                        {rank:"26-30", routesNumber: 1}
                     ];
                     callbackSuccess(poi);
                     callbackError(data.message);
