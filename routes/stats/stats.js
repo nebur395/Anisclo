@@ -474,7 +474,7 @@ module.exports = function(app){
 
     /**
      * @swagger
-     * /stats/{email}/transportUsage:
+     * /stats/{email}/transportsUsage:
      *   get:
      *     tags:
      *       - Stats
@@ -506,9 +506,11 @@ module.exports = function(app){
      *                  routesNumber:
      *                   type: integer
      *                   description: Número de rutas
-     *                  transporte:
+     *                  transport:
      *                   type: string
-     *                   description: Transporte empleado por las rutas
+     *                   description: |
+     *                     Transporte empleado por las rutas. Valor discreto entre:
+     *                     'En coche', 'Transporte público', 'A pie', y  'En bicicleta'
      *       404:
      *         description: Mensaje de feedback para el usuario.
      *         schema:

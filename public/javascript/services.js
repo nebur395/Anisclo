@@ -650,16 +650,36 @@ angular.module('pirineoPOIApp')
                 }).success(function (data) {
                     callbackSuccess(data.routes);
                 }).error(function (data) {
-                    var poi = [
-                        {rank:"1-5", routesNumber: 10},
-                        {rank:"6-10", routesNumber: 5},
-                        {rank:"11-15", routesNumber: 2},
-                        {rank:"31+", routesNumber: 1},
-                        {rank:"21-25", routesNumber: 0},
-                        {rank:"16-20", routesNumber: 1},
-                        {rank:"26-30", routesNumber: 1}
-                    ];
-                    callbackSuccess(poi);
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the most frequent transportation
+            getTransportUsage: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/transportsUsage',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the most recreated routes
+            getMostRequestedRoutesById: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/mostRequestedRoutesById',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
                     callbackError(data.message);
                 });
             }

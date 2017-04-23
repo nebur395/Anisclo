@@ -121,12 +121,25 @@ angular.module('pirineoPOIApp')
         }, showError);
 
 
-        // Longest routes by time
-        $scope.labels9Stat = ['En coche ', 'Transporte público', 'A pie', 'En bicicleta'];
-        $scope.data9Stat = [65,100,81,70];
+        // Most frequent transportation
+        $scope.labels9Stat = [];
+        $scope.data9Stat = [];
         $scope.options9Stat = { responsive: true, maintainAspectRatio: false};
+        userStats.getTransportUsage(function (list) {
+            for (i=0;i<list.length;i++) {
+                $scope.labels9Stat.push(list[i].transport);
+                $scope.data9Stat.push(list[i].routesNumber);
+            }
+        }, showError);
 
         // Most recreated routes
-        $scope.labels10Stat = ['poi1', 'poi2', 'poi3'];
-        $scope.data10Stat = [23,20,15];
+        $scope.labels10Stat = [];
+        $scope.data10Stat = [];
+        userStats.getMostRequestedRoutesById(function (list) {
+            list.sort(function(a, b){return b.routesNumber - a.routesNumber});
+            for (i=0;i<list.length;i++) {
+                $scope.labels10Stat.push(list[i].routeId);
+                $scope.data10Stat.push(list[i].routesNumber);
+            }
+        }, showError);
     }]);
