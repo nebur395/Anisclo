@@ -54,8 +54,14 @@ angular.module('pirineoPOIApp')
 
 
         // Most POI-populated location
-        $scope.labels4Stat = ['América','Asia','Europa','África','Oceanía','Antártida'];
-        $scope.data4Stat = [10,5,100,8,10,1];
+        $scope.labels4Stat = [];
+        $scope.data4Stat = [];
+        userStats.getPoiByLocation(function (list) {
+            for (i=0;i<list.length;i++) {
+                $scope.labels4Stat.push(list[i].continent);
+                $scope.data4Stat.push(list[i].poiNumber);
+            }
+        }, showError);
         $scope.options4Stat = { legend: { display: true }, responsive: true, maintainAspectRatio: false};
 
         // Most duplicated owned POI
