@@ -514,6 +514,56 @@ angular.module('pirineoPOIApp')
                 });
             }
         };
+    })
+
+    // 'userStats' service manage the userStats settings functions of the page with the server
+    .factory('userStats', function ($http, auth) {
+        return {
+            // Get the most rated owned POI
+            getMostRated: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/mostRated',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the most favorite owned POI
+            getMostFavorite: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/mostFavorite',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the evolution of POIs creation date
+            getPoiByDate: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/poiByDate',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            }
+        };
     });
 
 

@@ -1,19 +1,57 @@
 angular.module('pirineoPOIApp')
 
-    .controller('userStatsCtrl', ['$scope', function ($scope) {
+    .controller('userStatsCtrl', ['$scope', 'Notification', 'userStats', function ($scope, Notification, userStats) {
+        // FEEDBACK MESSAGES
+
+        // show the error message
+        var showError = function (message) {
+            Notification.error('&#10008' + message);
+        };
+
+        // show the error message
+        var showSuccess = function (message) {
+            Notification.success('&#10004' + message);
+        };
 
         // Most rated owned POI
-        $scope.labels1Stat = ['poi1', 'poi2', 'poi3', 'poi4', 'poi5'];
-        $scope.data1Stat = [25,20,15,10,5];
+        $scope.labels1Stat = [];
+        $scope.data1Stat = [];
+        userStats.getMostRated(function (list) {
+            list.sort(function(a, b){return b.rating - a.rating});
+            for (i=0;i<list.length;i++) {
+                $scope.labels1Stat.push(list[i].name);
+                $scope.data1Stat.push(list[i].rating);
+            }
+        }, showError);
 
         // Most favorite owned POI
-        $scope.labels2Stat = ['poi1', 'poi2', 'poi3', 'poi4', 'poi5'];
-        $scope.data2Stat = [10,8,7,4,1];
+        $scope.labels2Stat = [];
+        $scope.data2Stat = [];
+        userStats.getMostFavorite(function (list) {
+            list.sort(function(a, b){return b.favNumber - a.favNumber});
+            for (i=0;i<list.length;i++) {
+                $scope.labels2Stat.push(list[i].name);
+                $scope.data2Stat.push(list[i].favNumber);
+            }
+        }, showError);
 
         // Evolution of POIs creation date
         $scope.labels3Stat = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
             'Septiembre','Octubre','Noviembre','Diciembre'];
-        $scope.data3tat = [1,5,3,3,9,12,20,15,17,13,10,5];
+        $scope.data3Stat = [[0,0,0,0,0,0,0,0,0,0,0,0]];
+        userStats.getPoiByDate(function (list) {
+            list.sort(function(a, b){return a.creationDate - b.creationDate });
+            for (i=0;i<list.length - 1;i++) {
+                var currentMonth = list[i].creationDate;
+                var count = 1;
+                while ((i< (list.length - 1)) && (currentMonth == list[i+1].creationDate)) {
+                    count++;
+                    i++;
+                }
+                $scope.data3Stat[0][currentMonth - 1] = count;
+            }
+        }, showError);
+
 
         // Most POI-populated location
         $scope.labels4Stat = ['América','Asia','Europa','África','Oceanía','Antártida'];
