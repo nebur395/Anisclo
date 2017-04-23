@@ -592,6 +592,74 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
+            },
+
+            // Get the number of followers
+            getFollowers: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/followers',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.followers);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the longest routes by distance
+            getLongestRoutesByDistance: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/longestRoutesByDistance',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the longest routes by time
+            getLongestRoutes: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/longestRoutes',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Number of routes with the same amount of POIs
+            getPoisInRoutes: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/longestRoutes',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    var poi = [
+                        {routeId:"poi1", duration: 12},
+                        {routeId:"poi2", duration: 12},
+                        {routeId:"poi3", duration: 32},
+                        {routeId:"poi4", duration: 22},
+                        {routeId:"poi5", duration: 4}
+                    ];
+                    callbackSuccess(poi);
+                    callbackError(data.message);
+                });
             }
         };
     });

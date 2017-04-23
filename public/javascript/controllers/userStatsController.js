@@ -76,15 +76,32 @@ angular.module('pirineoPOIApp')
         }, showError);
 
         // Number of followers
-        $scope.follows = 0;
+        $scope.followers = 0;
+        userStats.getFollowers(function (number) {
+            $scope.followers = number;
+        }, showError);
 
         // Longest routes by distance
-        $scope.labels6Stat = ['poi1', 'poi2', 'poi3', 'poi4', 'poi5'];
-        $scope.data6Stat = [400,350,300,300,200];
+        $scope.labels6Stat = [];
+        $scope.data6Stat = [];
+        userStats.getLongestRoutesByDistance(function (list) {
+            list.sort(function(a, b){return b.length - a.length});
+            for (i=0;i<list.length;i++) {
+                $scope.labels6Stat.push(list[i].routeId);
+                $scope.data6Stat.push(list[i].length);
+            }
+        }, showError);
 
         // Longest routes by time
-        $scope.labels7Stat = ['poi1', 'poi2', 'poi3', 'poi4', 'poi5'];
-        $scope.data7Stat = [23,20,15,10,2];
+        $scope.labels7Stat = [];
+        $scope.data7Stat = [];
+        userStats.getLongestRoutes(function (list) {
+            list.sort(function(a, b){return b.duration - a.duration});
+            for (i=0;i<list.length;i++) {
+                $scope.labels7Stat.push(list[i].routeId);
+                $scope.data7Stat.push(list[i].duration);
+            }
+        }, showError);
 
         // Number of routes with the same amount of POIs
         $scope.data8Stat = [[
