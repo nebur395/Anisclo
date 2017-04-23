@@ -577,6 +577,21 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
+            },
+
+            // Get the most duplicated owned POI
+            getDuplicatedPois: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/duplicatedPois',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
             }
         };
     });

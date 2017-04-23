@@ -65,8 +65,15 @@ angular.module('pirineoPOIApp')
         $scope.options4Stat = { legend: { display: true }, responsive: true, maintainAspectRatio: false};
 
         // Most duplicated owned POI
-        $scope.labels5Stat = ['poi1', 'poi2', 'poi3', 'poi4', 'poi5'];
-        $scope.data5Stat = [25,20,15,10,5];
+        $scope.labels5Stat = [];
+        $scope.data5Stat = [];
+        userStats.getDuplicatedPois(function (list) {
+            list.sort(function(a, b){return b.duplicated - a.duplicated});
+            for (i=0;i<list.length;i++) {
+                $scope.labels5Stat.push(list[i].name);
+                $scope.data5Stat.push(list[i].duplicated);
+            }
+        }, showError);
 
         // Number of followers
         $scope.follows = 0;
