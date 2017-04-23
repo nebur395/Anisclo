@@ -397,12 +397,13 @@ module.exports = function(app){
 
     /**
      * @swagger
-     * /stats/{email}/longestRoutesByDistance:
+     * /stats/{email}/poisInRoutes:
      *   get:
      *     tags:
      *       - Stats
-     *     summary: Lista de las rutas más largas.
-     *     description: Obtiene una lista de las 5 rutas más largas creadas por el usuario.
+     *     summary: Lista del número de rutas por el número de POIs.
+     *     description: Obtiene una lista del número de rutas que tienen
+     *      un determinado número de POIs en rangos de 5.
      *     consumes:
      *       - application/json
      *       - charset=utf-8
@@ -416,7 +417,7 @@ module.exports = function(app){
      *         type: string
      *     responses:
      *       200:
-     *         description: Lista de las rutas ḿás largas.
+     *         description: Lista del número de rutas por número de POIs.
      *         schema:
      *           type: object
      *           properties:
@@ -425,12 +426,12 @@ module.exports = function(app){
      *               items:
      *                type: object
      *                properties:
-     *                  routeId:
-     *                   type: string
-     *                   description: Id de la ruta.
-     *                  length:
+     *                  routesNumber:
      *                   type: integer
-     *                   description: Longitud de la ruta
+     *                   description: Número de rutas
+     *                  rango:
+     *                   type: string
+     *                   description: Rango del número de POIs
      *       404:
      *         description: Mensaje de feedback para el usuario.
      *         schema:
@@ -444,11 +445,103 @@ module.exports = function(app){
 
     });
 
-    router.get("/transportsUsage", function(req, res){
+    /**
+     * @swagger
+     * /stats/{email}/transportUsage:
+     *   get:
+     *     tags:
+     *       - Stats
+     *     summary: Lista del número de rutas que usan cada transporte.
+     *     description: Obtiene una lista del número de rutas que emplean
+     *      cada tipo de transporte.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: userEmail
+     *         description: Email del usuario propietario de los POIs.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Lista del número de rutas por transporte.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              routes:
+     *               type: array
+     *               items:
+     *                type: object
+     *                properties:
+     *                  routesNumber:
+     *                   type: integer
+     *                   description: Número de rutas
+     *                  transporte:
+     *                   type: string
+     *                   description: Transporte empleado por las rutas
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/:email/transportsUsage", function(req, res){
 
     });
 
-    router.get("/mostRequestedRoutesById", function(req, res){
+    /**
+     * @swagger
+     * /stats/{email}/mostRequestedRoutesById:
+     *   get:
+     *     tags:
+     *       - Stats
+     *     summary: Lista de las rutas más recreadas por ID.
+     *     description: Obtiene una lista de las 5 rutas más recreadas
+     *      a partir de su ID.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: userEmail
+     *         description: Email del usuario propietario de los POIs.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Lista de las rutas más recreadas por ID.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              routes:
+     *               type: array
+     *               items:
+     *                type: object
+     *                properties:
+     *                  routeId:
+     *                   type: string
+     *                   description: Id de la ruta
+     *                  requestedNumber:
+     *                   type: integer
+     *                   description: Número de veces que se ha recreado por ID
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/:email/mostRequestedRoutesById", function(req, res){
 
     });
 
