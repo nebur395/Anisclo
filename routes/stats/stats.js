@@ -56,7 +56,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostRated", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -106,7 +109,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostFavorite", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -155,7 +161,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poiByDate", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
 
@@ -205,7 +214,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poiByLocation", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -254,7 +266,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/duplicatedPois", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -294,7 +309,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/followers", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -343,7 +361,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/longestRoutes", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -392,7 +413,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/longestRoutesByDistance", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -442,7 +466,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poisInRoutes", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -492,7 +519,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/transportsUsage", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -542,7 +572,12 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostRequestedRoutesById", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
+
+    return router;
 
 };
