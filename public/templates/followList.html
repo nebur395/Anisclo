@@ -1,12 +1,11 @@
 <div id="followListStyle">
   <div class="container">
-    <!-- TODO DARÍO: si tienes que dotar a esta página de estilos, crea una página css con el
-    nombre followListStyle.css, en la cual cada cosa que vayas a editar tiene como padre el id
-    '#followListStyle'. Fíjate en el resto de stylesheets para entenderlo si no lo entiendes,
-    y acuérdate de importarla junto al resto de stylesheets en el index.html
-     -->
-    <div class="divider"></div>
-    <div class="divider"></div>
-    <follow-cards ng-repeat="poi in poiList"></follow-cards>
+
+
+    <h1 id="firstContent" class="text-center">Visualiza aquí los POI de las personas a las que sigues</h1>
+    <div ng-hide="!isEmpty()" class="text-center"><p>No hay POI favoritos que mostrar</p></div>
+    <div ng-hide="isEmpty()">
+      <follow-cards ng-repeat="poi in poiList"></follow-cards>
+    </div>
   </div>
 </div>

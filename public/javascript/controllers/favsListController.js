@@ -18,6 +18,10 @@ angular.module('pirineoPOIApp')
 
         $scope.poiList = [];
 
+        $scope.isEmpty = function() {
+            return $scope.poiList.length == 0;
+        };
+
         $scope.$on('$viewContentLoaded', function(){
             var pois = auth.getFavs();
             console.log(pois);

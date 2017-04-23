@@ -1,14 +1,12 @@
 <div id="favsListStyle">
   <div class="container">
-    <!-- TODO DARÍO: si tienes que dotar a esta página de estilos, crea una página css con el
-    nombre favsListStyle.css, en la cual cada cosa que vayas a editar tiene como padre el id
-    '#favsListStyle'. Fíjate en el resto de stylesheets para entenderlo si no lo entiendes,
-    y acuérdate de importarla junto al resto de stylesheets en el index.html
-     -->
+
+    <h1 id="firstContent" class="text-center">Visualiza aquí tus POI favoritos</h1>
     <!-- Tarjetas para representar la info -->
-    <div class="divider"></div>
-    <div class="divider"></div>
-    <fav-cards ng-repeat="poi in poiList">
-    </fav-cards>
+    <div ng-hide="!isEmpty()" class="text-center"><p>No hay POI favoritos que mostrar</p></div>
+    <div ng-hide="isEmpty()">
+      <fav-cards ng-repeat="poi in poiList">
+      </fav-cards>
+    </div>
   </div>
 </div>
