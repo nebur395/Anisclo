@@ -19,7 +19,6 @@ angular.module('pirineoPOIApp')
                     .then(function(response){ //si lo hace bien
                         console.log(response);
                         console.log("todo bien");
-                        //TODO: login
                         console.log(response.data.google);
                         auth.login(response.data.email, response.data.google, true, showError);
                     })

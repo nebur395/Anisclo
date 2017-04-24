@@ -32,7 +32,6 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
         $authProvider.storageType = 'localStorage';
         $authProvider.google({
             clientId: '455009480567-lhd272hs4et03dj9g4vmltt9rurhcrtg.apps.googleusercontent.com',
-            //TODO: en url va la redireccion
             url: 'users/google',
             authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
             redirectUri: window.location.origin,
