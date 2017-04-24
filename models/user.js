@@ -48,6 +48,7 @@ mongoose.Promise = global.Promise;
 var userSchema = mongoose.Schema({
     email : {type: String, required: true, unique: true},
     password: {type: String},
+    google: {type: String},
     name: {type: String, required: true},
     lastname: {type: String, required: true},
     admin: {type: Boolean, required: true},

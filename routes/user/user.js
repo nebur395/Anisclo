@@ -141,6 +141,129 @@ module.exports = function (app) {
 
     /**
      * @swagger
+     * /users/google:
+     *   post:
+     *     tags:
+     *       - Users
+     *     summary: Crear usuario con cuenta de Google
+     *     description: Crea un nuevo usuario en el sistema usando los datos de su cuenta de google
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: token
+     *         description: Token de Google con los datos de la cuenta del usuario.
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.post("/google", function(req,res){
+        console.log("aqui llegamos");
+        var accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
+        var peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
+        var params = {
+            code: req.body.code,
+            client_id: req.body.clientId,
+            client_secret: 'DO1D2qtBemRa2IpAF8DKIv4A',
+            redirect_uri: req.body.redirectUri,
+            grant_type: 'authorization_code'
+        };
+        // Step 1: Exchange auth code for access token
+        request.post(accessTokenUrl, {json: true, form:params},function (err,response,token) {
+            var accessToken = token.access_token;
+            var headers = {Authorization: 'Bearer ' + accessToken};
+            console.log("procedemos a pedir perfil");
+            //Step 2: Retrieve profile information about the current user
+            request.get({url: peopleApiUrl, headers: headers, json:true}, function(err, response, profile){
+                if(profile.error){
+                    res.status(500).send({ // something got fucked up
+                        "success": false,
+                        "message": "Error al pedir profile " +profile.error.message
+                    });
+                }
+                else{
+                    console.log(profile);
+                    console.log("Nombre: "+profile.given_name+" Apellido: "+profile.family_name+" Email: "+profile.email);
+                    // Check if user exists
+                    User.findOne({email: profile.email}, function(err, result){
+
+                        if (result === null){ // User doesn't exist, so it's a signUp!
+                            User.create({
+                                email: profile.email,
+                                name: profile.given_name,
+                                lastname: profile.family_name,
+                                google: profile.sub,
+                                firstLogin: false,
+                                admin: false
+                            }, function (err, result){
+                                if(err){
+                                    res.status(500).send({ // something got fucked up
+                                        "success": false,
+                                        "message": "Error guardando datos"
+                                    });
+                                }
+                                else{ //all good, proceed to login
+                                    console.log("registrando usuario");
+                                    res.status(200).send({
+                                        "email": result.email,
+                                        "name": result.name,
+                                        "lastname": result.lastname,
+                                        "firstLogin": result.firstLogin,
+                                        "admin": result.admin,
+                                        "favs": result.favs,
+                                        "follows": result.follows,
+                                        "google": result.google
+                                    });
+                                }
+                            });
+                        }
+                        // If there's a user with that email and the token is correct
+                        else if(result && result.google === profile.sub){
+
+                            res.status(200).send({
+                                "email": result.email,
+                                "name": result.name,
+                                "lastname": result.lastname,
+                                "firstLogin": result.firstLogin,
+                                "admin": result.admin,
+                                "favs": result.favs,
+                                "follows": result.follows,
+                                "google": result.google
+                            });
+                        }
+                        // If there's no user with that token then it's not a google account
+                        else{
+                            console.log("user existe pero no es cuenta de google");
+                            res.status(404).send({
+                                "success": false,
+                                "message": "Error al intentar iniciar sesión"
+                            });
+                        }
+                    });
+                }
+            })
+        });
+
+
+    });
+
+    /**
+     * @swagger
      * /users/login:
      *   get:
      *     tags:
@@ -818,6 +941,83 @@ module.exports = function (app) {
                 });
             }
             // If the user doesn't exist or the password is incorrect
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "Email o contraseña incorrectos"
+                });
+            }
+        });
+
+    });
+
+    /**
+     * @swagger
+     * /users/{email}:
+     *   get:
+     *     tags:
+     *       - Users
+     *     summary: Pedir usuario de google
+     *     description: Devuelve la cuenta de usuario registrado con google.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: email
+     *         description: Email del usuario que sirve como identificador.
+     *         in: path
+     *         required: true
+     *         type: string
+     *       - name: token
+     *         description: Token identificador de google
+     *         in: body
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/:email", function(req,res){
+        console.log("Email: "+req.params.email);
+
+        User.findOne({email: req.params.email}, function(err, result){
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+            if(result === null){
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
+            else if(req.headers.token === result.google){
+                res.status(200).send({
+                    "email": result.email,
+                    "name": result.name,
+                    "lastname": result.lastname,
+                    "firstLogin": result.firstLogin,
+                    "admin": result.admin,
+                    "favs": result.favs,
+                    "follows": result.follows
+                });
+            }
+            // If the user doesn't exist or the token is incorrect
             else{
                 res.status(404).send({
                     "success": false,
