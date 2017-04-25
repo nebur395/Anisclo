@@ -17,13 +17,9 @@ angular.module('pirineoPOIApp')
             $scope.authenticate = function(provider) {
                 $auth.authenticate(provider)
                     .then(function(response){ //si lo hace bien
-                        console.log(response);
-                        console.log("todo bien");
-                        console.log(response.data.google);
                         auth.login(response.data.email, response.data.google, true, showError);
                     })
                     .catch(function(response){ //si lo hace mal
-                        console.log(response);
                         showError("Error al iniciar sesión. " +
                             "\nEs posible que ese email ya esté registrado");
                     });

@@ -153,11 +153,17 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
-     *       - name: token
-     *         description: Token de Google con los datos de la cuenta del usuario.
+     *       - name: code
+     *         description: Codigo para pedir datos a google
      *         in: body
      *         required: true
      *         type: string
+     *       - name: clientId
+     *         description: API key publico de nuestra app
+     *         required: true
+     *         type: string
+     *       - name: redirectUri
+     *         description: Direccion de enrutamiento para la peticion a google (predefinido)
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
@@ -173,7 +179,6 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.post("/google", function(req,res){
-        console.log("aqui llegamos");
         var accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
         var peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
         var params = {
@@ -187,7 +192,6 @@ module.exports = function (app) {
         request.post(accessTokenUrl, {json: true, form:params},function (err,response,token) {
             var accessToken = token.access_token;
             var headers = {Authorization: 'Bearer ' + accessToken};
-            console.log("procedemos a pedir perfil");
             //Step 2: Retrieve profile information about the current user
             request.get({url: peopleApiUrl, headers: headers, json:true}, function(err, response, profile){
                 if(profile.error){
@@ -197,7 +201,6 @@ module.exports = function (app) {
                     });
                 }
                 else{
-                    console.log(profile);
                     console.log("Nombre: "+profile.given_name+" Apellido: "+profile.family_name+" Email: "+profile.email);
                     // Check if user exists
                     User.findOne({email: profile.email}, function(err, result){
@@ -218,7 +221,6 @@ module.exports = function (app) {
                                     });
                                 }
                                 else{ //all good, proceed to login
-                                    console.log("registrando usuario");
                                     res.status(200).send({
                                         "email": result.email,
                                         "name": result.name,
@@ -248,7 +250,6 @@ module.exports = function (app) {
                         }
                         // If there's no user with that token then it's not a google account
                         else{
-                            console.log("user existe pero no es cuenta de google");
                             res.status(404).send({
                                 "success": false,
                                 "message": "Error al intentar iniciar sesión"
