@@ -483,11 +483,11 @@ angular.module('pirineoPOIApp')
                     idRoutes.push(route.routePOIs[i]._id);
                 }
                 route.routePOIs = idRoutes;
-                var routeInfoTemp = {
-                    distance: {text: "", value: 0}, duration: {text: "", value: 0}
-                };
                 var metaDataRoute = [];
                 for (i=0;i<route.routeInfo.length;i++) {
+                    var routeInfoTemp = {
+                        distance: {text: "", value: 0}, duration: {text: "", value: 0}
+                    };
                     routeInfoTemp.distance.text = route.routeInfo[i].distance.text;
                     routeInfoTemp.distance.value = route.routeInfo[i].distance.value;
                     routeInfoTemp.duration.text = route.routeInfo[i].duration.text;
