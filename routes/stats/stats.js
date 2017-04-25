@@ -1,4 +1,5 @@
 var express = require('express');
+var async = require("async");
 
 module.exports = function(app){
 
@@ -109,9 +110,47 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostFavorite", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Searches for all the POIs that the user owns
+                POI.find({"owner": req.params.email}, '-_id name favNumber', {sort: {"favNumber": -1}}, function(err, pois){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    // Takes the first 5 POIs from the query's result
+                    pois.splice(5, pois.length-5);
+
+                    res.status(200).send({
+                        "pois": pois
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 

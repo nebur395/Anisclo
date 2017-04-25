@@ -28,6 +28,7 @@ var routeSchema = mongoose.Schema({
     travelMode: {type: String, required: true},
     routePOIs: {type: [mongoose.Schema.Types.ObjectId], required: true},
     routeInfo : {type: [mongoose.Schema.Types.Mixed], required: true},
+    numRequested: {type: Number, default: 0},
     creationDate: {type: Date, default: Date.now}
 
 });
@@ -39,6 +40,7 @@ routeSchema.methods.createResponse = function(){
     delete route.creationDate;
     delete route.routeInfo;
     delete route.owner;
+    delete route.numRequested;
     return route;
 }
 

@@ -355,7 +355,7 @@ module.exports = function (app) {
      *              $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:id", function(req, res){
-        Route.findById(req.params.id, function(err, route){
+        Route.findByIdAndUpdate(req.params.id, {$inc: {"numRequested":1}}, function(err, route){
 
             if (err){
                 res.status(500).send({
@@ -365,7 +365,7 @@ module.exports = function (app) {
                 return;
             }
 
-            if(route){
+            if(route!==null){
                 var pois = [];
                 async.eachSeries(route.routePOIs, function(poiId, callback){
 

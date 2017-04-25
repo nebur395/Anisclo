@@ -560,7 +560,7 @@ module.exports = function (app) {
             if(user){
 
                 // Checks if the POI that is going to be duplicated exists.
-                POI.findById(req.params.id, function(err, poi){
+                POI.findByIdAndUpdate(req.params.id, {$inc: {"numDupli":1}}, function(err, poi){
 
                     if(err) {
                         res.status(500).send({
@@ -571,7 +571,7 @@ module.exports = function (app) {
                     }
 
                     // If the POI exists.
-                    if(poi){
+                    if(poi!==null){
 
                         // Creates the duplicate and remove the unwanted fields.
                         var duplicate = poi.toJSON();
