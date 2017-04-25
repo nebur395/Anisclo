@@ -69,6 +69,10 @@ angular.module('pirineoPOIApp')
                 return _identity.follows;
             },
 
+            getGoogle: function () {
+                return _identity.google;
+            },
+
             //send the login info to the server
             login: function (user, password, google,callback) {
                 var that = this;
@@ -220,8 +224,11 @@ angular.module('pirineoPOIApp')
             },
 
             // delete user account
-            deleteAccount: function (email, password, callbackError) {
-                var temp = {current: password};
+            deleteAccount: function (email, password, google, callbackError) {
+                var temp = {
+                    current: password,
+                    google:google
+                };
                 $http({
                     method: 'DELETE',
                     url: 'users/' + email,

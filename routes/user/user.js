@@ -898,7 +898,7 @@ module.exports = function (app) {
     router.delete("/:email", function(req,res){
         console.log("Email: "+req.params.email);
 
-        if(!req.body.current){
+        if(!req.body.google && !req.body.current){
             res.status(404).send({
                 "success": false,
                 "message": "Contraseña incorrecta"
@@ -915,15 +915,7 @@ module.exports = function (app) {
                 });
                 return;
             }
-            // Hashes the password in order to compare it with the stored one
-            var hashPass = require('crypto')
-                .createHash('sha1')
-                .update(req.body.current)
-                .digest('base64');
-
-            // If the user exists and the password is correct
-            if(result && hashPass===result.password){
-
+            if(req.body.google){ //If it's a google user, no need to check password
                 User.remove({email: req.params.email},function(err,result){
 
                     if(err) {
@@ -940,13 +932,41 @@ module.exports = function (app) {
                     });
                 });
             }
-            // If the user doesn't exist or the password is incorrect
             else{
-                res.status(404).send({
-                    "success": false,
-                    "message": "Email o contraseña incorrectos"
-                });
+                // Hashes the password in order to compare it with the stored one
+                var hashPass = require('crypto')
+                    .createHash('sha1')
+                    .update(req.body.current)
+                    .digest('base64');
+
+                // If the user exists and the password is correct
+                if(result && hashPass===result.password){
+
+                    User.remove({email: req.params.email},function(err,result){
+
+                        if(err) {
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error borrando usuario"
+                            });
+                            return;
+                        }
+
+                        res.status(200).send({
+                            "success": true,
+                            "message": "Usuario eliminado correctamente"
+                        });
+                    });
+                }
+                // If the user doesn't exist or the password is incorrect
+                else{
+                    res.status(404).send({
+                        "success": false,
+                        "message": "Email o contraseña incorrectos"
+                    });
+                }
             }
+
         });
 
     });
@@ -1014,7 +1034,8 @@ module.exports = function (app) {
                     "firstLogin": result.firstLogin,
                     "admin": result.admin,
                     "favs": result.favs,
-                    "follows": result.follows
+                    "follows": result.follows,
+                    "google": true
                 });
             }
             // If the user doesn't exist or the token is incorrect
