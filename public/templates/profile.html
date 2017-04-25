@@ -18,26 +18,25 @@
         </div>
 
         <!-- user name input form -->
-        <div class="form-group">
+        <div ng-hide="google" class="form-group">
           <input ng-click="hideError();hideSuccess()" type="password" ng-model="currentPass" class="form-control"
                  placeholder="Introduce tu contraseña actual" required />
         </div>
 
         <!-- password input form-->
-        <div class="form-group">
+        <div ng-hide="google" class="form-group">
           <input ng-click="hideError();hideSuccess()" type="password" ng-model="newPass" class="form-control"
                  placeholder="Introduce tu nueva contraseña" />
         </div>
 
         <!-- submit button form-->
         <p class="text-center">
-          <button ng-click="delete=false" type="submit" class="btn btn-default w3-theme-action customButton">
+          <button ng-hide="google" ng-click="delete=false" type="submit" class="btn btn-default w3-theme-action customButton">
             Cambiar contraseña</button>
           <button ng-click="delete=true" type="submit" class="btn btn-danger customButton">
             Borrar cuenta</button>
         </p>
 
-      </form>
     </div>
   </div>
 </div>
