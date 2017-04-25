@@ -560,7 +560,7 @@ module.exports = function (app) {
             if(user){
 
                 // Checks if the POI that is going to be duplicated exists.
-                POI.findByIdAndUpdate(req.params.id, {$inc: {"numDupli":1}}, function(err, poi){
+                POI.findByIdAndUpdate(req.params.id, {$inc: {"duplicated":1}}, function(err, poi){
 
                     if(err) {
                         res.status(500).send({
@@ -580,6 +580,8 @@ module.exports = function (app) {
                         delete duplicate.owner;
                         delete duplicate.creationDate;
                         delete duplicate.rating;
+                        delete duplicate.favNumber;
+                        delete duplicate.duplicated;
                         // Sets the new owner of the duplicated POI.
                         duplicate.owner = req.body.userEmail;
                         // Adds a suffix to indicate that is a duplicate of another POI
