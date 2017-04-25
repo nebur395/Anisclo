@@ -61,6 +61,7 @@ var poiSchema = mongoose.Schema({
     lng: {type: Number, required: true},
     owner: {type: String, required: true},
     rating: {type: [Number], default: []},
+    numFavs: {type: Number, default: 0},
     url: {type: String, default: ""},
     image: {type:mongoose.Schema.Types.ObjectId, default: null},
     creationDate: {type: Date, default: Date.now}
