@@ -8,6 +8,7 @@ angular.module('pirineoPOIApp')
             $scope.currentPass = "";
             $scope.newPass = "";
             $scope.delete = false;
+            $scope.google = auth.getGoogle();
 
             // FEEDBACK MESSAGES
 
@@ -42,7 +43,7 @@ angular.module('pirineoPOIApp')
 
             $scope.settings = function () {
                 if ($scope.delete) {
-                    settings.deleteAccount($scope.email, $scope.currentPass, showError);
+                    settings.deleteAccount($scope.email, $scope.currentPass, $scope.google, showError);
                 } else {
                     var passwords = {
                         current: $scope.currentPass,
