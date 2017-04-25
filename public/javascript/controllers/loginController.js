@@ -26,13 +26,6 @@ angular.module('pirineoPOIApp')
             };
 
             // inputs visual variables
-            $scope.name = "";
-            $scope.lastname = "";
-            $scope.email = "";
-            $scope.recaptchaResponse;
-
-
-            // inputs visual variables
             $scope.email = "";
             $scope.password = "";
 
