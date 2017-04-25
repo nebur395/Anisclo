@@ -191,6 +191,7 @@ angular.module('pirineoPOIApp')
 
             //close record
             $scope.closePOIModal = function () {
+                $scope.valorar = "";
                 $scope.poiModal = {
                     _id: "",
                     name: "",

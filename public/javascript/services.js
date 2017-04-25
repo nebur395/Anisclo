@@ -69,28 +69,51 @@ angular.module('pirineoPOIApp')
                 return _identity.follows;
             },
 
+            getGoogle: function () {
+                return _identity.google;
+            },
+
             //send the login info to the server
-            login: function (user, password, callback) {
+            login: function (user, password, google,callback) {
                 var that = this;
-                $http({
-                    method: 'GET',
-                    url: 'users/login',
-                    headers: {
-                        'Authorization': 'Basic ' +
-                        $base64.encode(user + ":" + password)
-                    }
-                }).success(function (data) {
-                    that.authenticate(data);
-                    if (data.firstLogin) {
-                        $state.go('changePassword');
-                    } else if (data.admin) {
-                        $state.go('admin');
-                    } else {
-                        $state.go('starter');
-                    }
-                }).error(function (data) {
-                    callback(data.message);
-                });
+                if(google){
+                    $http({
+                        method: 'GET',
+                        url: 'users/'+user,
+                        headers: {
+                            'Content-Type': 'application/json; charset=UTF-8',
+                            'token': password
+                        }
+                    }).success(function (data) {
+                        that.authenticate(data);
+                        if (data) {
+                            $state.go('starter');
+                        }
+                    }).error(function (data) {
+                        callback(data.message);
+                    });
+                }
+                else{
+                    $http({
+                        method: 'GET',
+                        url: 'users/login',
+                        headers: {
+                            'Authorization': 'Basic ' +
+                            $base64.encode(user + ":" + password)
+                        }
+                    }).success(function (data) {
+                        that.authenticate(data);
+                        if (data.firstLogin) {
+                            $state.go('changePassword');
+                        } else if (data.admin) {
+                            $state.go('admin');
+                        } else {
+                            $state.go('starter');
+                        }
+                    }).error(function (data) {
+                        callback(data.message);
+                    });
+                }
             },
 
             //send the register info to the server
@@ -200,9 +223,12 @@ angular.module('pirineoPOIApp')
                 });
             },
 
-            // change the current user password
-            deleteAccount: function (email, password, callbackError) {
-                var temp = {current: password};
+            // delete user account
+            deleteAccount: function (email, password, google, callbackError) {
+                var temp = {
+                    current: password,
+                    google:google
+                };
                 $http({
                     method: 'DELETE',
                     url: 'users/' + email,

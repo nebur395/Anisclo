@@ -16,12 +16,12 @@ angular.module('pirineoPOIApp')
             $scope.successMsg = "";
             $scope.errorMsg = "";
 
-            // hide the error mensage
+            // hide the error message
             $scope.hideError = function () {
                 $scope.errorMsg = "";
                 $scope.error = false;
             };
-            // show the error mensage
+            // show the error message
             var showError = function (error) {
                 $scope.errorMsg = error;
                 $scope.error = true;

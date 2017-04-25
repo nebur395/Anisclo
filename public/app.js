@@ -1,5 +1,5 @@
 angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgoogle-maps', 'dndLists',
-                                'ui-notification', 'ngSanitize', 'chart.js'])
+                                'ui-notification', 'ngSanitize', 'chart.js', 'satellizer'])
 
     .config(function(uiGmapGoogleMapApiProvider) {
         uiGmapGoogleMapApiProvider.configure({
@@ -14,6 +14,36 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             positionX: 'center',
             maxCount: 4
         });
+    })
+    //config login google
+    .config(function($authProvider){
+
+        $authProvider.httpInterceptor = function() { return true; };
+        $authProvider.withCredentials = false;
+        $authProvider.tokenRoot = null;
+        $authProvider.baseUrl = '/';
+        $authProvider.loginUrl = '/auth/login';
+        $authProvider.signupUrl = '/auth/signup';
+        $authProvider.unlinkUrl = '/auth/unlink/';
+        $authProvider.tokenName = 'token';
+        $authProvider.tokenPrefix = 'satellizer';
+        $authProvider.tokenHeader = 'Authorization';
+        $authProvider.tokenType = 'Bearer';
+        $authProvider.storageType = 'localStorage';
+        $authProvider.google({
+            clientId: '455009480567-lhd272hs4et03dj9g4vmltt9rurhcrtg.apps.googleusercontent.com',
+            url: 'users/google',
+            authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
+            redirectUri: window.location.origin,
+            requiredUrlParams: ['scope'],
+            optionalUrlParams: ['display'],
+            scope: ['profile', 'email'],
+            scopePrefix: 'openid',
+            scopeDelimiter: ' ',
+            display: 'popup',
+            oauthType: '2.0',
+            popupOptions: { width: 452, height: 633 }
+        })
     })
 
     .config(function ($stateProvider, $urlRouterProvider) {

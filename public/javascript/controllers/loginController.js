@@ -1,7 +1,30 @@
 angular.module('pirineoPOIApp')
 
-    .controller('loginCtrl', ['$scope', '$state', 'auth',
-        function ($scope, $state, auth) {
+    .controller('loginCtrl', ['$scope', '$state', 'auth', '$auth', 'Notification',
+        function ($scope, $state, auth, $auth, Notification) {
+
+            // show the error message
+            var showError = function (message) {
+                Notification.error('&#10008' + message);
+            };
+
+            // show the error message
+            var showSuccess = function (message) {
+                Notification.success('&#10004' + message);
+            };
+
+            //Google login code
+            $scope.authenticate = function(provider) {
+                $auth.authenticate(provider)
+                    .then(function(response){ //si lo hace bien
+                        auth.login(response.data.email, response.data.google, true, showError);
+                    })
+                    .catch(function(response){ //si lo hace mal
+                        showError("Error al iniciar sesión. " +
+                            "\nEs posible que ese email ya esté registrado");
+                    });
+            };
+
             // inputs visual variables
             $scope.email = "";
             $scope.password = "";
@@ -25,6 +48,6 @@ angular.module('pirineoPOIApp')
             // send the login form to the auth service
             $scope.login = function () {
                 // Standard 'authorization basic'
-                auth.login($scope.email, $scope.password, showError);
+                auth.login($scope.email, $scope.password, false, showError);
             };
         }]);
