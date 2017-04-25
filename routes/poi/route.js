@@ -161,26 +161,45 @@ module.exports = function (app) {
                         return;
                     }
 
-                    // If all the POIs exist, the new route is created and saved
-                    Route.create({
+                    var duration = 0;
+                    var length = 0;
+                    async.each(req.body.routeInfo, function(section, callback){
 
-                        owner: req.body.userEmail,
-                        travelMode: req.body.travelMode,
-                        routePOIs: req.body.routePOIs,
-                        routeInfo: req.body.routeInfo
+                        duration += section.duration.value;
+                        length += section.distance.value;
+                        callback();
 
-                    }, function(err, result){
-
+                    }, function(err){
                         if (err){
-                            res.status(500).send({
+                            res.status(404).send({
                                 "success": false,
-                                "message": "Error guardando datos"
+                                "message": err
                             });
                             return;
                         }
 
-                        res.status(200).send({
-                            "routeID": result._id
+                        // If all the POIs exist, the new route is created and saved
+                        Route.create({
+
+                            owner: req.body.userEmail,
+                            travelMode: req.body.travelMode,
+                            routePOIs: req.body.routePOIs,
+                            duration: duration,
+                            length: distance
+
+                        }, function(err, result){
+
+                            if (err){
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error guardando datos"
+                                });
+                                return;
+                            }
+
+                            res.status(200).send({
+                                "routeID": result._id
+                            });
                         });
                     });
 
@@ -355,7 +374,7 @@ module.exports = function (app) {
      *              $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:id", function(req, res){
-        Route.findByIdAndUpdate(req.params.id, {$inc: {"numRequested":1}}, function(err, route){
+        Route.findByIdAndUpdate(req.params.id, {$inc: {"requestedNumber":1}}, function(err, route){
 
             if (err){
                 res.status(500).send({
