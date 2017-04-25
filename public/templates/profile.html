@@ -9,11 +9,11 @@
 
       <form role="form" ng-submit="settings()">
         <!-- this div will show only when an error occurs -->
-        <div ng-hide="google" ng-if="error" class="alert alert-danger feedbackMessages">
+        <div ng-if="error" class="alert alert-danger feedbackMessages">
           <strong>&#10008</strong> {{errorMsg}}
         </div>
         <!-- this div will show only when the operation has been a success -->
-        <div ng-hide="google" ng-if="success" class="alert alert-success feedbackMessages">
+        <div ng-if="success" class="alert alert-success feedbackMessages">
           <strong>&#10004</strong> {{successMsg}}
         </div>
 
