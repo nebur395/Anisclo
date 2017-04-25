@@ -200,9 +200,59 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poiByDate", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+                var date = new Date();
+                var year = date.getFullYear()-1;
+                var month = date.getMonth() +1;
+                var day = date.getDate();
+                POI.find({"creationDate": {$gte: new Date(year, month, day)}}, '-_id name creationDate', function(err, pois){
+
+                    var poiList = [];
+                    async.eachOf(pois, function(poi, index, callback){
+
+                        var poiInfo = {
+
+                            "name": poi.name,
+                            "creationDate": poi.creationDate.getMonth()+1
+                        };
+                        poiList.push(poiInfo);
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "pois": poiList
+                        });
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
