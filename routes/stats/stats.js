@@ -56,7 +56,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostRated", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -106,7 +109,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostFavorite", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -155,7 +161,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poiByDate", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
 
@@ -205,7 +214,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poiByLocation", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -254,7 +266,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/duplicatedPois", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -294,7 +309,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/followers", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -343,7 +361,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/longestRoutes", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -392,7 +413,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/longestRoutesByDistance", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -403,7 +427,7 @@ module.exports = function(app){
      *       - Stats
      *     summary: Lista del número de rutas por el número de POIs.
      *     description: Obtiene una lista del número de rutas que tienen
-     *      un determinado número de POIs en rangos de 5.
+     *      un determinado número de POIs en rangos de 5. El último rango es 31+.
      *     consumes:
      *       - application/json
      *       - charset=utf-8
@@ -429,7 +453,7 @@ module.exports = function(app){
      *                  routesNumber:
      *                   type: integer
      *                   description: Número de rutas
-     *                  rango:
+     *                  rank:
      *                   type: string
      *                   description: Rango del número de POIs
      *       404:
@@ -442,12 +466,15 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poisInRoutes", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
      * @swagger
-     * /stats/{email}/transportUsage:
+     * /stats/{email}/transportsUsage:
      *   get:
      *     tags:
      *       - Stats
@@ -479,9 +506,11 @@ module.exports = function(app){
      *                  routesNumber:
      *                   type: integer
      *                   description: Número de rutas
-     *                  transporte:
+     *                  transport:
      *                   type: string
-     *                   description: Transporte empleado por las rutas
+     *                   description: |
+     *                     Transporte empleado por las rutas. Valor discreto entre:
+     *                     'En coche', 'Transporte público', 'A pie', y  'En bicicleta'
      *       404:
      *         description: Mensaje de feedback para el usuario.
      *         schema:
@@ -492,7 +521,10 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/transportsUsage", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
 
     /**
@@ -542,7 +574,12 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostRequestedRoutesById", function(req, res){
-
+        res.status(500).send({
+            "success": false,
+            "message": "Error guardando datos"
+        });
     });
+
+    return router;
 
 };

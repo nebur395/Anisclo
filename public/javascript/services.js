@@ -514,6 +514,176 @@ angular.module('pirineoPOIApp')
                 });
             }
         };
+    })
+
+    // 'userStats' service manage the userStats settings functions of the page with the server
+    .factory('userStats', function ($http, auth) {
+        return {
+            // Get the most rated owned POI
+            getMostRated: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/mostRated',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the most favorite owned POI
+            getMostFavorite: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/mostFavorite',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the evolution of POIs creation date
+            getPoiByDate: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/poiByDate',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the most POI-populated location
+            getPoiByLocation: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/poiByLocation',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the most duplicated owned POI
+            getDuplicatedPois: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/duplicatedPois',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.pois);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the number of followers
+            getFollowers: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/followers',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.followers);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the longest routes by distance
+            getLongestRoutesByDistance: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/longestRoutesByDistance',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the longest routes by time
+            getLongestRoutes: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/longestRoutes',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the number of routes with the same amount of POIs
+            getPoisInRoutes: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/poisInRoutes',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the most frequent transportation
+            getTransportUsage: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/transportsUsage',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // Get the most recreated routes
+            getMostRequestedRoutesById: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'stats/' + auth.getEmail() + '/mostRequestedRoutesById',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            }
+        };
     });
 
 
