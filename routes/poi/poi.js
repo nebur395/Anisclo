@@ -450,17 +450,16 @@ module.exports = function (app) {
             }
 
             if(poi){
-
                 var rating = req.body.rating;
                 // Checks if the rating is a valid one
                 if(rating>-1 && rating<6){
                     poi.rating.push(rating);
                     var ratingSum = 0;
                     //var ratingSum = poi.rating.reduce((a, b) => a + b, 0);
-                    for(i=0;poi.rating.length;i++){
+                    for(i=0;i<poi.rating.length;i++){
                         ratingSum += poi.rating[i];
                     }
-                    poi.ratingAvg = ratingSum/rating.length;
+                    poi.ratingAvg = ratingSum/poi.rating.length;
                     poi.save(function(err, result){
 
                         if(err) {

@@ -57,9 +57,63 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostRated", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Searches for the user's 5 POIs that have more favorites
+                POI.find({"owner": req.params.email}, '-_id name ratingAvg', {sort: {"ratingAvg": -1}, limit:5}, function(err, pois){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    // Iterates the list to create the response with the correct fields
+                    async.eachOf(pois, function(poi, index, callback){
+
+                        var jPoi = poi.toJSON();
+                        jPoi.rating = poi.ratingAvg;
+                        delete jPoi.ratingAvg;
+                        pois[index] = jPoi;
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "pois": pois
+                        });
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
