@@ -530,6 +530,14 @@ module.exports = function(app){
                 // Searches for the user's routes, sorting them by descending duration
                 Route.find({"owner": req.params.email}, 'duration', {sort: {"duration": -1}}, function(err, routes){
 
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
                     // Takes the first 5 POIs from the list
                     routes.splice(5, routes.length-5);
                     // Iterates the list to create the response with the correct fields
@@ -629,6 +637,14 @@ module.exports = function(app){
 
                 // Searches for the user's routes, sorting them by descending duration
                 Route.find({"owner": req.params.email}, 'distance', {sort: {"distance": -1}}, function(err, routes){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
 
                     // Takes the first 5 POIs from the list
                     routes.splice(5, routes.length-5);
@@ -768,9 +784,82 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/transportsUsage", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                var trasports = ['DRIVING', 'WALKING', 'BICYCLING', 'TRANSIT'];
+                var transStats = [];
+                for(i=0;i<trasports.length;i++){
+                    var item = {
+                        "transport": trasports[i],
+                        "routesNumber":0
+                    };
+                    transStats.push(item);
+                }
+                Route.find({"owner": req.params.email}, function(err, routes){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    async.each(routes, function(route, callback){
+
+                        switch (route.travelMode){
+                            case 'DRIVING':
+                                transStats[trasports.indexOf('DRIVING')].routesNumber += 1;
+                                break;
+                            case 'WALKING':
+                                transStats[trasports.indexOf('WALKING')].routesNumber += 1;
+                                break;
+                            case 'BICYCLING':
+                                transStats[trasports.indexOf('BICYCLING')].routesNumber += 1;
+                                break;
+                            case 'TRANSIT':
+                                transStats[trasports.indexOf('TRANSIT')].routesNumber += 1;
+                                break;
+                        }
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "routes": transStats
+                        });
+
+                    });
+
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
