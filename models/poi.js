@@ -62,7 +62,7 @@ var poiSchema = mongoose.Schema({
     location: {type: String, required: true},
     owner: {type: String, required: true},
     rating: {type: [Number], default: []},
-    ratingAvg: {type: Number, defauld: 0},
+    ratingAvg: {type: Number, default: 0},
     favNumber: {type: Number, default: 0},
     duplicated: {type: Number, default: 0},
     url: {type: String, default: ""},

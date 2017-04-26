@@ -208,6 +208,7 @@ module.exports = function (app) {
                     tagsToArray(req.body.poi.tags, function(lowerCaseTags){
                         // Creates a new POI with the basic and required info.
 
+                        // Extracts the continent of the POI based on the coordinates
                         var continent = lookup.byIso(wc([req.body.poi.lng, req.body.poi.lat])).continent;
                         var newPoi = new POI({
 
@@ -460,7 +461,7 @@ module.exports = function (app) {
                 if(rating>-1 && rating<6){
                     poi.rating.push(rating);
                     var ratingSum = 0;
-                    //var ratingSum = poi.rating.reduce((a, b) => a + b, 0);
+                    // Calculates the average rating of the POI
                     for(i=0;i<poi.rating.length;i++){
                         ratingSum += poi.rating[i];
                     }
@@ -866,6 +867,7 @@ module.exports = function (app) {
                             // Transforms all the tags to an array with the tags in lowercase
                             tagsToArray(req.body.poi.tags, function(lowerCaseTags){
 
+                                // Extracts the continent of the POI based on the coordinates
                                 var continent = lookup.byIso(wc([req.body.poi.lng, req.body.poi.lat])).continent;
                                 // Updates every modifiable field in the POI
                                 poi.name = req.body.poi.name;
