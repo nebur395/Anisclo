@@ -1,4 +1,5 @@
 var express = require('express');
+var async = require("async");
 
 module.exports = function(app){
 
@@ -109,9 +110,47 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostFavorite", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Searches for all the POIs that the user owns
+                POI.find({"owner": req.params.email}, '-_id name favNumber', {sort: {"favNumber": -1}}, function(err, pois){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    // Takes the first 5 POIs from the query's result
+                    pois.splice(5, pois.length-5);
+
+                    res.status(200).send({
+                        "pois": pois
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
@@ -161,9 +200,58 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poiByDate", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+                // Checks the current date
+                var date = new Date();
+                var year = date.getFullYear()-1;
+                var month = date.getMonth() +1;
+                var day = date.getDate();
+                // Searches for POIs created during the last year since the current date
+                POI.find({"creationDate": {$gte: new Date(year, month, day)}}, '-_id name creationDate', function(err, pois){
+
+                    // Iterates the returned list to create the response
+                    async.eachOf(pois, function(poi, index, callback){
+
+                        var jPoi = poi.toJSON();
+                        jPoi.creationDate = poi.creationDate.getMonth()+1;
+                        pois[index] = jPoi;
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "pois": pois
+                        });
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
@@ -266,9 +354,47 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/duplicatedPois", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Searches for all the POIs that the user owns
+                POI.find({"owner": req.params.email}, '-_id name duplicated', {sort: {"duplicated": -1}}, function(err, pois){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    // Takes the first 5 POIs from the query's result
+                    pois.splice(5, pois.length-5);
+
+                    res.status(200).send({
+                        "pois": pois
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
@@ -309,9 +435,34 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/followers", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                User.count({"follows":req.params.email}, function(err, followers){
+                    res.status(200).send({
+                        "followers": followers
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
@@ -361,9 +512,57 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/longestRoutes", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Searches for the user's routes, sorting them by descending duration
+                Route.find({"owner": req.params.email}, 'duration', {sort: {"duration": -1}}, function(err, routes){
+
+                    // Takes the first 5 POIs from the list
+                    routes.splice(5, routes.length-5);
+                    // Iterates the list to create the response with the correct fields
+                    async.eachOf(routes, function(route, index, callback){
+
+                        var jRoute = route.toJSON();
+                        jRoute.routeId = route._id;
+                        delete jRoute._id;
+                        routes[index] = jRoute;
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "routes": routes
+                        });
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
@@ -413,9 +612,57 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/longestRoutesByDistance", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Searches for the user's routes, sorting them by descending duration
+                Route.find({"owner": req.params.email}, 'distance', {sort: {"distance": -1}}, function(err, routes){
+
+                    // Takes the first 5 POIs from the list
+                    routes.splice(5, routes.length-5);
+                    // Iterates the list to create the response with the correct fields
+                    async.eachOf(routes, function(route, index, callback){
+
+                        var jRoute = route.toJSON();
+                        jRoute.routeId = route._id;
+                        delete jRoute._id;
+                        routes[index] = jRoute;
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "routes": routes
+                        });
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
@@ -574,9 +821,57 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/mostRequestedRoutesById", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                // Searches for the user's routes, sorting them by descending duration
+                Route.find({"owner": req.params.email}, 'requestedNumber', {sort: {"requestedNumber": -1}}, function(err, routes){
+
+                    // Takes the first 5 POIs from the list
+                    routes.splice(5, routes.length-5);
+                    // Iterates the list to create the response with the correct fields
+                    async.eachOf(routes, function(route, index, callback){
+
+                        var jRoute = route.toJSON();
+                        jRoute.routeId = route._id;
+                        delete jRoute._id;
+                        routes[index] = jRoute;
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "routes": routes
+                        });
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 

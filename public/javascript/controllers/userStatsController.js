@@ -136,10 +136,10 @@ angular.module('pirineoPOIApp')
         $scope.labels10Stat = [];
         $scope.data10Stat = [];
         userStats.getMostRequestedRoutesById(function (list) {
-            list.sort(function(a, b){return b.routesNumber - a.routesNumber});
+            list.sort(function(a, b){return b.requestedNumber - a.requestedNumber});
             for (i=0;i<list.length;i++) {
                 $scope.labels10Stat.push(list[i].routeId);
-                $scope.data10Stat.push(list[i].routesNumber);
+                $scope.data10Stat.push(list[i].requestedNumber);
             }
         }, showError);
     }]);

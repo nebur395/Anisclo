@@ -567,8 +567,11 @@ module.exports = function (app) {
             // If the user exists
             if(user){
 
+                var isFav = user.favs.indexOf(req.body.poiId);
+                var favIncrement = isFav===-1 ? 1 : -1;
+
                 // Checks if the given POI exists
-                POI.findById(req.body.poiId, function(err, poi){
+                POI.findByIdAndUpdate(req.body.poiId, {$inc: {"favNumber":favIncrement}}, function(err, poi){
 
                     if(err) {
                         res.status(500).send({
@@ -579,11 +582,11 @@ module.exports = function (app) {
                     }
 
                     // If the POI exists
-                    if(poi){
+                    if(poi!==null){
 
                         var message = '';
                         // Checks if the user already has that POI as fav
-                        var isFav = user.favs.indexOf(req.body.poiId);
+
                         // If the user doesn't have that POI as fav, it adds it to the favs list
                         if(isFav == -1){
                             user.favs.push(req.body.poiId);
