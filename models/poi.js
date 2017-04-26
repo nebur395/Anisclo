@@ -59,6 +59,7 @@ var poiSchema = mongoose.Schema({
     tags: {type: [String], required: true},
     lat: {type: Number, required: true},
     lng: {type: Number, required: true},
+    location: {type: String, required: true},
     owner: {type: String, required: true},
     rating: {type: [Number], default: []},
     ratingAvg: {type: Number, defauld: 0},
@@ -86,6 +87,7 @@ poiSchema.methods.createResponse = function(imageData){
     delete poi.creationDate;
     delete poi.favNumber;
     delete poi.duplicated;
+    delete poi.location;
     delete poi.__v;
     poi.image = imageData;
 

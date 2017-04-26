@@ -6,6 +6,8 @@ var fs = require("fs");
 var async = require("async");
 var Readable = require('stream').Readable;
 var bs58 = require("bs58");
+var wc = require('which-country');
+var lookup = require('country-code-lookup');
 grid.mongo = mongoose.mongo;
 
 
@@ -205,6 +207,8 @@ module.exports = function (app) {
                     // Transforms all the tags to an array with the tags in lowercase
                     tagsToArray(req.body.poi.tags, function(lowerCaseTags){
                         // Creates a new POI with the basic and required info.
+
+                        var continent = lookup.byIso(wc([req.body.poi.lng, req.body.poi.lat])).continent;
                         var newPoi = new POI({
 
                             name: req.body.poi.name,
@@ -212,6 +216,7 @@ module.exports = function (app) {
                             tags: lowerCaseTags,
                             lat: req.body.poi.lat,
                             lng: req.body.poi.lng,
+                            location: continent,
                             owner: req.body.userEmail
                         });
 
@@ -860,12 +865,15 @@ module.exports = function (app) {
                         if(req.body.poi.tags.charAt(0)==='#'){
                             // Transforms all the tags to an array with the tags in lowercase
                             tagsToArray(req.body.poi.tags, function(lowerCaseTags){
+
+                                var continent = lookup.byIso(wc([req.body.poi.lng, req.body.poi.lat])).continent;
                                 // Updates every modifiable field in the POI
                                 poi.name = req.body.poi.name;
                                 poi.description = req.body.poi.description;
                                 poi.tags = lowerCaseTags;
                                 poi.lat = req.body.poi.lat;
                                 poi.lng = req.body.poi.lng;
+                                poi.location = continent;
 
                                 // Checks if the request have a new URL for the POI, since it's an optional field
                                 if(req.body.poi.url){
