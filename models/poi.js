@@ -61,6 +61,7 @@ var poiSchema = mongoose.Schema({
     lng: {type: Number, required: true},
     owner: {type: String, required: true},
     rating: {type: [Number], default: []},
+    ratingAvg: {type: Number, defauld: 0},
     favNumber: {type: Number, default: 0},
     duplicated: {type: Number, default: 0},
     url: {type: String, default: ""},
@@ -81,6 +82,7 @@ var poiSchema = mongoose.Schema({
 poiSchema.methods.createResponse = function(imageData){
     var poi = this.toJSON();
     delete poi.rating;
+    delete poi.ratingAvg;
     delete poi.creationDate;
     delete poi.favNumber;
     delete poi.duplicated;

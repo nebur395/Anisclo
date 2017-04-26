@@ -125,8 +125,8 @@ module.exports = function(app){
             // If the user exists
             if(user){
 
-                // Searches for all the POIs that the user owns
-                POI.find({"owner": req.params.email}, '-_id name favNumber', {sort: {"favNumber": -1}}, function(err, pois){
+                // Searches for the user's 5 POIs that have more favorites
+                POI.find({"owner": req.params.email}, '-_id name favNumber', {sort: {"favNumber": -1}, limit:5}, function(err, pois){
 
                     if(err) {
                         res.status(500).send({
@@ -135,9 +135,6 @@ module.exports = function(app){
                         });
                         return;
                     }
-
-                    // Takes the first 5 POIs from the query's result
-                    pois.splice(5, pois.length-5);
 
                     res.status(200).send({
                         "pois": pois
@@ -369,8 +366,8 @@ module.exports = function(app){
             // If the user exists
             if(user){
 
-                // Searches for all the POIs that the user owns
-                POI.find({"owner": req.params.email}, '-_id name duplicated', {sort: {"duplicated": -1}}, function(err, pois){
+                // Searches for the user's 5 POIs that have been more duplicated
+                POI.find({"owner": req.params.email}, '-_id name duplicated', {sort: {"duplicated": -1}, limit:5}, function(err, pois){
 
                     if(err) {
                         res.status(500).send({
@@ -379,9 +376,6 @@ module.exports = function(app){
                         });
                         return;
                     }
-
-                    // Takes the first 5 POIs from the query's result
-                    pois.splice(5, pois.length-5);
 
                     res.status(200).send({
                         "pois": pois
@@ -527,8 +521,8 @@ module.exports = function(app){
             // If the user exists
             if(user){
 
-                // Searches for the user's routes, sorting them by descending duration
-                Route.find({"owner": req.params.email}, 'duration', {sort: {"duration": -1}}, function(err, routes){
+                // Searches for the user's 5 longer routes, sorting them by descending duration
+                Route.find({"owner": req.params.email}, 'duration', {sort: {"duration": -1}, limit:5}, function(err, routes){
 
                     if(err) {
                         res.status(500).send({
@@ -538,8 +532,6 @@ module.exports = function(app){
                         return;
                     }
 
-                    // Takes the first 5 POIs from the list
-                    routes.splice(5, routes.length-5);
                     // Iterates the list to create the response with the correct fields
                     async.eachOf(routes, function(route, index, callback){
 
@@ -635,7 +627,7 @@ module.exports = function(app){
             // If the user exists
             if(user){
 
-                // Searches for the user's routes, sorting them by descending duration
+                // Searches for the user's 5 longer routes, sorting them by descending distance
                 Route.find({"owner": req.params.email}, 'distance', {sort: {"distance": -1}}, function(err, routes){
 
                     if(err) {
@@ -646,8 +638,6 @@ module.exports = function(app){
                         return;
                     }
 
-                    // Takes the first 5 POIs from the list
-                    routes.splice(5, routes.length-5);
                     // Iterates the list to create the response with the correct fields
                     async.eachOf(routes, function(route, index, callback){
 
@@ -994,11 +984,9 @@ module.exports = function(app){
             // If the user exists
             if(user){
 
-                // Searches for the user's routes, sorting them by descending duration
-                Route.find({"owner": req.params.email}, 'requestedNumber', {sort: {"requestedNumber": -1}}, function(err, routes){
+                // Searches for the user's 5 most requested routes
+                Route.find({"owner": req.params.email}, 'requestedNumber', {sort: {"requestedNumber": -1}, limit: 5}, function(err, routes){
 
-                    // Takes the first 5 POIs from the list
-                    routes.splice(5, routes.length-5);
                     // Iterates the list to create the response with the correct fields
                     async.eachOf(routes, function(route, index, callback){
 
