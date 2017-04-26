@@ -5,6 +5,8 @@ var server = require('../server.js');
 var User = server.models.User;
 var POI = server.models.POI;
 var ObjectId = require('mongoose').Types.ObjectId;
+var wc = require('which-country');
+var lookup = require('country-code-lookup');
 
 chai.use(chaiHttp);
 
@@ -24,14 +26,19 @@ describe('POI', function(){
 
     var email2 = "email@test.com";
 
+    var lat = 41.64469659784919;
+    var lng = -0.8703231811523438;
+    var continent = lookup.byIso(wc([lng, lat])).continent;
+
     var poiRequest = {
         "userEmail": email,
         "poi": {
             "name": "TestPOI",
             "description": "A test POI",
             "tags": "#test#POITEST",
-            "lat": 41.64469659784919,
-            "lng": -0.8703231811523438
+            "lat": lat,
+            "lng": lng,
+            "location": continent
         }
     };
 
@@ -40,9 +47,10 @@ describe('POI', function(){
         "name": "TestPOI",
         "description": "A test POI",
         "tags": ['test', 'poitest'],
-        "lat": 41.64469659784919,
-        "lng": -0.8703231811523438,
-        "owner": email
+        "lat": lat,
+        "lng": lng,
+        "owner": email,
+        "location": continent
     };
 
     var url = "https://noterayesco.herokuapp.com/";
