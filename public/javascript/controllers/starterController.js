@@ -119,7 +119,7 @@ angular.module('pirineoPOIApp')
                     case 4:
                         $scope.map.center.latitude= $scope.poiModal.lat;
                         $scope.map.center.longitude= $scope.poiModal.lng;
-                        showSuccess("Mapa centrado en POI");
+                        showSuccess("Mapa centrado en "+$scope.poiModal.name);
                         $scope.closePOIModal();
                         break;
                     default:
