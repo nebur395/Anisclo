@@ -353,9 +353,91 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poiByLocation", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                var continents = ['Asia', 'Africa', 'Europe', 'Americas', 'Oceania', 'Indian Ocean', 'Atlantic Ocean'];
+                var stats = [];
+                for(i=0;i<continents.length;i++){
+                    var item = {
+                        "continent": continents[i],
+                        "poiNumber":0
+                    };
+                    stats.push(item);
+                }
+
+                POI.find({"owner":req.params.email}, function(err, pois){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    async.each(pois, function(poi, callback){
+
+                        switch (poi.location){
+                            case 'Asia':
+                                stats[continents.indexOf('Asia')].poiNumber += 1;
+                                break;
+                            case 'Africa':
+                                stats[continents.indexOf('Africa')].poiNumber += 1;
+                                break;
+                            case 'Europe':
+                                stats[continents.indexOf('Europe')].poiNumber += 1;
+                                break;
+                            case 'Americas':
+                                stats[continents.indexOf('Americas')].poiNumber += 1;
+                                break;
+                            case 'Oceania':
+                                stats[continents.indexOf('Oceania')].poiNumber += 1;
+                                break;
+                            case 'Indian Ocean':
+                                stats[continents.indexOf('Indian Ocean')].poiNumber += 1;
+                                break;
+                            case 'Atlantic Ocean':
+                                stats[continents.indexOf('Atlantic Ocean')].poiNumber += 1;
+                                break;
+                        }
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "pois": stats
+                        });
+
+                    });
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
