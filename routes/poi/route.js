@@ -185,7 +185,7 @@ module.exports = function (app) {
                             travelMode: req.body.travelMode,
                             routePOIs: req.body.routePOIs,
                             duration: duration,
-                            length: distance
+                            length: length
 
                         }, function(err, result){
 

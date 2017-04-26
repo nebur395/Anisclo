@@ -6,6 +6,8 @@ var fs = require("fs");
 var async = require("async");
 var Readable = require('stream').Readable;
 var bs58 = require("bs58");
+var wc = require('which-country');
+var lookup = require('country-code-lookup');
 grid.mongo = mongoose.mongo;
 
 
@@ -205,6 +207,9 @@ module.exports = function (app) {
                     // Transforms all the tags to an array with the tags in lowercase
                     tagsToArray(req.body.poi.tags, function(lowerCaseTags){
                         // Creates a new POI with the basic and required info.
+
+                        // Extracts the continent of the POI based on the coordinates
+                        var continent = lookup.byIso(wc([req.body.poi.lng, req.body.poi.lat])).continent;
                         var newPoi = new POI({
 
                             name: req.body.poi.name,
@@ -212,6 +217,7 @@ module.exports = function (app) {
                             tags: lowerCaseTags,
                             lat: req.body.poi.lat,
                             lng: req.body.poi.lng,
+                            location: continent,
                             owner: req.body.userEmail
                         });
 
@@ -450,11 +456,16 @@ module.exports = function (app) {
             }
 
             if(poi){
-
                 var rating = req.body.rating;
                 // Checks if the rating is a valid one
                 if(rating>-1 && rating<6){
                     poi.rating.push(rating);
+                    var ratingSum = 0;
+                    // Calculates the average rating of the POI
+                    for(i=0;i<poi.rating.length;i++){
+                        ratingSum += poi.rating[i];
+                    }
+                    poi.ratingAvg = ratingSum/poi.rating.length;
                     poi.save(function(err, result){
 
                         if(err) {
@@ -580,6 +591,7 @@ module.exports = function (app) {
                         delete duplicate.owner;
                         delete duplicate.creationDate;
                         delete duplicate.rating;
+                        delete duplicate.ratingAvg;
                         delete duplicate.favNumber;
                         delete duplicate.duplicated;
                         // Sets the new owner of the duplicated POI.
@@ -854,12 +866,16 @@ module.exports = function (app) {
                         if(req.body.poi.tags.charAt(0)==='#'){
                             // Transforms all the tags to an array with the tags in lowercase
                             tagsToArray(req.body.poi.tags, function(lowerCaseTags){
+
+                                // Extracts the continent of the POI based on the coordinates
+                                var continent = lookup.byIso(wc([req.body.poi.lng, req.body.poi.lat])).continent;
                                 // Updates every modifiable field in the POI
                                 poi.name = req.body.poi.name;
                                 poi.description = req.body.poi.description;
                                 poi.tags = lowerCaseTags;
                                 poi.lat = req.body.poi.lat;
                                 poi.lng = req.body.poi.lng;
+                                poi.location = continent;
 
                                 // Checks if the request have a new URL for the POI, since it's an optional field
                                 if(req.body.poi.url){
