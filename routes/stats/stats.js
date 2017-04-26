@@ -729,9 +729,78 @@ module.exports = function(app){
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/:email/poisInRoutes", function(req, res){
-        res.status(500).send({
-            "success": false,
-            "message": "Error guardando datos"
+
+        // It searches for the user.
+        User.findOne({"email": req.params.email}, function(err, user){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            // If the user exists
+            if(user){
+
+                var ranks = ['1-5', '6-10', '11-15', '16-20', '21-25', '26-30', '31+'];
+                var stats = [];
+                for(i=0;i<ranks.length;i++){
+                    var item = {
+                        "rank": ranks[i],
+                        "routesNumber":0
+                    };
+                    stats.push(item);
+                }
+                Route.find({"owner": req.params.email}, function(err, routes){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    async.each(routes, function(route, callback){
+
+                        var poisNumber = route.routePOIs.length;
+
+                        if (poisNumber>=31) stats[ranks.indexOf('+31')].routesNumber+=1;
+                        else if(poisNumber>25) stats[ranks.indexOf('26-30')].routesNumber+=1;
+                        else if(poisNumber>20) stats[ranks.indexOf('21-25')].routesNumber+=1;
+                        else if(poisNumber>15) stats[ranks.indexOf('16-20')].routesNumber+=1;
+                        else if(poisNumber>10) stats[ranks.indexOf('11-15')].routesNumber+=1;
+                        else if(poisNumber>5) stats[ranks.indexOf('6-10')].routesNumber+=1;
+                        else stats[ranks.indexOf('1-5')].routesNumber+=1;
+
+                        callback();
+
+                    }, function(err){
+
+                        if (err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error creando respuesta"
+                            });
+                            return;
+                        }
+                        res.status(200).send({
+                            "routes": stats
+                        });
+
+                    });
+
+                });
+            }
+            // If the user doesn't exist
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
         });
     });
 
