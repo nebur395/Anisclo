@@ -36,6 +36,39 @@ module.exports = function (app) {
     /**
      * @swagger
      * /users/:
+     *   get:
+     *     tags:
+     *       - Users
+     *     summary: Listar todos los usuarios del sistema
+     *     description: Lista todos los usuarios del sistema
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           type: array
+     *           items:
+     *             $ref: '#/definitions/User'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/", function(req, res){
+
+    });
+
+    /**
+     * @swagger
+     * /users/:
      *   post:
      *     tags:
      *       - Users
