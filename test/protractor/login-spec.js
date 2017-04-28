@@ -64,4 +64,12 @@ describe('Login Page', function() {
 
         expect(browser.getCurrentUrl()).toBe(loginPage.getUrl());
     });
+
+    /*
+     * Removes the user created at the begining of the tests
+     * after every test is finished.
+     */
+    afterAll(function(){
+        User.collection.remove({"email":'e2etest@email.com'});
+    });
 });
