@@ -44,6 +44,7 @@ describe('Starter Page', function() {
         loginPage.loginClick();
 
         expect(browser.getCurrentUrl()).toBe(starterPage.getUrl());
+        browser.sleep(500);
         starterPage.mapClick();
 
 
