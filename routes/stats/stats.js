@@ -764,7 +764,7 @@ module.exports = function(app){
             if(user){
 
                 // Searches for the user's 5 longer routes, sorting them by descending distance
-                Route.find({"owner": req.params.email}, 'distance', {sort: {"distance": -1}}, function(err, routes){
+                Route.find({"owner": req.params.email}, 'length', {sort: {"length": -1}}, function(err, routes){
 
                     if(err) {
                         res.status(500).send({
