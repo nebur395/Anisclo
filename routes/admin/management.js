@@ -7,6 +7,40 @@ module.exports = function (app) {
     var User = app.models.User;
     var POI = app.models.POI;
 
+    /**
+     * @swagger
+     * /admin/users/:
+     *   get:
+     *     tags:
+     *       - Admin
+     *     summary: Listar todos los usuarios del sistema
+     *     description: Lista todos los usuarios del sistema con información a la que sólo
+     *      el admin puede acceder.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           type: array
+     *           items:
+     *             $ref: '#/definitions/UserForAdmin'
+     *       404:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/", function(req, res){
+
+    });
+
 
     /**
      * @swagger
@@ -182,4 +216,6 @@ module.exports = function (app) {
     router.put("/users/:email/permanentBan", function(req, res){
 
     });
+
+    return router;
 };

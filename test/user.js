@@ -54,7 +54,7 @@ describe('User', function(){
     describe('#signUp()', function(){
 
         var singUpSuccessMessage = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
-        var signUpErrorMessage = "Error guardando datos";
+        var signUpErrorMessage = "Ya existe una cuenta con ese correo.";
         var signUpBlankFieldMessage = "Nombre, apellido o email incorrectos";
 
 
@@ -84,7 +84,7 @@ describe('User', function(){
                 .send({name:name, lastname:lastname, email:email})
                 .end(function(err, result){
 
-                    result.should.have.status(500);
+                    result.should.have.status(404);
                     result.body.should.be.a('object');
                     result.body.should.have.property('success');
                     result.body.success.should.equal(false);
@@ -651,6 +651,15 @@ describe('User', function(){
                     done();
                 });
         });
+
+        /*
+         * Removes the user created during the deleteUser tests.
+         */
+        after(function(done){
+            User.collection.remove({"email":email2});
+            done();
+        });
+
 
     });
 

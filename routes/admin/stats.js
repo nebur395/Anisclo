@@ -7,5 +7,5 @@ module.exports = function (app) {
     var User = app.models.User;
     var POI = app.models.POI;
 
-
+    return router;
 };

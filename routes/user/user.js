@@ -36,39 +36,6 @@ module.exports = function (app) {
     /**
      * @swagger
      * /users/:
-     *   get:
-     *     tags:
-     *       - Users
-     *     summary: Listar todos los usuarios del sistema
-     *     description: Lista todos los usuarios del sistema
-     *     consumes:
-     *       - application/json
-     *       - charset=utf-8
-     *     produces:
-     *       - application/json
-     *     responses:
-     *       200:
-     *         description: Mensaje de feedback para el usuario.
-     *         schema:
-     *           type: array
-     *           items:
-     *             $ref: '#/definitions/User'
-     *       404:
-     *         description: Mensaje de feedback para el usuario.
-     *         schema:
-     *           $ref: '#/definitions/FeedbackMessage'
-     *       500:
-     *         description: Mensaje de feedback para el usuario.
-     *         schema:
-     *           $ref: '#/definitions/FeedbackMessage'
-     */
-    router.get("/", function(req, res){
-
-    });
-
-    /**
-     * @swagger
-     * /users/:
      *   post:
      *     tags:
      *       - Users
@@ -138,36 +105,54 @@ module.exports = function (app) {
         );
         */
 
-        console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
-        User.create({
-
-            email: req.body.email,
-            name: req.body.name,
-            lastname: req.body.lastname,
-            firstLogin: true,
-            admin: false
-
-        }, function (err, result){
+        User.findOne({email: req.body.email}, function(err, result){
 
             if(err){
                 res.status(500).send({
                     "success": false,
-                    "message": "Error guardando datos"
+                    "message": "Error recuperando datos"
+                });
+            }
+
+            if(result){
+                res.status(404).send({
+                    "success": false,
+                    "message": "Ya existe una cuenta con ese correo."
                 });
             }
             else{
-                var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
-                var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
-                var mailOptions = {
-                    from: 'No-Reply <verif.anisclo@gmail.com>',
-                    to: req.body.email,
-                    subject: 'Pirineo\'s POI account confirmation',
-                    html: 'Hello there! Wellcome to Pirineo\'s POI.</p>' +
-                    '<p>Click on the link below to confim you account and get your password :)</p>' +
-                    '<a href='+url+' target="_blank">'+url+'</a>'+
-                    '<p>The Pirineo\'s POI team.</p>'
-                };
-                sendEmail(mailOptions, res, message);
+                console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
+                User.create({
+
+                    email: req.body.email,
+                    name: req.body.name,
+                    lastname: req.body.lastname,
+                    firstLogin: true,
+                    admin: false
+
+                }, function (err, result){
+
+                    if(err){
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error guardando datos"
+                        });
+                    }
+                    else{
+                        var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
+                        var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
+                        var mailOptions = {
+                            from: 'No-Reply <verif.anisclo@gmail.com>',
+                            to: req.body.email,
+                            subject: 'Pirineo\'s POI account confirmation',
+                            html: 'Hello there! Wellcome to Pirineo\'s POI.</p>' +
+                            '<p>Click on the link below to confim you account and get your password :)</p>' +
+                            '<a href='+url+' target="_blank">'+url+'</a>'+
+                            '<p>The Pirineo\'s POI team.</p>'
+                        };
+                        sendEmail(mailOptions, res, message);
+                    }
+                });
             }
         });
     });
@@ -236,7 +221,7 @@ module.exports = function (app) {
                 else{
                     console.log("Nombre: "+profile.given_name+" Apellido: "+profile.family_name+" Email: "+profile.email);
                     // Check if user exists
-                    User.findOne({email: profile.email}, function(err, result){
+                    User.findOneAndUpdate({email: profile.email}, {lastLoginDate: Date.now()}, function(err, result){
 
                         if (result === null){ // User doesn't exist, so it's a signUp!
                             User.create({
@@ -269,6 +254,35 @@ module.exports = function (app) {
                         }
                         // If there's a user with that email and the token is correct
                         else if(result && result.google === profile.sub){
+
+                            // Checks if the user's account is active
+                            if(!result.isActive){
+                                res.status(404).send({
+                                    "success": false,
+                                    "message": "La cuenta no está activa. Contacte con el administrador."
+                                });
+                                return;
+                            }
+
+                            // Checks if the user's account have any kind of ban, temporary or permanent
+                            if(result.banInitDate !== null && result.banFinishDate !== null){
+                                var initDate = new Date(result.banInitDate);
+                                var finishDate = new Date(result.banFinishDate);
+                                var remainingTime = parseInt((finishDate.valueOf() - initDate.valueOf())/(1000*60*60*24));
+                                res.status(404).send({
+                                    "success": false,
+                                    "message": "Su cuenta se encuentra baneada temporalmente. Podrá volver en "+remainingTime+" días."
+                                });
+                                return;
+
+                            }
+                            else if (result.banInitDate !== null){
+                                res.status(404).send({
+                                    "success": false,
+                                    "message": "Su cuenta se encuentra baneada permanentemente."
+                                });
+                                return;
+                            }
 
                             res.status(200).send({
                                 "email": result.email,
@@ -344,7 +358,7 @@ module.exports = function (app) {
         console.log("Email: "+email+" Pass: "+pass);
 
         // Looks for the user
-        User.findOne({email: email}, function(err, result){
+        User.findOneAndUpdate({email: email}, {lastLoginDate: Date.now()}, function(err, result){
 
             if (err){
                 res.status(500).send({
@@ -360,8 +374,46 @@ module.exports = function (app) {
                 .update(pass)
                 .digest('base64');
 
-            // If there's a user with that email and the password is correct
-            if(result && hashPass===result.password){
+            // If there's a user with that email
+            if(result!==null){
+
+                // Checks if the user's account is active
+                if(!result.isActive){
+                    res.status(404).send({
+                        "success": false,
+                        "message": "La cuenta no está activa. Contacte con el administrador."
+                    });
+                    return;
+                }
+
+                // Checks if the user's account have any kind of ban, temporary or permanent
+                if(result.banInitDate !== null && result.banFinishDate !== null){
+                    var initDate = new Date(result.banInitDate);
+                    var finishDate = new Date(result.banFinishDate);
+                    var remainingTime = parseInt((finishDate.valueOf() - initDate.valueOf())/(1000*60*60*24));
+                    res.status(404).send({
+                        "success": false,
+                        "message": "Su cuenta se encuentra baneada temporalmente. Podrá volver en "+remainingTime+" días."
+                    });
+                    return;
+
+                }
+                else if (result.banInitDate !== null){
+                    res.status(404).send({
+                        "success": false,
+                        "message": "Su cuenta se encuentra baneada permanentemente."
+                    });
+                    return;
+                }
+
+                // If the account is active and have no ban on it, checks if the password is correct
+                if(hashPass!==result.password){
+                    res.status(404).send({
+                        "success": false,
+                        "message": "Email o contraseña incorrectos"
+                    });
+                    return;
+                }
 
                 res.status(200).send({
                         "email": result.email,
@@ -953,7 +1005,7 @@ module.exports = function (app) {
                 return;
             }
             if(req.body.google){ //If it's a google user, no need to check password
-                User.remove({email: req.params.email},function(err,result){
+                User.update({email: req.params.email}, {isActive: false}, function(err,result){
 
                     if(err) {
                         res.status(500).send({
@@ -979,7 +1031,7 @@ module.exports = function (app) {
                 // If the user exists and the password is correct
                 if(result && hashPass===result.password){
 
-                    User.remove({email: req.params.email},function(err,result){
+                    User.update({email: req.params.email}, {isActive: false}, function(err,result){
 
                         if(err) {
                             res.status(500).send({
@@ -1064,6 +1116,7 @@ module.exports = function (app) {
                 });
             }
             else if(req.headers.token === result.google){
+
                 res.status(200).send({
                     "email": result.email,
                     "name": result.name,
