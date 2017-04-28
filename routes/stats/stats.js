@@ -368,7 +368,7 @@ module.exports = function(app){
             // If the user exists
             if(user){
 
-                var continents = ['Asia', 'Africa', 'Europe', 'Americas', 'Oceania', 'Indian Ocean', 'Atlantic Ocean'];
+                var continents = ['Asia', 'Africa', 'Europe', 'Americas', 'Oceania', 'Indian Ocean', 'Atlantic Ocean', 'Otros'];
                 var stats = [];
                 for(i=0;i<continents.length;i++){
                     var item = {
@@ -411,6 +411,9 @@ module.exports = function(app){
                                 break;
                             case 'Atlantic Ocean':
                                 stats[continents.indexOf('Atlantic Ocean')].poiNumber += 1;
+                                break;
+                            case 'Otros':
+                                stats[continents.indexOf('Otros')].poiNumber += 1;
                                 break;
                         }
                         callback();

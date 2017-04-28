@@ -210,7 +210,7 @@ module.exports = function (app) {
 
                         // Extracts the continent of the POI based on the coordinates
                         var country = wc([req.body.poi.lng, req.body.poi.lat]);
-                        var continent = country===null ? "No-definido": lookup.byIso(country).continent;
+                        var continent = country===null ? "Otros": lookup.byIso(country).continent;
                         var newPoi = new POI({
 
                             name: req.body.poi.name,
