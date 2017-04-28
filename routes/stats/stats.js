@@ -368,7 +368,7 @@ module.exports = function(app){
             // If the user exists
             if(user){
 
-                var continents = ['Asia', 'Africa', 'Europe', 'Americas', 'Oceania', 'Indian Ocean', 'Atlantic Ocean'];
+                var continents = ['Asia', 'Africa', 'Europe', 'Americas', 'Oceania', 'Indian Ocean', 'Atlantic Ocean', 'Otros'];
                 var stats = [];
                 for(i=0;i<continents.length;i++){
                     var item = {
@@ -411,6 +411,9 @@ module.exports = function(app){
                                 break;
                             case 'Atlantic Ocean':
                                 stats[continents.indexOf('Atlantic Ocean')].poiNumber += 1;
+                                break;
+                            case 'Otros':
+                                stats[continents.indexOf('Otros')].poiNumber += 1;
                                 break;
                         }
                         callback();
@@ -764,7 +767,7 @@ module.exports = function(app){
             if(user){
 
                 // Searches for the user's 5 longer routes, sorting them by descending distance
-                Route.find({"owner": req.params.email}, 'distance', {sort: {"distance": -1}}, function(err, routes){
+                Route.find({"owner": req.params.email}, 'length', {sort: {"length": -1}}, function(err, routes){
 
                     if(err) {
                         res.status(500).send({
