@@ -5,5 +5,6 @@ module.exports = function(app) {
     app.use("/routes", require('./poi/route')(app));
     app.use("/url", require('./url/urlShortener')(app));
     app.use("/stats", require('./stats/stats')(app));
-
+    app.use("/admin", require('./admin/management')(app));
+    app.use("/adminStats", require('./admin/stats')(app));
 };
