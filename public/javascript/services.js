@@ -726,6 +726,26 @@ angular.module('pirineoPOIApp')
                 });
             }
         };
+    })
+
+    // 'userManagement' service manage the user management function of the page with the server
+    .factory('userManagement', function ($http) {
+        return {
+            // save a route in the server
+            getUsers: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'admin/users/',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.users);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            }
+        };
     });
 
 

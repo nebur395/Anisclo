@@ -1,0 +1,16 @@
+<div class="accordionCard">
+  <button class="accordion" ng-click="showCard = !showCard" ng-class="{active: showCard}">
+    {{user.email}}
+  </button>
+  <div class="panel" ng-class="{show: showCard}">
+
+    <p><strong>Nombre:</strong> {{user.name}}</p>
+
+    <p><strong>Apellido/s:</strong> {{user.lastname}}</p>
+
+    <div class="col-xs-12 text-right" id="doneTroubleReport">
+      <button ng-click="done(report.id)" class="btn-success">Hecha</button>
+      <button ng-click="trouble(report.id)" class="btn-danger">Problema</button>
+    </div>
+  </div>
+</div>
