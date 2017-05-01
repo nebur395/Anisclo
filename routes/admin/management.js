@@ -155,7 +155,7 @@ module.exports = function (app) {
         if(!req.body.name || !req.body.lastname || !req.body.newEmail){
             res.status(404).send({
                 "success": false,
-                "message": "Usuario o POI incorrectos"
+                "message": "Nombre, apellido o nuevo email incorrectos"
             });
             return;
         }
@@ -227,8 +227,47 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/FeedbackMessage'
      */
-    router.put("/users/:email/permanentBan", function(req, res){
+    router.put("/users/:email/ban", function(req, res){
 
+        // Checks all body fields
+        if(!req.body.time && req.body.time<0){
+            res.status(404).send({
+                "success": false,
+                "message": "Tiempo de baneo incorrecto"
+            });
+            return;
+        }
+
+        var initBanDate = new Date();
+        var finishBanDate = null;
+        if(req.body.time !== 0){
+            finishBanDate = new Date((req.body.time*(1000*60*60*24)) + initBanDate.valueOf());
+        }
+
+        User.findOneAndUpdate({email: req.params.email}, {banInitDate: initBanDate, banFinishDate: finishBanDate},
+            function(err, result){
+
+                if (err){
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error recuperando y actualizando datos"
+                    });
+                    return;
+                }
+
+                if(result !== null){
+                    res.status(200).send({
+                        "success": true,
+                        "message": "Usuario baneado correctamente"
+                    });
+                }
+                else{
+                    res.status(404).send({
+                        "success": false,
+                        "message": "El usuario no existe"
+                    });
+                }
+        });
     });
 
     /**
@@ -265,7 +304,7 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/FeedbackMessage'
      */
-    router.put("/users/:email/permanentBan", function(req, res){
+    router.put("/users/:email/unban", function(req, res){
 
     });
 
@@ -305,7 +344,7 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/FeedbackMessage'
      */
-    router.put("/users/:email/permanentBan", function(req, res){
+    router.put("/users/:email/useDragonBalls", function(req, res){
 
     });
 
