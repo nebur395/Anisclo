@@ -142,5 +142,46 @@ module.exports = function (app) {
         });
     });
 
+    /**
+     * @swagger
+     * /adminStats/usersStatus:
+     *   get:
+     *     tags:
+     *       - AdminStats
+     *     summary: Número de usuarios activos, inactivos, baneados temporalmente y permanentes
+     *     description: Devuelve el número de de usuarios cuyas cuentas se cuentran actualmente
+     *      activas, inactivas, con baneos permanentes y con baneos temporales.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Número de usuarios en cada estado distinto.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              pois:
+     *               type: array
+     *               items:
+     *                type: object
+     *                properties:
+     *                  status:
+     *                   type: string
+     *                   description: Estado de la cuenta de usuario (activo, inactivo, banP, banT)
+     *                  usersNumber:
+     *                   type: integer
+     *                   description: Número de usuarios en ese estado
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/totalRoutes", function(req, res){
+
+
+    });
+
     return router;
 };
