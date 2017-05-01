@@ -5,8 +5,11 @@
     <!-- Tarjetas para representar la info -->
     <div ng-hide="!isEmpty()" class="text-center"><p>No hay usuarios en el sistema</p></div>
     <div ng-hide="isEmpty()">
-      <user ng-repeat="user in userList">
-      </user>
+
+      <div id="userCardsStyle">
+        <user ng-repeat="user in userList">
+        </user>
+      </div>
     </div>
 
   </div>
