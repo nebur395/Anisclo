@@ -1063,11 +1063,9 @@ module.exports = function (app) {
             else{ //No result
                 res.status(404).send({
                     "success": false,
-                    "message": "Usuario inexistente"
+                    "message": "Email o contraseña incorrectos"
                 });
-                return;
             }
-
         });
 
     });
