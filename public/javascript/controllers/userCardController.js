@@ -4,6 +4,7 @@ angular.module('pirineoPOIApp')
         function ($scope, Notification, userManagement) {
 
             $scope.showCard = false;
+            $scope.editing = false;
 
             // FEEDBACK MESSAGES
 

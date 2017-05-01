@@ -4,13 +4,42 @@
   </button>
   <div class="panel" ng-class="{show: showCard}">
 
-    <p><strong>Nombre:</strong> {{user.name}}</p>
+    <form role="form" class="form-horizontal" ng-submit="modalSubmit()" style="margin-top: 1%">
+      <!-- name input -->
+      <div class="form-group">
+        <label for="userName" class="control-label col-xs-2"><strong>Nombre:</strong></label>
+        <div class="col-xs-10">
+          <input id="userName" type="text" ng-model="user.name" required ng-disabled="!editing"
+                 class="form-control" placeholder="Introduce el nombre del usuario" />
+        </div>
+      </div>
 
-    <p><strong>Apellido/s:</strong> {{user.lastname}}</p>
+      <!-- lastname input -->
+      <div class="form-group">
+        <label for="userLastname" class="control-label col-xs-2"><strong>Apellido/s:</strong></label>
+        <div class="col-xs-10">
+          <input id="userLastname" type="text" ng-model="user.lastname" required ng-disabled="!editing"
+                 class="form-control" placeholder="Introduce el apellido del usuario" />
+        </div>
+      </div>
 
-    <div class="col-xs-12 text-right" id="managementButtons">
-      <button ng-click="done(report.id)" class="btn-success">Hecha</button>
-      <button ng-click="trouble(report.id)" class="btn-danger">Problema</button>
-    </div>
+      <!-- email input -->
+      <div class="form-group">
+        <label for="userEmail" class="control-label col-xs-2"><strong>Email:</strong></label>
+        <div class="col-xs-10">
+          <input id="userEmail" type="email" ng-model="user.email" required ng-disabled="!editing"
+                 class="form-control" placeholder="Introduce el email del usuario" />
+        </div>
+      </div>
+
+
+      <div class="col-xs-12 text-right" id="managementButtons">
+        <button ng-click="done(report.id)" class="btn-danger">Inhabilitar</button>
+        <button ng-click="done(report.id)" class="btn-danger">Habilitar</button>
+        <button ng-click="trouble(report.id)" class="btn-warning">Activar</button>
+        <button ng-click="trouble(report.id)" class="w3-theme-action">Editar</button>
+        <button ng-click="trouble(report.id)" class="btn-success">Guardar</button>
+      </div>
+    </form>
   </div>
 </div>
