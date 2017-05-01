@@ -11,7 +11,7 @@ angular.module('pirineoPOIApp')
             return auth.isAuthenticated();
         }, function () {
             $scope.logged = auth.isAuthenticated();
-            $scope.admin = auth.getAdmin();
+            $scope.admin = auth.isAuthenticated() && auth.getAdmin();
             $scope.home = $scope.logged ? "starter" : "login";
         });
 

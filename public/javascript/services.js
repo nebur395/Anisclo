@@ -54,7 +54,7 @@ angular.module('pirineoPOIApp')
             },
 
             getAdmin: function () {
-                return true;//_identity.admin;
+                return _identity.admin;
             },
 
             getFirstLogin: function () {
@@ -105,8 +105,6 @@ angular.module('pirineoPOIApp')
                         that.authenticate(data);
                         if (data.firstLogin) {
                             $state.go('changePassword');
-                        } else if (data.admin) {
-                            $state.go('admin');
                         } else {
                             $state.go('starter');
                         }
@@ -178,7 +176,11 @@ angular.module('pirineoPOIApp')
                 if (!auth.isAuthenticated()){
                     return "login";
                 } else if(auth.getAdmin()) {
-                    return "starter";
+                    if (state == "profile") {
+                        return state;
+                    } else {
+                        return "starter";
+                    }
                 } else if(auth.getFirstLogin()) {
                     return "changePassword";
                 } else {
@@ -189,6 +191,7 @@ angular.module('pirineoPOIApp')
                     }
                 }
             },
+
             // manage access privileges of any logged state for an admin user
             manageAdminState: function (state) {
                 if (!auth.isAuthenticated()){
@@ -201,6 +204,7 @@ angular.module('pirineoPOIApp')
                     return "starter";
                 }
             },
+
             // manage access privileges of any not logged state
             manageNotLoggedState: function (state) {
                 if (!auth.isAuthenticated()) {
