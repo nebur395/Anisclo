@@ -328,7 +328,7 @@ module.exports = function (app) {
                     "message": "El usuario no existe"
                 });
             }
-        })
+        });
     });
 
 
@@ -368,6 +368,30 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/users/:email/useDragonBalls", function(req, res){
+
+        User.findOneAndUpdate({email: req.params.email}, {isActive: true}, function(err, result){
+
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando y actualizando datos"
+                });
+                return;
+            }
+
+            if(result !== null){
+                res.status(200).send({
+                    "success": true,
+                    "message": "Cuenta de usuario reactivada correctamente"
+                });
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
+        });
 
     });
 
