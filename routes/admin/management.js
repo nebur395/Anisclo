@@ -86,7 +86,7 @@ module.exports = function (app) {
                 if (err){
                     res.status(500).send({
                         "success": false,
-                        "message": "Error recuperando datos"
+                        "message": "Error creando respuesta"
                     });
                     return;
                 }
@@ -151,6 +151,40 @@ module.exports = function (app) {
      */
     router.put("/users/:email", function(req, res){
 
+        // Checks all body fields
+        if(!req.body.name || !req.body.lastname || !req.body.newEmail){
+            res.status(404).send({
+                "success": false,
+                "message": "Usuario o POI incorrectos"
+            });
+            return;
+        }
+
+        User.findOneAndUpdate({email: req.params.email}, {name: req.body.name,
+            lastname: req.body.lastname, email: req.body.newEmail}, function(err, result){
+
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando y actualizando datos"
+                });
+                return;
+            }
+
+            if(result !== null){
+                res.status(200).send({
+                    "success": true,
+                    "message": "Usuario actualizado correctamente"
+                });
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
+
+        });
     });
 
 
