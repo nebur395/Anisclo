@@ -17,7 +17,8 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             maxCount: 4
         });
     })
-    //config login google
+
+    // config login google
     .config(function($authProvider){
 
         $authProvider.httpInterceptor = function() { return true; };
@@ -51,7 +52,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
     .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
 
-        //starter screen
+        // starter screen
         .state('starter', {
             url: "/starter",
             templateUrl: "templates/starter.html",
@@ -64,7 +65,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             }
         })
 
-        //profile screen
+        // profile screen
         .state('profile', {
             url: "/profile",
             templateUrl: "templates/profile.html",
@@ -90,7 +91,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             }
         })
 
-        //favsList screen
+        // favsList screen
         .state('favs', {
             url: "/favs",
             templateUrl: "templates/favsList.html",
@@ -103,7 +104,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             }
         })
 
-        //followList screen
+        // followList screen
         .state('follows', {
             url: "/follows",
             templateUrl: "templates/followList.html",
@@ -129,7 +130,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             }
         })
 
-        //login screen
+        // login screen
         .state('retrievePassword', {
             url: "/retrievePassword",
             templateUrl: "templates/retrievePassword.html",
@@ -142,7 +143,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             }
         })
 
-        //login screen
+        // login screen
         .state('login', {
             url: "/login",
             templateUrl: "templates/login.html",
@@ -155,7 +156,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             }
         })
 
-        //sign up screen
+        // sign up screen
         .state('signUp', {
             url: "/signUp",
             templateUrl: "templates/signUp.html",
@@ -163,6 +164,32 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
             onEnter: function($state, manageState){
                 var correctState = manageState.manageNotLoggedState("signUp");
                 if (correctState != "signUp") {
+                    $state.go(correctState);
+                }
+            }
+        })
+
+        // admin management screen
+        .state('adminManagement', {
+            url: "/adminManagement",
+            templateUrl: "templates/adminManagement.html",
+            controller: "adminManagementCtrl",
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageAdminState("adminManagement");
+                if (correctState != "adminManagement") {
+                    $state.go(correctState);
+                }
+            }
+        })
+
+        // admin stats screen
+        .state('adminStats', {
+            url: "/adminStats",
+            templateUrl: "templates/adminStats.html",
+            controller: "adminStatsCtrl",
+            onEnter: function($state, manageState){
+                var correctState = manageState.manageAdminState("adminStats");
+                if (correctState != "adminStats") {
                     $state.go(correctState);
                 }
             }

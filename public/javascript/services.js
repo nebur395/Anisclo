@@ -54,7 +54,7 @@ angular.module('pirineoPOIApp')
             },
 
             getAdmin: function () {
-                return _identity.admin;
+                return true;//_identity.admin;
             },
 
             getFirstLogin: function () {
@@ -173,12 +173,12 @@ angular.module('pirineoPOIApp')
     // 'manageState' service manage the control access to the different states of the page
     .factory('manageState', function (auth) {
         return {
-            // manage access privileges of any logged state
+            // manage access privileges of any logged state for a normal user
             manageLoggedState: function (state) {
                 if (!auth.isAuthenticated()){
                     return "login";
                 } else if(auth.getAdmin()) {
-                    return "admin";
+                    return "starter";
                 } else if(auth.getFirstLogin()) {
                     return "changePassword";
                 } else {
@@ -189,12 +189,24 @@ angular.module('pirineoPOIApp')
                     }
                 }
             },
+            // manage access privileges of any logged state for an admin user
+            manageAdminState: function (state) {
+                if (!auth.isAuthenticated()){
+                    return "login";
+                } else if(auth.getAdmin()) {
+                    return state;
+                } else if(auth.getFirstLogin()) {
+                    return "changePassword";
+                } else {
+                    return "starter";
+                }
+            },
             // manage access privileges of any not logged state
             manageNotLoggedState: function (state) {
                 if (!auth.isAuthenticated()) {
                     return state;
                 } else if(auth.getAdmin()) {
-                    return "admin";
+                    return "starter";
                 } else if(auth.getFirstLogin()) {
                     return "changePassword";
                 } else {
