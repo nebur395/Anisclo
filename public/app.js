@@ -1,6 +1,7 @@
 angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgoogle-maps', 'dndLists',
                                 'ui-notification', 'ngSanitize', 'chart.js', 'satellizer'])
 
+    // Config UI-Google-maps angularjs module
     .config(function(uiGmapGoogleMapApiProvider) {
         uiGmapGoogleMapApiProvider.configure({
             key: 'AIzaSyCzuYo95Y83vG0jLpI97fC8Rfw1pgRuq7U',
@@ -9,6 +10,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
         });
     })
 
+    // Config UI-Notification angularjs module
     .config(function(NotificationProvider) {
         NotificationProvider.setOptions({
             positionX: 'center',
