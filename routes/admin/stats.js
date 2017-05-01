@@ -82,6 +82,20 @@ module.exports = function (app) {
      */
     router.get("/totalPois", function(req, res){
 
+        POI.count({}, function(err, pois){
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+
+            res.status(200).send({
+                "totalPois": pois
+            });
+        });
     });
 
     /**
@@ -112,6 +126,20 @@ module.exports = function (app) {
      */
     router.get("/totalRoutes", function(req, res){
 
+        Route.count({}, function(err, routes){
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+
+            res.status(200).send({
+                "totalRoutes": routes
+            });
+        });
     });
 
     return router;
