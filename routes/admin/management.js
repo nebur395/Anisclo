@@ -238,13 +238,13 @@ module.exports = function (app) {
             return;
         }
 
-        var initBanDate = new Date();
-        var finishBanDate = null;
+        var banInitDate = new Date();
+        var banFinishDate = null;
         if(req.body.time !== 0){
-            finishBanDate = new Date((req.body.time*(1000*60*60*24)) + initBanDate.valueOf());
+            banFinishDate = new Date((req.body.time*(1000*60*60*24)) + banInitDate.valueOf());
         }
 
-        User.findOneAndUpdate({email: req.params.email}, {banInitDate: initBanDate, banFinishDate: finishBanDate},
+        User.findOneAndUpdate({email: req.params.email}, {banInitDate: banInitDate, banFinishDate: banFinishDate},
             function(err, result){
 
                 if (err){
@@ -306,6 +306,29 @@ module.exports = function (app) {
      */
     router.put("/users/:email/unban", function(req, res){
 
+        User.findOneAndUpdate({email: req.params.email}, {banInitDate:null, banFinishDate: null}, function(err, result){
+
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando y actualizando datos"
+                });
+                return;
+            }
+
+            if(result !== null){
+                res.status(200).send({
+                    "success": true,
+                    "message": "Usuario desbaneado correctamente"
+                });
+            }
+            else{
+                res.status(404).send({
+                    "success": false,
+                    "message": "El usuario no existe"
+                });
+            }
+        })
     });
 
 
