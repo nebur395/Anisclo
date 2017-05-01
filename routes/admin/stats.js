@@ -6,6 +6,7 @@ module.exports = function (app) {
 
     var User = app.models.User;
     var POI = app.models.POI;
+    var Route = app.models.Route;
 
 
     /**
@@ -51,6 +52,66 @@ module.exports = function (app) {
                 "totalUsers": users
             });
         });
+    });
+
+    /**
+     * @swagger
+     * /adminStats/totalPois:
+     *   get:
+     *     tags:
+     *       - AdminStats
+     *     summary: Número de POIs totales del sistema
+     *     description: Devuelve el número de POIs totales creados en el sistema.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Número de POIs totales del sistema.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              totalPois:
+     *               type: integer
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/totalPois", function(req, res){
+
+    });
+
+    /**
+     * @swagger
+     * /adminStats/totalRoutes:
+     *   get:
+     *     tags:
+     *       - AdminStats
+     *     summary: Número de rutas totales del sistema
+     *     description: Devuelve el número de rutas totales creadas en el sistema.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Número de rutas totales del sistema.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              totalRoutes:
+     *               type: integer
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/totalRoutes", function(req, res){
+
     });
 
     return router;
