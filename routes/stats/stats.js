@@ -584,6 +584,14 @@ module.exports = function(app){
             if(user){
 
                 User.count({"follows":req.params.email}, function(err, followers){
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
                     res.status(200).send({
                         "followers": followers
                     });
