@@ -87,11 +87,11 @@ mongoose.Promise = global.Promise;
  *        required: true
  *        description: Lista con los ID de los usuarios a los que sigue.
  *       isActive:
- *        type: Boolean
+ *        type: boolean
  *        required: true
  *        description: Indica si la cuenta está o no activa.
  *       ban:
- *        type: Integer
+ *        type: integer
  *        required: true
  *        description: Indica si el usuario está baneado. >0 días restantes del ban,
  *         0 ban permanente, -1 no baneado
