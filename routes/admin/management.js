@@ -1,4 +1,5 @@
 var express = require('express');
+var async = require("async");
 
 module.exports = function (app) {
 
@@ -25,9 +26,12 @@ module.exports = function (app) {
      *       200:
      *         description: Mensaje de feedback para el usuario.
      *         schema:
-     *           type: array
-     *           items:
-     *             $ref: '#/definitions/UserForAdmin'
+     *           type: object
+     *           properties:
+     *              users:
+     *                type: array
+     *                items:
+     *                   $ref: '#/definitions/UserForAdmin'
      *       404:
      *         description: Mensaje de feedback para el usuario.
      *         schema:
@@ -37,7 +41,61 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/FeedbackMessage'
      */
-    router.get("/", function(req, res){
+    router.get("/users", function(req, res){
+
+        User.find({}, function(err, result){
+
+            if (err){
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            var users = [];
+            async.each(result, function(user, callback){
+
+                var ban = -1;
+                // Checks if the user's account have any kind of ban, temporary or permanent
+                if(user.banInitDate !== null && user.banFinishDate !== null){
+                    var initDate = new Date(user.banInitDate);
+                    var finishDate = new Date(user.banFinishDate);
+                    ban = parseInt((finishDate.valueOf() - initDate.valueOf())/(1000*60*60*24));
+
+                }
+                else if (user.banInitDate !== null){ ban=0; }
+
+                var userInfo = {
+
+                    "email":user.email,
+                    "name":user.name,
+                    "lastname":user.lastname,
+                    "admin":user.admin,
+                    "firstLogin":user.firstLogin,
+                    "favs":user.favs,
+                    "follows":user.follows,
+                    "isActive":user.isActive,
+                    "ban": ban
+                };
+                users.push(userInfo);
+                callback();
+
+            }, function(err){
+
+                if (err){
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error recuperando datos"
+                    });
+                    return;
+                }
+
+                res.status(200).send({
+                    "users": users
+                });
+            });
+        });
 
     });
 
