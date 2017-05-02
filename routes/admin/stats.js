@@ -465,6 +465,71 @@ module.exports = function (app) {
      */
     router.get("/signUpAndRemove", function(req, res){
 
+        var date = new Date();
+        var year = date.getFullYear()-1;
+        var month = date.getMonth() +1;
+        var day = date.getDate();
+
+        User.find({registerDate: {$gte: new Date(year, month, day)}}, '-_id registerDate', function(err, registrations){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            var registrationsList = new Array(12).fill(0);
+            async.each(registrations, function(registration, callback){
+
+                registrationsList[registration.registerDate.getMonth()] += 1;
+                callback();
+
+            }, function(err){
+
+                if (err){
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error creando respuesta"
+                    });
+                    return;
+                }
+
+                User.find({deactivationDate: {$gte: new Date(year, month, day)}}, '-_id deactivationDate', function(err, deactivations){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
+                    var deactivationsList = new Array(12).fill(0);
+                    async.each(deactivations, function(deactivation, callback){
+
+                        deactivationsList[deactivation.deactivationDate.getMonth()] += 1;
+                        callback();
+
+                    }, function(err){
+
+                        if(err) {
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error recuperando datos"
+                            });
+                            return;
+                        }
+
+                        res.status(200).send({
+                            "signUps": registrationsList,
+                            "removes": deactivationsList
+                        });
+                    });
+                });
+            });
+        });
     });
 
     return router;
