@@ -34,11 +34,11 @@
 
 
       <div class="col-xs-12 text-right" id="managementButtons">
-        <button ng-click="done(report.id)" class="btn-danger">Inhabilitar</button>
-        <button ng-click="done(report.id)" class="btn-danger">Habilitar</button>
-        <button ng-click="trouble(report.id)" class="btn-warning">Activar</button>
-        <button ng-click="trouble(report.id)" class="w3-theme-action">Editar</button>
-        <button ng-click="trouble(report.id)" class="btn-success">Guardar</button>
+        <button ng-click="$parent.modalButton=0" ng-if="user.ban<0" class="btn-danger">Inhabilitar</button>
+        <button ng-click="$parent.modalButton=1" ng-if="user.ban>=0" class="btn-danger">Habilitar</button>
+        <button ng-click="$parent.modalButton=2" ng-if="!user.isActive" class="btn-warning">Activar</button>
+        <button ng-click="$parent.modalButton=3" ng-if="!editing" class="w3-theme-action" type="submit">Editar</button>
+        <button ng-click="$parent.modalButton=4" ng-if="editing" class="btn-success">Guardar</button>
       </div>
     </form>
   </div>
