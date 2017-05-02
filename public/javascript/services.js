@@ -744,6 +744,22 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
+            },
+
+            // modify a current user with admin privileges
+            setUser: function (user, email, callbackSuccess, callbackError) {
+                $http({
+                    method: 'PUT',
+                    url: 'admin/users/' + email,
+                    data: JSON.stringify(user),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
             }
         };
     });

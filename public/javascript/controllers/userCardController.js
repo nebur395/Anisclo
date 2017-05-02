@@ -5,6 +5,7 @@ angular.module('pirineoPOIApp')
 
             $scope.showCard = false;
             $scope.editing = false;
+            $scope.currentEmail = $scope.user.email;
 
             // FEEDBACK MESSAGES
 
@@ -33,8 +34,17 @@ angular.module('pirineoPOIApp')
                     case 3:
                         $scope.editing = !$scope.editing;
                         break;
-                    default:
-                        showSuccess("4");
+                    default: // save and modify a user
+                        var user = {
+                            name: $scope.user.name,
+                            lastname: $scope.user.lastname,
+                            newEmail: $scope.user.email
+                        };
+                        userManagement.setUser(user, $scope.currentEmail, function (message) {
+                            $scope.currentEmail = $scope.user.email;
+                            $scope.editing = !$scope.editing;
+                            showSuccess(message);
+                        }, showError);
                 }
             };
 
