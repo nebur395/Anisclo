@@ -273,6 +273,14 @@ module.exports = function(app){
                 // Searches for POIs created during the last year since the current date
                 POI.find({"creationDate": {$gte: new Date(year, month, day)}}, '-_id name creationDate', function(err, pois){
 
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+
                     // Iterates the returned list to create the response
                     async.eachOf(pois, function(poi, index, callback){
 

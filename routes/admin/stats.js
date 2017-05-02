@@ -1,4 +1,5 @@
 var express = require('express');
+var async = require("async");
 
 module.exports = function (app) {
 
@@ -353,6 +354,42 @@ module.exports = function (app) {
                 });
             });
         });
+    });
+
+
+    /**
+     * @swagger
+     * /adminStats/lastLogins:
+     *   get:
+     *     tags:
+     *       - AdminStats
+     *     summary: Número de logins de usuarios por mes durante el último año
+     *     description: Devuelve el número de logins de usuarios registrados en el sistema
+     *      durante el último año, agrupados por meses.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Número de usuarios en cada estado distinto.
+     *         schema:
+     *           type: object
+     *           properties:
+     *              lastLogins:
+     *               type: array
+     *               description: Array de tamaño 12, una entrada por cada mes
+     *               items:
+     *                type: integer
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/lastLogins", function(req, res){
+
+
     });
 
     return router;
