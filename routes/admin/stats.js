@@ -299,5 +299,37 @@ module.exports = function (app) {
         });
     });
 
+    /**
+     * @swagger
+     * /adminStats/routesPerUser:
+     *   get:
+     *     tags:
+     *       - AdminStats
+     *     summary: Número medio de rutas por usuario
+     *     description: Devuelve el número medio de rutas totales creados en
+     *      el sistema en función del número de usuarios totales registrados en el sistema.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Número medio de rutas por usuario
+     *         schema:
+     *           type: object
+     *           properties:
+     *              routesPerUser:
+     *               type: integer
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/routesPerUser", function(req, res){
+
+
+    });
+
     return router;
 };
