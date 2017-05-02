@@ -111,6 +111,7 @@ var userSchema = mongoose.Schema({
     registerDate: {type: Date, default: Date.now},
     lastLoginDate: {type: Date, default: Date.now},
     isActive: {type: Boolean, default: true},
+    deactivationDate: {type: Date, default: null},
     banInitDate: {type: Date, default: null},
     banFinishDate: {type: Date, default: null}
 });

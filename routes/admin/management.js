@@ -369,7 +369,7 @@ module.exports = function (app) {
      */
     router.put("/users/:email/useDragonBalls", function(req, res){
 
-        User.findOneAndUpdate({email: req.params.email}, {isActive: true}, function(err, result){
+        User.findOneAndUpdate({email: req.params.email}, {isActive: true, deactivationDate: null}, function(err, result){
 
             if (err){
                 res.status(500).send({
