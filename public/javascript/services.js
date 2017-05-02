@@ -791,6 +791,21 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
+            },
+
+            // admin's dragon balls are used to active a current user
+            useDragonBalls: function (email, callbackSuccess, callbackError) {
+                $http({
+                    method: 'PUT',
+                    url: 'admin/users/' + email + '/useDragonBalls',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
             }
         };
     });

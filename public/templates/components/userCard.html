@@ -1,6 +1,6 @@
 <div class="accordionCard">
   <button class="accordion" ng-click="showCard = !showCard" ng-class="{active: showCard}">
-    {{currentEmail}}
+    <span ng-if="!isActive" style="color:#d9534f">Inactiva:</span> {{currentEmail}}
   </button>
   <div class="panel" ng-class="{show: showCard}">
 

@@ -40,8 +40,12 @@ angular.module('pirineoPOIApp')
                             showSuccess(message);
                         }, showError);
                         break;
-                    case 2:
-                        showSuccess("2");
+                    case 2: // activate a user
+                        userManagement.useDragonBalls($scope.currentEmail, function (message) {
+                            $scope.user.isActive = true;
+                            $scope.isActive = $scope.user.isActive;
+                            showSuccess(message);
+                        }, showError);
                         break;
                     case 3:
                         $scope.editing = !$scope.editing;
