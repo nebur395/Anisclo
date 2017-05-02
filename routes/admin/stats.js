@@ -328,7 +328,31 @@ module.exports = function (app) {
      */
     router.get("/routesPerUser", function(req, res){
 
+        User.count({admin: false}, function(err, users){
 
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            Route.count({}, function(err, routes){
+
+                if(err) {
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error recuperando datos"
+                    });
+                    return;
+                }
+
+                res.status(200).send({
+                    "routesPerUser":routes/users
+                });
+            });
+        });
     });
 
     return router;
