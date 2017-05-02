@@ -4,7 +4,7 @@ var server = require('../../server.js');
 var User = server.models.User;
 var POI = server.models.POI;
 
-var LoginPageObject = require('./pageObjects/login.js');
+var LoginPageObject = require('./pageObjects/login');
 var StarterPageOject = require('./pageObjects/starter');
 
 // starter-spec.js
