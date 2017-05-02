@@ -146,7 +146,7 @@ module.exports = function (app) {
      *     tags:
      *       - AdminStats
      *     summary: Número de usuarios activos, inactivos, baneados temporalmente y permanentes
-     *     description: Devuelve el número de de usuarios cuyas cuentas se cuentran actualmente
+     *     description: Devuelve el número de usuarios cuyas cuentas se cuentran actualmente
      *      activas, inactivas, con baneos permanentes y con baneos temporales.
      *     consumes:
      *       - application/json
@@ -233,13 +233,46 @@ module.exports = function (app) {
                         }
                         stats[statuses.indexOf("BaneadosT")].usersNumber = users;
 
-                        res.status(500).send({
+                        res.status(200).send({
                             "usersStatus":stats
                         });
                     });
                 });
             });
         });
+    });
+
+
+    /**
+     * @swagger
+     * /adminStats/poisPerUser:
+     *   get:
+     *     tags:
+     *       - AdminStats
+     *     summary: Número medio de pois por usuario
+     *     description: Devuelve el número medio de pois totales creados en
+     *      el sistema en función del número de usuarios totales registrados en el sistema.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Número medio de pois por usuario
+     *         schema:
+     *           type: object
+     *           properties:
+     *              poisPerUser:
+     *               type: integer
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/poisPerUser", function(req, res){
+
+
     });
 
     return router;

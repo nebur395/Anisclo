@@ -16,7 +16,7 @@ module.exports = function (app) {
      *       - Admin
      *     summary: Listar todos los usuarios del sistema
      *     description: Lista todos los usuarios del sistema con información a la que sólo
-     *      el admin puede acceder.
+     *      el admin puede acceder, a excepción de los usuarios administradores, que no los devuelve.
      *     consumes:
      *       - application/json
      *       - charset=utf-8
@@ -43,7 +43,7 @@ module.exports = function (app) {
      */
     router.get("/users", function(req, res){
 
-        User.find({}, function(err, result){
+        User.find({admin: false}, function(err, result){
 
             if (err){
                 res.status(500).send({
