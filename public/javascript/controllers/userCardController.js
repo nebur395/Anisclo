@@ -24,8 +24,14 @@ angular.module('pirineoPOIApp')
             $scope.modalButton = 0;
             $scope.modalSubmit = function () {
                 switch ($scope.modalButton) {
-                    case 0:
-                        showSuccess("0");
+                    case 0: // ban a user
+                        var time = {
+                            time: $scope.user.ban
+                        };
+                        userManagement.banUser(time, $scope.currentEmail, function (message) {
+                            $scope.isBanned = $scope.user.ban >= 0;
+                            showSuccess(message);
+                        }, showError);
                         break;
                     case 1:
                         showSuccess("1");

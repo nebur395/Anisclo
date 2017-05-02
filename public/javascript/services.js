@@ -760,6 +760,22 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
+            },
+
+            // ban a current user with admin privileges
+            banUser: function (time, email, callbackSuccess, callbackError) {
+                $http({
+                    method: 'PUT',
+                    url: 'admin/users/' + email + '/ban',
+                    data: JSON.stringify(time),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
             }
         };
     });
