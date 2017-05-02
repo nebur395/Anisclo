@@ -389,7 +389,42 @@ module.exports = function (app) {
      */
     router.get("/lastLogins", function(req, res){
 
+        var date = new Date();
+        var year = date.getFullYear()-1;
+        var month = date.getMonth() +1;
+        var day = date.getDate();
 
+        User.find({lastLoginDate: {$gte: new Date(year, month, day)}}, '-_id lastLoginDate', function(err, logins){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            var lastLogins = new Array(12).fill(0);
+            async.each(logins, function(login, callback){
+
+                lastLogins[login.lastLoginDate.getMonth()] += 1;
+                callback();
+
+            }, function(err){
+
+                if (err){
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error creando respuesta"
+                    });
+                    return;
+                }
+                res.status(200).send({
+                    "lastLogins": lastLogins
+                });
+
+            });
+        });
     });
 
     return router;
