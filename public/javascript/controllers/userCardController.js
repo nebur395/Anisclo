@@ -6,7 +6,7 @@ angular.module('pirineoPOIApp')
             $scope.showCard = false;
             $scope.editing = false;
             $scope.currentEmail = $scope.user.email;
-            $scope.isNotActive = !$scope.user.isActive;
+            $scope.isActive = $scope.user.isActive;
             $scope.isBanned = $scope.user.ban >= 0;
 
             // FEEDBACK MESSAGES
@@ -33,8 +33,12 @@ angular.module('pirineoPOIApp')
                             showSuccess(message);
                         }, showError);
                         break;
-                    case 1:
-                        showSuccess("1");
+                    case 1: // unban a user
+                        userManagement.unBanUser($scope.currentEmail, function (message) {
+                            $scope.user.ban = -1;
+                            $scope.isBanned = $scope.user.ban >= 0;
+                            showSuccess(message);
+                        }, showError);
                         break;
                     case 2:
                         showSuccess("2");
@@ -58,7 +62,9 @@ angular.module('pirineoPOIApp')
 
             $scope.$watch('user.ban', function () {
                 if ($scope.user.ban < 0) {
-                    $scope.user.ban = "";
+                    $scope.user.ban = 0;
+                } else if ($scope.user.ban === null) {
+                    $scope.user.ban = 0;
                 }
             });
 

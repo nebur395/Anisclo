@@ -776,6 +776,21 @@ angular.module('pirineoPOIApp')
                 }).error(function (data) {
                     callbackError(data.message);
                 });
+            },
+
+            // unBan a current user with admin privileges
+            unBanUser: function (email, callbackSuccess, callbackError) {
+                $http({
+                    method: 'PUT',
+                    url: 'admin/users/' + email + '/unban',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
             }
         };
     });
