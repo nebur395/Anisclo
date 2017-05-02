@@ -272,7 +272,31 @@ module.exports = function (app) {
      */
     router.get("/poisPerUser", function(req, res){
 
+        User.count({admin: false}, function(err, users){
 
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+
+            POI.count({}, function(err, pois){
+
+                if(err) {
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error recuperando datos"
+                    });
+                    return;
+                }
+
+                res.status(200).send({
+                    "poisPerUser":pois/users
+                });
+            });
+        });
     });
 
     return router;
