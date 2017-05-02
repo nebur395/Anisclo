@@ -427,5 +427,45 @@ module.exports = function (app) {
         });
     });
 
+
+    /**
+     * @swagger
+     * /adminStats/signUpAndRemove:
+     *   get:
+     *     tags:
+     *       - AdminStats
+     *     summary: Número de usuarios nuevos registrados y de cuentas que se han dado de baja
+     *     description: Devuelve dos listas que reflejan los nuevos registros y las cuentas
+     *      que se han dado de baja en el último año agrupados por meses, respectivamente.
+     *     consumes:
+     *       - application/json
+     *       - charset=utf-8
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: Número de registros y de bajas en el último año
+     *         schema:
+     *           type: object
+     *           properties:
+     *              signUps:
+     *               type: array
+     *               description: Array de tamaño 12, una entrada por cada mes
+     *               items:
+     *                type: integer
+     *              removes:
+     *               type: array
+     *               description: Array de tamaño 12, una entrada por cada mes
+     *               items:
+     *                type: integer
+     *       500:
+     *         description: Mensaje de feedback para el usuario.
+     *         schema:
+     *           $ref: '#/definitions/FeedbackMessage'
+     */
+    router.get("/signUpAndRemove", function(req, res){
+
+    });
+
     return router;
 };
