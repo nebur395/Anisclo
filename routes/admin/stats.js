@@ -47,7 +47,6 @@ module.exports = function (app) {
                 return;
             }
 
-
             res.status(200).send({
                 "totalUsers": users
             });
@@ -90,7 +89,6 @@ module.exports = function (app) {
                 });
                 return;
             }
-
 
             res.status(200).send({
                 "totalPois": pois
@@ -135,7 +133,6 @@ module.exports = function (app) {
                 return;
             }
 
-
             res.status(200).send({
                 "totalRoutes": routes
             });
@@ -162,7 +159,7 @@ module.exports = function (app) {
      *         schema:
      *           type: object
      *           properties:
-     *              pois:
+     *              usersStatus:
      *               type: array
      *               items:
      *                type: object
@@ -178,9 +175,71 @@ module.exports = function (app) {
      *         schema:
      *           $ref: '#/definitions/FeedbackMessage'
      */
-    router.get("/totalRoutes", function(req, res){
+    router.get("/usersStatus", function(req, res){
 
+        var statuses = ['Activos', 'Inactivos', 'BaneadosP', 'BaneadosT'];
+        var stats = [];
+        for(i=0;i<statuses.length;i++){
+            var item = {
+                "status": statuses[i],
+                "usersNumber":0
+            };
+            stats.push(item);
+        }
 
+        //Searches for all active users without a ban
+        User.count({isActive: true, banInitDate: null}, function(err, users){
+
+            if(err) {
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error recuperando datos"
+                });
+                return;
+            }
+            stats[statuses.indexOf("Activos")].usersNumber = users;
+
+            //Searches for all inactive users, with or without a ban, it's not important since they are inactive
+            User.count({isActive: false}, function(err, users){
+
+                if(err) {
+                    res.status(500).send({
+                        "success": false,
+                        "message": "Error recuperando datos"
+                    });
+                    return;
+                }
+                stats[statuses.indexOf("Inactivos")].usersNumber = users;
+
+                User.count({isActive: true, banInitDate: {$ne: null}, banFinishDate: null}, function(err, users){
+
+                    if(err) {
+                        res.status(500).send({
+                            "success": false,
+                            "message": "Error recuperando datos"
+                        });
+                        return;
+                    }
+                    stats[statuses.indexOf("BaneadosP")].usersNumber = users;
+
+                    User.count({isActive: true, banFinishDate: {$ne: null}}, function(err, users){
+
+                        if(err) {
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error recuperando datos"
+                            });
+                            return;
+                        }
+                        stats[statuses.indexOf("BaneadosT")].usersNumber = users;
+
+                        res.status(500).send({
+                            "usersStatus":stats
+                        });
+                    });
+                });
+            });
+        });
     });
 
     return router;
