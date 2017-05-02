@@ -1005,7 +1005,7 @@ module.exports = function (app) {
                 return;
             }
             if(req.body.google){ //If it's a google user, no need to check password
-                User.update({email: req.params.email}, {isActive: false}, function(err,result){
+                User.update({email: req.params.email}, {isActive: false, deactivationDate: new Date()}, function(err,result){
 
                     if(err) {
                         res.status(500).send({
@@ -1031,7 +1031,7 @@ module.exports = function (app) {
                 // If the user exists and the password is correct
                 if(result && hashPass===result.password){
 
-                    User.update({email: req.params.email}, {isActive: false}, function(err,result){
+                    User.update({email: req.params.email}, {isActive: false, deactivationDate: new Date()}, function(err,result){
 
                         if(err) {
                             res.status(500).send({
