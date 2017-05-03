@@ -4,10 +4,16 @@ var express = require("express"),
     swaggerJSDoc = require("swagger-jsdoc"),
     crypto = require("crypto"),
     fs = require("fs"),
+    morgan = require("morgan"),
+    config = require("./config"),
+    jwt = require("express-jwt"),
     https = require("https");
 
 
 var app = express();
+
+// Morgan used to log requests to the console in developer's mode
+app.use(morgan('dev'));
 
 // swagger definition
 var swaggerDefinition = {
@@ -32,7 +38,14 @@ var options = {
 // initialize swagger-jsdoc
 var swaggerSpec = swaggerJSDoc(options);
 
+// Secret key used to sign JWT
+app.set('secret', config.secret);
+
 app.use(express.static('./public'));
+
+// Midelware to access handler and JWT
+//require('./security/jwt-handler')(app);
+
 
 app.use(bodyParser.json({limit: '20mb'}));
 app.use(bodyParser.urlencoded({limit: '20mb', extended : true}));
