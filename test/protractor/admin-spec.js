@@ -84,6 +84,24 @@ describe('Admin Page', function() {
         navbar.goLogout();
     });
 
+    it('should unban a user', function() {
+        loginPage.get();
+
+        loginPage.setEmail('e2etestADMIN@email.com');
+        loginPage.setPassword('pass');
+        loginPage.loginClick();
+
+        navbar.goUserManagement();
+        expect(browser.getCurrentUrl()).toBe(adminPage.getUrl());
+
+        adminPage.userClick('e2etest@email.com');
+        browser.sleep(500);
+        adminPage.unBanClick('e2etest@email.com');
+
+        expect(adminPage.getMessage()).toContain("Usuario desbaneado correctamente");
+        navbar.goLogout();
+    });
+
     /*
      * Removes the user created at the begining of the tests
      * after every test is finished.
