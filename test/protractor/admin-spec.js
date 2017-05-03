@@ -63,7 +63,25 @@ describe('Admin Page', function() {
         adminPage.activeClick('e2etest@email.com');
 
         expect(adminPage.getMessage()).toContain("Cuenta de usuario reactivada correctamente");
+        navbar.goLogout();
+    });
 
+    it('should ban a user', function() {
+        loginPage.get();
+
+        loginPage.setEmail('e2etestADMIN@email.com');
+        loginPage.setPassword('pass');
+        loginPage.loginClick();
+
+        navbar.goUserManagement();
+        expect(browser.getCurrentUrl()).toBe(adminPage.getUrl());
+
+        adminPage.userClick('e2etest@email.com');
+        browser.sleep(500);
+        adminPage.banClick('e2etest@email.com');
+
+        expect(adminPage.getMessage()).toContain("Usuario baneado correctamente");
+        navbar.goLogout();
     });
 
     /*
