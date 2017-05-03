@@ -102,6 +102,25 @@ describe('Admin Page', function() {
         navbar.goLogout();
     });
 
+    it('should edit a user', function() {
+        loginPage.get();
+
+        loginPage.setEmail('e2etestADMIN@email.com');
+        loginPage.setPassword('pass');
+        loginPage.loginClick();
+
+        navbar.goUserManagement();
+        expect(browser.getCurrentUrl()).toBe(adminPage.getUrl());
+
+        adminPage.userClick('e2etest@email.com');
+        browser.sleep(500);
+        adminPage.editClick('e2etest@email.com');
+        adminPage.saveClick('e2etest@email.com');
+
+        expect(adminPage.getMessage()).toContain("Usuario actualizado correctamente");
+        navbar.goLogout();
+    });
+
     /*
      * Removes the user created at the begining of the tests
      * after every test is finished.
