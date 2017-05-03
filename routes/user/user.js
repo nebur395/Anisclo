@@ -6,6 +6,7 @@ var randomstring = require('randomstring');
 var nodemailer = require('nodemailer');
 var ip = require('ip');
 var request = require('request');
+var jwt = require ('jsonwebtoken');
 
 
 module.exports = function (app) {
@@ -415,6 +416,11 @@ module.exports = function (app) {
                     return;
                 }
 
+                // If user is found and password is right, create and sign a jwt for it
+                var token = jwt.sign(result, app.get('secret'), {
+                    expiresIn: "1h" // expires in 1 hours
+                });
+
                 res.status(200).send({
                         "email": result.email,
                         "name": result.name,
@@ -422,7 +428,8 @@ module.exports = function (app) {
                         "firstLogin": result.firstLogin,
                         "admin": result.admin,
                         "favs": result.favs,
-                        "follows": result.follows
+                        "follows": result.follows,
+                        "token": token
                 });
             }
             // If there's no user with that email or the password is incorrect
