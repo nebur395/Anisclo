@@ -44,7 +44,7 @@ app.set('secret', config.secret);
 app.use(express.static('./public'));
 
 // Midelware to access handler and JWT
-//require('./security/jwt-handler')(app);
+require('./security/jwt-handler')(app);
 
 
 app.use(bodyParser.json({limit: '20mb'}));
