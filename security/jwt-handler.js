@@ -8,7 +8,9 @@ module.exports = function jwtHandler(app){
             path:[  //Aqui se colocan rutas que no necesitan autenticación
                 { url: "/users/", methods: ['POST']  },  // sign up
                 { url: "/users/google", methods: ['POST']  },  // google sign up
-                { url: "/users/login", methods: ['GET']  }  // Login
+                { url: "/users/login", methods: ['GET']  },  // Login
+                { url: "/users/retrievePass", methods: ['PUT']  },  // Retrieve password
+                { url: /^\/users\/confirm\/[^\/]+$/, methods: ['GET']  }  // /users/confirm/{:email}
             ]}
         ));
 
