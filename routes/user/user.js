@@ -184,9 +184,9 @@ module.exports = function (app) {
      *         description: Direccion de enrutamiento para la peticion a google (predefinido)
      *     responses:
      *       200:
-     *         description: Mensaje de feedback para el usuario.
+     *         description: Informacion de perfil de usuario.
      *         schema:
-     *           $ref: '#/definitions/FeedbackMessage'
+     *           $ref: '#/definitions/User'
      *       404:
      *         description: Mensaje de feedback para el usuario.
      *         schema:
@@ -968,7 +968,12 @@ module.exports = function (app) {
      *       - name: current
      *         description: Contraseña actual del usuario.
      *         in: body
-     *         required: true
+     *         required: false
+     *         type: string
+     *       - name: google
+     *         description: Booleano que indica si es cuenta de google
+     *         in: body
+     *         required: false
      *         type: string
      *     responses:
      *       200:
@@ -1004,9 +1009,9 @@ module.exports = function (app) {
                 });
                 return;
             }
-            if(req.body.google){ //If it's a google user, no need to check password
-                User.update({email: req.params.email}, {isActive: false, deactivationDate: new Date()}, function(err,result){
-
+			
+            if(result && req.body.google){ //If it's a google user, no need to check password
+                User.update({email: req.params.email}, {isActive: false}, function(err,result){
                     if(err) {
                         res.status(500).send({
                             "success": false,
@@ -1021,7 +1026,7 @@ module.exports = function (app) {
                     });
                 });
             }
-            else{
+            else if(result && req.body.current){
                 // Hashes the password in order to compare it with the stored one
                 var hashPass = require('crypto')
                     .createHash('sha1')
@@ -1055,7 +1060,12 @@ module.exports = function (app) {
                     });
                 }
             }
-
+            else{ //No result
+                res.status(404).send({
+                    "success": false,
+                    "message": "Email o contraseña incorrectos"
+                });
+            }
         });
 
     });
