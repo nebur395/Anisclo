@@ -13,7 +13,7 @@ angular.module('pirineoPOIApp')
                     return _authenticated;
                 } else {
                     var tmp = angular.fromJson(localStorage.userIdentity);
-                    if (tmp !== undefined) {
+                    if (typeof tmp !== 'undefined' && tmp !== null) {
                         this.authenticate(tmp);
                         return _authenticated;
                     } else {
@@ -25,7 +25,7 @@ angular.module('pirineoPOIApp')
             //authenticate the [identity] user
             authenticate: function (identity) {
                 _identity = identity;
-                _authenticated = identity !== undefined;
+                _authenticated = (typeof identity !== 'undefined' && identity !== null);
                 localStorage.userIdentity = angular.toJson(_identity);
             },
 
