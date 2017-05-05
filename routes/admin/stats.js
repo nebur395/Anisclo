@@ -24,6 +24,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de usuarios totales del sistema.
@@ -67,6 +75,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de POIs totales del sistema.
@@ -110,6 +126,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de rutas totales del sistema.
@@ -154,6 +178,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de usuarios en cada estado distinto.
@@ -258,6 +290,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número medio de pois por usuario
@@ -314,6 +354,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número medio de rutas por usuario
@@ -371,6 +419,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de usuarios en cada estado distinto.
@@ -442,6 +498,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de registros y de bajas en el último año

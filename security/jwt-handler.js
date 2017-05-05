@@ -12,7 +12,8 @@ module.exports = function jwtHandler(app){
                 { url: "/users/retrievePass", methods: ['PUT']  },  // Retrieve password
                 { url: /^\/users\/confirm\/[^\/]+$/, methods: ['GET']  },  // /users/confirm/{:email}
                 { url: "/swagger.json", methods: ['GET']  },  // Swagger's JSON
-                { url: "/api-docs/", methods: ['GET']  }  // Swagger's API Web
+                { url: "/api-docs/", methods: ['GET']  },  // Swagger's API Web
+                { url: /^\/url\/[^\/]+$/, methods: ['GET']  }  ///url/{:id}:
             ]}
         ));
 
