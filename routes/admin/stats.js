@@ -47,6 +47,14 @@ module.exports = function (app) {
      */
     router.get("/totalUsers", function(req, res){
 
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
+
         User.count({}, function(err, users){
             if(err) {
                 res.status(500).send({
@@ -98,6 +106,14 @@ module.exports = function (app) {
      */
     router.get("/totalPois", function(req, res){
 
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
+
         POI.count({}, function(err, pois){
             if(err) {
                 res.status(500).send({
@@ -148,6 +164,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/totalRoutes", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         Route.count({}, function(err, routes){
             if(err) {
@@ -209,6 +233,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/usersStatus", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         var statuses = ['Activos', 'Inactivos', 'BaneadosP', 'BaneadosT'];
         var stats = [];
@@ -313,6 +345,14 @@ module.exports = function (app) {
      */
     router.get("/poisPerUser", function(req, res){
 
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
+
         User.count({admin: false}, function(err, users){
 
             if(err) {
@@ -376,6 +416,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/routesPerUser", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         User.count({admin: false}, function(err, users){
 
@@ -444,6 +492,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/lastLogins", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         var date = new Date();
         var year = date.getFullYear()-1;
@@ -528,6 +584,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/signUpAndRemove", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         var date = new Date();
         var year = date.getFullYear()-1;

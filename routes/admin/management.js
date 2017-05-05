@@ -51,6 +51,14 @@ module.exports = function (app) {
      */
     router.get("/users", function(req, res){
 
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
+
         User.find({admin: false}, function(err, result){
 
             if (err){
@@ -166,6 +174,14 @@ module.exports = function (app) {
      */
     router.put("/users/:email", function(req, res){
 
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
+
         // Checks all body fields
         if(!req.body.name || !req.body.lastname || !req.body.newEmail){
             res.status(404).send({
@@ -251,6 +267,14 @@ module.exports = function (app) {
      */
     router.put("/users/:email/ban", function(req, res){
 
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
+
         // Checks all body fields
         if(!req.body.time && req.body.time<0){
             res.status(404).send({
@@ -335,6 +359,14 @@ module.exports = function (app) {
      */
     router.put("/users/:email/unban", function(req, res){
 
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
+
         User.findOneAndUpdate({email: req.params.email}, {banInitDate:null, banFinishDate: null}, function(err, result){
 
             if (err){
@@ -404,6 +436,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/users/:email/useDragonBalls", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         User.findOneAndUpdate({email: req.params.email}, {isActive: true, deactivationDate: null}, function(err, result){
 
