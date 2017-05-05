@@ -1,7 +1,7 @@
 angular.module('pirineoPOIApp')
 
     // 'auth' service manage the authentication function of the page with the server
-    .factory('auth', function ($state, $http, $base64) {
+    .factory('auth', function ($state, $http, $base64, jwtHelper) {
 
         var _identity = undefined,
             _authenticated = false;
@@ -38,39 +38,91 @@ angular.module('pirineoPOIApp')
             },
 
             getUserObject: function () {
-                return _identity;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity._identity;
+                } else {
+                    return "";
+                }
             },
 
             getUsername: function () {
-                return _identity.name;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.name;
+                } else {
+                    return "";
+                }
             },
 
             getEmail: function () {
-                return _identity.email;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.email;
+                } else {
+                    return "";
+                }
             },
 
             getLastname: function () {
-                return _identity.lastname;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.lastname;
+                } else {
+                    return "";
+                }
             },
 
             getAdmin: function () {
-                return _identity.admin;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.admin;
+                } else {
+                    return "";
+                }
             },
 
             getFirstLogin: function () {
-                return _identity.firstLogin;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.firstLogin;
+                } else {
+                    return "";
+                }
             },
 
             getFavs: function () {
-                return _identity.favs;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.favs;
+                } else {
+                    return "";
+                }
             },
 
             getFollows: function () {
-                return _identity.follows;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.follows;
+                } else {
+                    return "";
+                }
             },
 
             getGoogle: function () {
-                return _identity.google;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.google;
+                } else {
+                    return "";
+                }
+            },
+
+            getToken: function () {
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.token;
+                } else {
+                    return "";
+                }
+            },
+
+            isTokenExpired: function () {
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return jwtHelper.isTokenExpired(_identity.token);
+                } else {
+                    return true;
+                }
             },
 
             //send the login info to the server

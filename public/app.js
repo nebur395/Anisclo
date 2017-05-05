@@ -1,5 +1,5 @@
 angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgoogle-maps', 'dndLists',
-                                'ui-notification', 'ngSanitize', 'chart.js', 'satellizer'])
+                                'ui-notification', 'ngSanitize', 'chart.js', 'satellizer', 'angular-jwt'])
 
     // Config UI-Google-maps angularjs module
     .config(function(uiGmapGoogleMapApiProvider) {
@@ -196,4 +196,37 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
         });
 
         $urlRouterProvider.otherwise('login');
-    });
+    })
+
+    .config(['$httpProvider',function ($httpProvider) {
+        /**
+         *  HTTP Interceptor.
+         *  En cada request, envía el token de autorización si presente.
+         *  En cada respuesta, si código es 401 manda a login, si es 403 manda a forbidden.
+         */
+        $httpProvider.interceptors.push(['$q','$injector', function ($q, $injector) {
+            return {
+                'request': function (config) {
+                    var authService = $injector.get('auth');
+                    config.headers = config.headers || {};
+                    if (authService.getToken()) {
+                        config.headers.Authorization = 'Bearer ' + authService.getToken();
+                    }
+                    return config;
+                },
+                'responseError': function (response) {
+
+                    //Cuando en una respuesta nos llega 401 -> O datos incorrectos o necesitamos autenticarnos
+                    if (response.status === 401) {
+                        var authService = $injector.get('auth');
+                        //Si el token está caducado -> Vamos a login
+                        if(authService.getToken() && authService.isTokenExpired()){
+                            console.log("Expired token! Redirecting to login...");
+                            authService.logout();
+                        }
+                    }
+                    return $q.reject(response);
+                }
+            };
+        }]);
+    }]);
