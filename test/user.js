@@ -3,7 +3,8 @@ var chaiHttp = require('chai-http');
 var should = chai.should();
 var server = require('../server.js');
 var User = server.models.User;
-var jwt = require ('jsonwebtoken');
+var config = require("../config");
+var jwt = require('jsonwebtoken');
 var createUserToken = require('./jwtCreator').createUserToken;
 
 chai.use(chaiHttp);
@@ -179,7 +180,7 @@ describe('User', function(){
                     result.body.should.be.a('object');
                     result.body.should.have.property('token');
                     var token = result.body.token;
-                    jwt.verify(token, app.get('secret'), function (err, decoded) {
+                    jwt.verify(token, config.secret, function (err, decoded) {
                         var user = decoded;
                         user.should.be.a('object');
                         user.should.have.property('email');
@@ -466,6 +467,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/'+email2)
                 .send({current: password2, new: "newPass"})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -484,6 +486,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/falseEmail')
                 .send({current: password2, new: "newPass"})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -503,6 +506,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/'+email2)
                 .send({current: "wrongPass", new: "newPass"})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -521,6 +525,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/'+email2)
                 .send({current: "", new: "newPass"})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -539,6 +544,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/'+email2)
                 .send({current: password2, new: ""})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -593,6 +599,7 @@ describe('User', function(){
             chai.request(server)
                 .delete('/users/'+email2)
                 .send({current: password2})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -611,6 +618,7 @@ describe('User', function(){
             chai.request(server)
                 .delete('/users/falseEmail')
                 .send({current: password2})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -629,6 +637,7 @@ describe('User', function(){
             chai.request(server)
                 .delete('/users/'+email)
                 .send({current: "wrongPass"})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -647,6 +656,7 @@ describe('User', function(){
             chai.request(server)
                 .delete('/users/'+email2)
                 .send({current: ""})
+                .set('Authorization','Bearer ' + createUserToken(email2))
                 .end(function(err, result){
 
                     result.should.have.status(404);
