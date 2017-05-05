@@ -22,6 +22,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
@@ -115,6 +123,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -203,6 +218,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -285,6 +307,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -348,6 +377,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
