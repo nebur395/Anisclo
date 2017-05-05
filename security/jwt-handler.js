@@ -5,12 +5,14 @@ module.exports = function jwtHandler(app){
 // Middleware that add a route access check
     app.use(jwt({ secret: app.get('secret')})
         .unless({
-            path:[  //Aqui se colocan rutas que no necesitan autenticación
+            path:[  // Non-authorization routes
                 { url: "/users/", methods: ['POST']  },  // sign up
                 { url: "/users/google", methods: ['POST']  },  // google sign up
                 { url: "/users/login", methods: ['GET']  },  // Login
                 { url: "/users/retrievePass", methods: ['PUT']  },  // Retrieve password
-                { url: /^\/users\/confirm\/[^\/]+$/, methods: ['GET']  }  // /users/confirm/{:email}
+                { url: /^\/users\/confirm\/[^\/]+$/, methods: ['GET']  },  // /users/confirm/{:email}
+                { url: "/swagger.json", methods: ['GET']  },  // Swagger's JSON
+                { url: "/api-docs/", methods: ['GET']  }  // Swagger's API Web
             ]}
         ));
 

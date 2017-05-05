@@ -201,8 +201,8 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
     .config(['$httpProvider',function ($httpProvider) {
         /**
          *  HTTP Interceptor.
-         *  En cada request, envía el token de autorización si presente.
-         *  En cada respuesta, si código es 401 manda a login, si es 403 manda a forbidden.
+         *  Authorization JWT is sent in every request if exist.
+         *  LogOut function is execute in every response if http 401.
          */
         $httpProvider.interceptors.push(['$q','$injector', function ($q, $injector) {
             return {
@@ -216,7 +216,6 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
                 },
                 'responseError': function (response) {
 
-                    //Cuando en una respuesta nos llega 401 -> O datos incorrectos o necesitamos autenticarnos
                     if (response.status === 401) {
                         var authService = $injector.get('auth');
                         //Si el token está caducado -> Vamos a login

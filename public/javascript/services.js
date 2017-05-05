@@ -154,7 +154,9 @@ angular.module('pirineoPOIApp')
                             $base64.encode(user + ":" + password)
                         }
                     }).success(function (data) {
-                        that.authenticate(data);
+                        var user = jwtHelper.decodeToken(data.token);
+                        user.token = data.token;
+                        that.authenticate(user);
                         if (data.firstLogin) {
                             $state.go('changePassword');
                         } else {
