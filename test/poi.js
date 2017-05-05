@@ -7,6 +7,8 @@ var POI = server.models.POI;
 var ObjectId = require('mongoose').Types.ObjectId;
 var wc = require('which-country');
 var lookup = require('country-code-lookup');
+var jwt = require('jsonwebtoken');
+var createUserToken = require('./jwtCreator').createUserToken;
 
 chai.use(chaiHttp);
 
@@ -122,6 +124,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(poiRequest)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -163,6 +166,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -203,6 +207,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -225,6 +230,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -247,6 +253,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -269,6 +276,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -291,6 +299,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -313,6 +322,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -335,6 +345,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -357,6 +368,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -379,6 +391,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -443,6 +456,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois/'+poisIds[0].toString())
                 .send({"userEmail":email2})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -480,6 +494,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois/'+poisIds[0].toString())
                 .send({"userEmail":""})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -499,6 +514,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois/'+poisIds[0].toString())
                 .send({"userEmail":"fakeEmail"})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -518,6 +534,7 @@ describe('POI', function(){
             chai.request(server)
                 .post('/pois/'+'58f7301f33073d1a24bc22e6')
                 .send({"userEmail":email2})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -587,6 +604,7 @@ describe('POI', function(){
             chai.request(server)
                 .delete('/pois/'+poiId)
                 .send({"userEmail":email})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -605,6 +623,7 @@ describe('POI', function(){
             chai.request(server)
                 .delete('/pois/'+poiId)
                 .send({"userEmail":""})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -623,6 +642,7 @@ describe('POI', function(){
             chai.request(server)
                 .delete('/pois/'+poiId)
                 .send({"userEmail":"fakeEmail"})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -641,6 +661,7 @@ describe('POI', function(){
             chai.request(server)
                 .delete('/pois/'+'58f7301f33073d1a24bc22e6')
                 .send({"userEmail":email})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -659,6 +680,7 @@ describe('POI', function(){
             chai.request(server)
                 .delete('/pois/'+poiId)
                 .send({"userEmail":email2})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -731,6 +753,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -755,6 +778,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -778,6 +802,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -801,6 +826,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -824,6 +850,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -847,6 +874,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -870,6 +898,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -893,6 +922,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -916,6 +946,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -940,6 +971,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId.toString())
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -964,6 +996,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+'58f7301f33073d1a24bc22e6')
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -988,6 +1021,7 @@ describe('POI', function(){
             chai.request(server)
                 .put('/pois/'+poiId)
                 .send(duplicatedPoi)
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);

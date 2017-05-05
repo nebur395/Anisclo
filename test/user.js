@@ -467,7 +467,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/'+email2)
                 .send({current: password2, new: "newPass"})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -486,7 +486,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/falseEmail')
                 .send({current: password2, new: "newPass"})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -506,7 +506,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/'+email2)
                 .send({current: "wrongPass", new: "newPass"})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -525,7 +525,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/'+email2)
                 .send({current: "", new: "newPass"})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -544,7 +544,7 @@ describe('User', function(){
             chai.request(server)
                 .put('/users/'+email2)
                 .send({current: password2, new: ""})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -599,7 +599,7 @@ describe('User', function(){
             chai.request(server)
                 .delete('/users/'+email2)
                 .send({current: password2})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -618,7 +618,7 @@ describe('User', function(){
             chai.request(server)
                 .delete('/users/falseEmail')
                 .send({current: password2})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -637,7 +637,7 @@ describe('User', function(){
             chai.request(server)
                 .delete('/users/'+email)
                 .send({current: "wrongPass"})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -656,7 +656,7 @@ describe('User', function(){
             chai.request(server)
                 .delete('/users/'+email2)
                 .send({current: ""})
-                .set('Authorization','Bearer ' + createUserToken(email2))
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
                 .end(function(err, result){
 
                     result.should.have.status(404);
