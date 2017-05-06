@@ -49,9 +49,15 @@ angular.module('pirineoPOIApp')
             });
 
             // Average number of pois per user
-            // Number of routes
             $scope.avgPois = 0;
             adminStats.getPoisPerUser(function(number){
                 $scope.avgPois = number;
             }, showError);
+
+            // Average number of routes per user
+            $scope.avgRoutes = 0;
+            adminStats.getRoutesPerUser(function(number){
+                $scope.avgRoutes = number;
+            }, showError);
+
     }]);
