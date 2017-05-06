@@ -55,7 +55,7 @@ module.exports = function (app) {
             return;
         }
 
-        User.count({}, function(err, users){
+        User.count({admin: false}, function(err, users){
             if(err) {
                 res.status(500).send({
                     "success": false,

@@ -1,5 +1,62 @@
 <div id="adminStatsStyle">
   <div class="container">
+    <h1 id="firstContent" class="text-center">Estadísticas del Sistema</h1>
+
+    <!-- Number of users -->
+    <div class="row" style="margin-top: 5%">
+      <div class="col-sm-12"><p class="text-justify">El sistema dispone de un total de
+        <strong>{{totalUsers}} usuarios</strong>,
+        <strong>{{totalPois}} pois</strong> y
+        <strong>{{totalRoutes}} rutas</strong>.</p></div>
+    </div>
+
+    <!-- Average number of pois per user -->
+    <div class="row" style="margin-top: 5%">
+      <div class="col-sm-12"><p class="text-justify">El sistema dispone de una media de
+        <strong>{{avgPois}} pois</strong> y
+        <strong>{{avgRoutes}} rutas</strong> por usuario.</p></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Number of users per status -->
+    <div class="row">
+      <div class="col-sm-8">
+        <canvas class="chart chart-pie" chart-data="dataStatusChart" chart-labels="labelsStatusChart"
+                chart-options="optionsStatusChart"></canvas>
+      </div>
+      <div class="col-sm-4"><p class="text-justify">Número de usuarios por estado.</p></div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Last logins per month -->
+    <div class="row">
+      <div class="col-sm-4"><p class="text-justify">Evolución de últimos accesos a lo largo del último año.
+        Un mes anterior al actual refleja el dato del año pasado. <br>Eje Y: Número de Cuentas. <br>Eje X: Mes del último año.</p></div>
+      <div class="col-sm-8">
+        <canvas class="chart chart-line" chart-data="dataLastLoginChart" chart-labels="labelsMeses"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Sign Ups per month -->
+    <div class="row">
+      <div class="col-sm-4"><p class="text-justify">Evolución de nuevos registros a lo largo del último año.
+        Un mes anterior al actual refleja el dato del año pasado. <br> Eje Y: Número de Registros. <br>Eje X: Mes del último año.</p></div>
+      <div class="col-sm-8">
+        <canvas class="chart chart-line" chart-data="dataSignUpsChart" chart-labels="labelsMeses"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Removes per month -->
+    <div class="row">
+      <div class="col-sm-4"><p class="text-justify">Evolución de cuentas borradas a lo largo del último año.
+        Un mes anterior al actual refleja el dato del año pasado. <br>Eje Y: Número de Cuentas. <br>Eje X: Mes del último año.</p></div>
+      <div class="col-sm-8">
+        <canvas class="chart chart-line" chart-data="dataRemovesChart" chart-labels="labelsMeses"></canvas>
+      </div>
+    </div>
 
   </div>
 </div>
