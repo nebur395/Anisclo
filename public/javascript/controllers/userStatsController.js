@@ -1,6 +1,7 @@
 angular.module('pirineoPOIApp')
 
-    .controller('userStatsCtrl', ['$scope', 'Notification', 'userStats', function ($scope, Notification, userStats) {
+    .controller('userStatsCtrl', ['$scope', 'Notification', 'userStats',
+        function ($scope, Notification, userStats) {
         // FEEDBACK MESSAGES
 
         // show the error message

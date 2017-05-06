@@ -1,6 +1,7 @@
 angular.module('pirineoPOIApp')
 
-    .controller('adminStatsCtrl', ['$scope', function ($scope) {
+    .controller('adminStatsCtrl', 'Notification', 'adminStats', ['$scope',
+        function ($scope, Notification, adminStats) {
 
 
     }]);

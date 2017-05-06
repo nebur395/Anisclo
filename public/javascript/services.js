@@ -862,7 +862,125 @@ angular.module('pirineoPOIApp')
                 });
             }
         };
-    });
+    })
 
+    // 'adminStats' service manages the adminStats settings functions of the page with the server
+    .factory('adminStats', function ($http) {
+        return{
+            // returns the number of users in the system, including bans
+            getTotalUsers: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/totalUsers',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data) {
+                    callbackSuccess(data.totalUsers);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // return the number of pois in the system
+            getTotalPois: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/totalPois',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.totalPois);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // return the number of routes in the system
+            getTotalRoutes: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/totalRoutes',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.totalRoutes);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns an array of number of users by account state (active, inactive, temporally banned, permanently banned)
+            getUsersStatus: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/usersStatus',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.usersStatus);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns the average number of pois per user
+            getPoisPerUser: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/poisPerUser',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.poisPerUser);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns the average number of routes per user
+            getRoutesPerUser: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/routesPerUser',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.routesPerUser);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns an array with the number of the last login of every user, grouped by month
+            getLastLogins: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/lastLogins',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.lastLogins);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns two arrays: the number of new signUps and the number of accounts removed,
+            // both grouped by months
+            getSignUpAndRemove: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/signUpAndRemove',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.signUps,data.removes);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            }
+        }
+    });
 
 
