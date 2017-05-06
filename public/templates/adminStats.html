@@ -2,5 +2,34 @@
   <div class="container">
     <h1 id="firstContent" class="text-center">Estadísticas del Sistema</h1>
 
+    <!-- Number of users -->
+    <div class="row" style="margin-top: 5%">
+      <div class="col-sm-12"><p class="text-justify">El sistema dispone de un total de
+        <strong>{{totalUsers}} usuarios</strong>.</p></div>
+    </div>
+
+    <!-- Number of pois -->
+    <div class="row" style="margin-top: 5%">
+      <div class="col-sm-12"><p class="text-justify">El sistema dispone de un total de
+        <strong>{{totalPois}} pois</strong>.</p></div>
+    </div>
+
+    <!-- Number of pois -->
+    <div class="row" style="margin-top: 5%">
+      <div class="col-sm-12"><p class="text-justify">El sistema dispone de una media de
+        <strong>{{avgPois}} pois</strong> por usuario.</p></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Number of users per status -->
+    <div class="row">
+      <div class="col-sm-8">
+        <canvas class="chart chart-pie" chart-data="dataStatusChart" chart-labels="labelsStatusChart"
+                chart-options="optionsStatusChart"></canvas>
+      </div>
+      <div class="col-sm-4"><p class="text-justify">Número de usuarios por estado.</p></div>
+    </div>
+
   </div>
 </div>
