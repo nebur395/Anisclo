@@ -24,6 +24,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de usuarios totales del sistema.
@@ -38,6 +46,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/totalUsers", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         User.count({}, function(err, users){
             if(err) {
@@ -67,6 +83,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de POIs totales del sistema.
@@ -81,6 +105,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/totalPois", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         POI.count({}, function(err, pois){
             if(err) {
@@ -110,6 +142,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de rutas totales del sistema.
@@ -124,6 +164,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/totalRoutes", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         Route.count({}, function(err, routes){
             if(err) {
@@ -154,6 +202,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de usuarios en cada estado distinto.
@@ -177,6 +233,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/usersStatus", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         var statuses = ['Activos', 'Inactivos', 'BaneadosP', 'BaneadosT'];
         var stats = [];
@@ -258,6 +322,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número medio de pois por usuario
@@ -272,6 +344,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/poisPerUser", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         User.count({admin: false}, function(err, users){
 
@@ -314,6 +394,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número medio de rutas por usuario
@@ -328,6 +416,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/routesPerUser", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         User.count({admin: false}, function(err, users){
 
@@ -371,6 +467,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de usuarios en cada estado distinto.
@@ -388,6 +492,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/lastLogins", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         var date = new Date();
         var year = date.getFullYear()-1;
@@ -442,6 +554,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Número de registros y de bajas en el último año
@@ -464,6 +584,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/signUpAndRemove", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         var date = new Date();
         var year = date.getFullYear()-1;

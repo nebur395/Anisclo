@@ -25,6 +25,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario creador de la ruta.
      *         in: body
@@ -232,6 +239,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: id
      *         description: Id de la ruta.
      *         in: path
@@ -345,6 +359,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: id
      *         description: Id de la ruta.
      *         in: path

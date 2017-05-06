@@ -32,6 +32,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Lista con todos los POIs del sistema.
@@ -119,6 +127,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario que sirve como identificador.
      *         in: body
@@ -306,6 +321,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: tags
      *         description: Conjunto de tags separados por un '#'.
      *         in: header
@@ -411,6 +433,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: id
      *         description: ID del POI al que se va a añadir la valoración.
      *         in: path
@@ -515,6 +544,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: id
      *         description: ID del POI que se va a duplicar.
      *         in: path
@@ -661,6 +697,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: id
      *         description: ID del POI que se va a eliminar.
      *         in: path
@@ -772,6 +815,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: id
      *         description: ID del POI que se va a eliminar.
      *         in: path
@@ -942,6 +992,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Objeto POI.

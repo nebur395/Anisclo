@@ -24,6 +24,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -132,6 +139,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -219,6 +233,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -329,6 +350,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -466,6 +494,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -553,6 +588,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -629,6 +671,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -735,6 +784,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -842,6 +898,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -964,6 +1027,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path
@@ -1092,6 +1162,13 @@ module.exports = function(app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: userEmail
      *         description: Email del usuario propietario de los POIs.
      *         in: path

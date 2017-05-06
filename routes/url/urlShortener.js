@@ -23,6 +23,13 @@ module.exports = function (app){
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: url
      *         description: URL que se quiere acortar.
      *         in: body

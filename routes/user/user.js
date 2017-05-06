@@ -6,6 +6,7 @@ var randomstring = require('randomstring');
 var nodemailer = require('nodemailer');
 var ip = require('ip');
 var request = require('request');
+var jwt = require ('jsonwebtoken');
 
 
 module.exports = function (app) {
@@ -334,9 +335,12 @@ module.exports = function (app) {
      *         format: byte
      *     responses:
      *       200:
-     *         description: Información de perfil del usuario.
+     *         description: Información de perfil del usuario metido dentro de un JSON Web Token.
      *         schema:
-     *           $ref: '#/definitions/User'
+     *           type: object
+     *           properties:
+     *             token:
+     *               $ref: '#/definitions/User'
      *       404:
      *         description: Mensaje de feedback para el usuario.
      *         schema:
@@ -415,14 +419,24 @@ module.exports = function (app) {
                     return;
                 }
 
+                // User to be sent in the response
+                var userResponse = {
+                    "email": result.email,
+                    "name": result.name,
+                    "lastname": result.lastname,
+                    "firstLogin": result.firstLogin,
+                    "admin": result.admin,
+                    "favs": result.favs,
+                    "follows": result.follows
+                };
+
+                // If user is found and password is right, create and sign a jwt for it
+                var token = jwt.sign(userResponse, app.get('secret'), {
+                    expiresIn: "1h" // expires in 1 hours
+                });
+
                 res.status(200).send({
-                        "email": result.email,
-                        "name": result.name,
-                        "lastname": result.lastname,
-                        "firstLogin": result.firstLogin,
-                        "admin": result.admin,
-                        "favs": result.favs,
-                        "follows": result.follows
+                        "token": token
                 });
             }
             // If there's no user with that email or the password is incorrect
@@ -603,6 +617,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -733,6 +754,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -860,6 +888,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -960,6 +995,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -1084,6 +1126,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
