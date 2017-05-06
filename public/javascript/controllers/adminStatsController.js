@@ -60,4 +60,19 @@ angular.module('pirineoPOIApp')
                 $scope.avgRoutes = number;
             }, showError);
 
+            // Evolution of last access by user
+            $scope.labelsMeses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
+                'Septiembre','Octubre','Noviembre','Diciembre'];
+            $scope.dataLastLoginChart = [[0,0,0,0,0,0,0,0,0,0,0,0]];
+            adminStats.getLastLogins(function(list) {
+                $scope.dataLastLoginChart = list;
+            });
+
+            // Evolution of signups and removes grouped by month
+            $scope.dataSignUpsChart = [[0,0,0,0,0,0,0,0,0,0,0,0]];
+            $scope.dataRemovesChart = [[0,0,0,0,0,0,0,0,0,0,0,0]];
+            adminStats.getSignUpAndRemove(function(signups, removes) {
+                $scope.dataSignUpsChart = signups;
+                $scope.dataRemovesChart = removes;
+            });
     }]);
