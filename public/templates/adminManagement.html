@@ -1,0 +1,16 @@
+<div id="adminManagementStyle">
+  <div class="container">
+
+    <h1 id="firstContent" class="text-center">Gestiona los usuarios del sistema</h1>
+    <!-- Tarjetas para representar la info -->
+    <div ng-hide="!isEmpty()" class="text-center"><p>No hay usuarios en el sistema</p></div>
+    <div ng-hide="isEmpty()">
+
+      <div id="userCardsStyle">
+        <user ng-repeat="user in userList">
+        </user>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -4,14 +4,15 @@ var server = require('../../server.js');
 var User = server.models.User;
 var POI = server.models.POI;
 
-var LoginPageObject = require('./pageObjects/login.js');
+var LoginPageObject = require('./pageObjects/login');
 var StarterPageOject = require('./pageObjects/starter');
+var NavbarPageOject = require('./pageObjects/components/navbar');
 
 // starter-spec.js
 describe('Starter Page', function() {
     var loginPage,
-        starterPage,
-        navbar;
+        navbar,
+        starterPage;
 
     beforeAll(function(){
         var hashPass = require('crypto')
@@ -33,6 +34,7 @@ describe('Starter Page', function() {
 
     beforeEach(function() {
         loginPage = new LoginPageObject();
+        navbar = new NavbarPageOject();
         starterPage = new StarterPageOject();
     });
 
@@ -55,7 +57,9 @@ describe('Starter Page', function() {
         starterPage.setPoiUrl("poiTestUrl");
         starterPage.savePOIClick();
 
-        expect(starterPage.getMessage()).toContain("POI añadido correctamente");//POI eliminado correctamente
+        expect(starterPage.getMessage()).toContain("POI añadido correctamente");
+
+        navbar.goLogout();
 
     });
 

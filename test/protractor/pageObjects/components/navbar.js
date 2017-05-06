@@ -6,6 +6,7 @@ var NavbarPageOject = function() {
     var home = element(by.linkText("Pirineo's POI"));
     var login = element(by.linkText('Iniciar Sesión'));
     var signUp = element(by.linkText('Registrarse'));
+    var userManagement = element(by.linkText('Gestión de usuarios'));
 
     this.goProfile = function() {
         profile.click();
@@ -21,6 +22,9 @@ var NavbarPageOject = function() {
     };
     this.goSignUp = function() {
         signUp.click();
+    };
+    this.goUserManagement = function() {
+        userManagement.click();
     };
 };
 

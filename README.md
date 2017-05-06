@@ -1,6 +1,8 @@
 # Anisclo
 
 [![Build Status](https://travis-ci.com/nebur395/Anisclo.svg?token=TeQnRfV979qCVxB8pdn2&branch=master)](https://travis-ci.com/nebur395/Anisclo)
+[![codecov](https://codecov.io/gh/dari1495/Anisclo/branch/master/graph/badge.svg?token=zwkk1UO92a)](https://codecov.io/gh/dari1495/Anisclo)
+
 
 ## Start using this App!
 

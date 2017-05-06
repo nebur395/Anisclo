@@ -28,14 +28,23 @@
 
 
         <!-- view follos button -->
-        <li ng-if="logged"><a href="#/follows"><i class="fa fa-users fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged && !admin"><a href="#/follows"><i class="fa fa-users fa-lg" aria-hidden="true"></i>
           Ver siguiendo</a></li>
         <!-- view favs button -->
-        <li ng-if="logged"><a href="#/favs"><i class="fa fa-star fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged && !admin"><a href="#/favs"><i class="fa fa-star fa-lg" aria-hidden="true"></i>
           Ver favoritos</a></li>
-        <!-- view stats button -->
-        <li ng-if="logged"><a href="#/userStats"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
+        <!-- view stats of normal user button -->
+        <li ng-if="logged && !admin"><a href="#/userStats"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
           Estadísticas</a></li>
+
+        <!-- view stats of admin user button -->
+        <li ng-if="logged && admin"><a href="#/adminManagement"><i class="fa fa-wrench fa-lg" aria-hidden="true"></i>
+          Gestión de usuarios</a></li>
+        <!-- view stats of admin user button -->
+        <li ng-if="logged && admin"><a href="#/adminStats"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
+          Estado del sistema</a></li>
+
+
         <!-- log out button -->
         <li ng-if="logged"><a href="#/profile"><i class="fa fa-cogs fa-lg" aria-hidden="true"></i>
           Cuenta</a></li>

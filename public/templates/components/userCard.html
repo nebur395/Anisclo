@@ -1,0 +1,55 @@
+<div class="accordionCard">
+  <button class="accordion" ng-click="showCard = !showCard" ng-class="{active: showCard}">
+    <span ng-if="!isActive" style="color:#d9534f">Inactiva:</span> {{currentEmail}}
+  </button>
+  <div class="panel" ng-class="{show: showCard}">
+
+    <form role="form" class="form-horizontal" ng-submit="modalSubmit()" style="margin-top: 1%">
+      <!-- name input -->
+      <div class="form-group">
+        <label for="userName" class="control-label col-xs-2"><strong>Nombre:</strong></label>
+        <div class="col-xs-10">
+          <input id="userName" type="text" ng-model="user.name" required ng-disabled="!editing"
+                 class="form-control" placeholder="Introduce el nombre del usuario" />
+        </div>
+      </div>
+
+      <!-- lastname input -->
+      <div class="form-group">
+        <label for="userLastname" class="control-label col-xs-2"><strong>Apellido/s:</strong></label>
+        <div class="col-xs-10">
+          <input id="userLastname" type="text" ng-model="user.lastname" required ng-disabled="!editing"
+                 class="form-control" placeholder="Introduce el apellido del usuario" />
+        </div>
+      </div>
+
+      <!-- email input -->
+      <div class="form-group">
+        <label for="userEmail" class="control-label col-xs-2"><strong>Email:</strong></label>
+        <div class="col-xs-10">
+          <input id="userEmail" type="email" ng-model="user.email" required ng-disabled="!editing"
+                 class="form-control" placeholder="Introduce el email del usuario" />
+        </div>
+      </div>
+
+      <!-- ban input -->
+      <div class="form-group">
+        <label for="userBan" class="control-label col-xs-2"><strong>Tiempo:</strong></label>
+        <div class="col-xs-10">
+          <input id="userBan" type="number" ng-model="user.ban" ng-disabled="isBanned"
+                 class="form-control" placeholder="Introduce los días. 0 si es permanente." />
+          <p style="font-size: 60%">Introduce los días a inhabilitar. 0 implica indefinidamente.</p>
+        </div>
+      </div>
+
+      <div class="col-xs-12 text-right" id="managementButtons">
+        <button ng-click="$parent.modalButton=0" ng-if="!isBanned" class="btn-danger">Inhabilitar</button>
+        <button ng-click="$parent.modalButton=1" ng-if="isBanned" class="btn-success">Habilitar</button>
+        <button ng-click="modalButton=2" class="btn-warning" ng-disabled="isActive"
+                ng-class="{customDisabled: isActive}">Activar</button>
+        <button ng-click="$parent.modalButton=3" ng-if="!editing" class="w3-theme-action" type="submit">Editar</button>
+        <button ng-click="$parent.modalButton=4" ng-if="editing" class="w3-theme-action">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>

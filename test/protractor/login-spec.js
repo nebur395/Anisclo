@@ -3,9 +3,9 @@
 var server = require('../../server.js');
 var User = server.models.User;
 
-var LoginPageObject = require('./pageObjects/login.js');
+var LoginPageObject = require('./pageObjects/login');
 var StarterPageOject = require('./pageObjects/starter');
-var NavbarPageOject = require('./pageObjects/components/navbar.js');
+var NavbarPageOject = require('./pageObjects/components/navbar');
 
 // login-spec.js
 describe('Login Page', function() {

@@ -105,8 +105,6 @@ angular.module('pirineoPOIApp')
                         that.authenticate(data);
                         if (data.firstLogin) {
                             $state.go('changePassword');
-                        } else if (data.admin) {
-                            $state.go('admin');
                         } else {
                             $state.go('starter');
                         }
@@ -173,12 +171,16 @@ angular.module('pirineoPOIApp')
     // 'manageState' service manage the control access to the different states of the page
     .factory('manageState', function (auth) {
         return {
-            // manage access privileges of any logged state
+            // manage access privileges of any logged state for a normal user
             manageLoggedState: function (state) {
                 if (!auth.isAuthenticated()){
                     return "login";
                 } else if(auth.getAdmin()) {
-                    return "admin";
+                    if (state == "profile") {
+                        return state;
+                    } else {
+                        return "starter";
+                    }
                 } else if(auth.getFirstLogin()) {
                     return "changePassword";
                 } else {
@@ -189,12 +191,26 @@ angular.module('pirineoPOIApp')
                     }
                 }
             },
+
+            // manage access privileges of any logged state for an admin user
+            manageAdminState: function (state) {
+                if (!auth.isAuthenticated()){
+                    return "login";
+                } else if(auth.getAdmin()) {
+                    return state;
+                } else if(auth.getFirstLogin()) {
+                    return "changePassword";
+                } else {
+                    return "starter";
+                }
+            },
+
             // manage access privileges of any not logged state
             manageNotLoggedState: function (state) {
                 if (!auth.isAuthenticated()) {
                     return state;
                 } else if(auth.getAdmin()) {
-                    return "admin";
+                    return "starter";
                 } else if(auth.getFirstLogin()) {
                     return "changePassword";
                 } else {
@@ -705,6 +721,88 @@ angular.module('pirineoPOIApp')
                     }
                 }).success(function (data) {
                     callbackSuccess(data.routes);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            }
+        };
+    })
+
+    // 'userManagement' service manage the user management function of the page with the server
+    .factory('userManagement', function ($http) {
+        return {
+            // save a route in the server
+            getUsers: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'admin/users/',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.users);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // modify a current user with admin privileges
+            setUser: function (user, email, callbackSuccess, callbackError) {
+                $http({
+                    method: 'PUT',
+                    url: 'admin/users/' + email,
+                    data: JSON.stringify(user),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // ban a current user with admin privileges
+            banUser: function (time, email, callbackSuccess, callbackError) {
+                $http({
+                    method: 'PUT',
+                    url: 'admin/users/' + email + '/ban',
+                    data: JSON.stringify(time),
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // unBan a current user with admin privileges
+            unBanUser: function (email, callbackSuccess, callbackError) {
+                $http({
+                    method: 'PUT',
+                    url: 'admin/users/' + email + '/unban',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
+                }).error(function (data) {
+                    callbackError(data.message);
+                });
+            },
+
+            // admin's dragon balls are used to active a current user
+            useDragonBalls: function (email, callbackSuccess, callbackError) {
+                $http({
+                    method: 'PUT',
+                    url: 'admin/users/' + email + '/useDragonBalls',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function (data) {
+                    callbackSuccess(data.message);
                 }).error(function (data) {
                     callbackError(data.message);
                 });

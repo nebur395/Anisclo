@@ -1,4 +1,11 @@
 language: node_js
 node_js:
-- 6.9.5
+ - 6.9.5
 services: mongodb
+install:
+  - npm install -g istanbul mocha
+  - npm install
+script:
+  - istanbul cover _mocha
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
