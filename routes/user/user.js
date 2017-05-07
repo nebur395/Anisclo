@@ -1176,7 +1176,7 @@ module.exports = function (app) {
             }
             else if(req.headers.token === result.google){
 
-                res.status(200).send({
+                var preToken = {
                     "email": result.email,
                     "name": result.name,
                     "lastname": result.lastname,
@@ -1185,6 +1185,12 @@ module.exports = function (app) {
                     "favs": result.favs,
                     "follows": result.follows,
                     "google": true
+                };
+                var token = jwt.sign(preToken,app.get('secret'), {
+                    expiresIn: '1h'
+                });
+                res.status(200).send({
+                    "token": token
                 });
             }
             // If the user doesn't exist or the token is incorrect
