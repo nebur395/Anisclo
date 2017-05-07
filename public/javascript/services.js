@@ -807,7 +807,8 @@ angular.module('pirineoPOIApp')
                     url: 'admin/users/' + email,
                     data: JSON.stringify(user),
                     headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Json': true
                     }
                 }).success(function (data) {
                     callbackSuccess(data.message);

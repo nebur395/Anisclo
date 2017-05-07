@@ -17,6 +17,7 @@
     "async": "^2.3.0",
     "base-64": "^0.1.0",
     "body-parser": "^1.17.1",
+    "body-parser-xml": "^1.1.0",
     "bs58": "^4.0.0",
     "country-code-lookup": "0.0.6",
     "crypto": "0.0.3",
@@ -36,8 +37,7 @@
     "semaphore": "^1.0.5",
     "swagger-jsdoc": "^1.9.2",
     "utf8": "^2.1.2",
-    "which-country": "^1.0.0",
-    "xml2js": "^0.4.17"
+    "which-country": "^1.0.0"
   },
   "scripts": {
     "postinstall": "cd public ; npm install;",

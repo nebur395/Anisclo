@@ -1,7 +1,5 @@
 var express = require('express');
 var async = require("async");
-var parseString = require('xml2js').parseString;
-var util = require('util');
 
 module.exports = function (app) {
 
@@ -140,8 +138,8 @@ module.exports = function (app) {
      *         required: true
      *         type: string
      *         format: byte
-     *       - name: json
-     *         description: Booleano que indica si la información llega en XLM o JSON.
+     *       - name: Json
+     *         description: Booleano que indica si la información llega en XLM o JSON. True = JSON.
      *         in: header
      *         required: true
      *         type: boolean
@@ -189,8 +187,29 @@ module.exports = function (app) {
             return;
         }
 
+        if(!req.headers["json"]){
+            res.status(404).send({
+                "success": false,
+                "message": "El campo 'Json' de las cabeceras no existe o no es válido."
+            });
+            return;
+        }
+
+        var name, lastname, newEmail;
+
+        if(req.headers['json'] === 'true'){
+            name = req.body.name;
+            lastname = req.body.lastname;
+            newEmail = req.body.newEmail;
+        }
+        else{
+            name = req.body.user.name;
+            lastname = req.body.user.lastname;
+            newEmail = req.body.user.newEmail[0];
+        }
+
         // Checks all body fields
-        if(!req.body.name || !req.body.lastname || !req.body.newEmail){
+        if(!name || !lastname || !newEmail){
             res.status(404).send({
                 "success": false,
                 "message": "Nombre, apellido o nuevo email incorrectos"
@@ -198,8 +217,8 @@ module.exports = function (app) {
             return;
         }
 
-        User.findOneAndUpdate({email: req.params.email}, {name: req.body.name,
-            lastname: req.body.lastname, email: req.body.newEmail}, function(err, result){
+        User.findOneAndUpdate({email: req.params.email}, {name: name,
+            lastname: lastname, email: newEmail}, function(err, result){
 
             if (err){
                 res.status(500).send({
