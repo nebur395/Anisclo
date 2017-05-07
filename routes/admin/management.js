@@ -1,5 +1,7 @@
 var express = require('express');
 var async = require("async");
+var parseString = require('xml2js').parseString;
+var util = require('util');
 
 module.exports = function (app) {
 
@@ -115,6 +117,11 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: json
+     *         description: Booleano que indica si la información llega en XLM o JSON.
+     *         in: header
+     *         required: true
+     *         trype: boolean
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path

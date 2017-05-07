@@ -33,7 +33,8 @@
     "semaphore": "^1.0.5",
     "swagger-jsdoc": "^1.9.2",
     "utf8": "^2.1.2",
-    "which-country": "^1.0.0"
+    "which-country": "^1.0.0",
+    "xml2js": "^0.4.17"
   },
   "scripts": {
     "postinstall": "cd public ; npm install;",
