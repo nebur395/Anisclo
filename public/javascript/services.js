@@ -587,7 +587,8 @@ angular.module('pirineoPOIApp')
                     url: 'routes/' + routeId + '/sendRoute/',
                     data: JSON.stringify(emails),
                     headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Json': true
                     }
                 }).success(function (data) {
                     callbackSuccess(data.message);
