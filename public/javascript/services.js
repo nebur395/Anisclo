@@ -137,7 +137,9 @@ angular.module('pirineoPOIApp')
                             'token': password
                         }
                     }).success(function (data) {
-                        that.authenticate(data);
+                        var user = jwtHelper.decodeToken(data.token);
+                        user.token = data.token;
+                        that.authenticate(user);
                         if (data) {
                             $state.go('starter');
                         }
