@@ -24,6 +24,14 @@ module.exports = function (app) {
      *       - charset=utf-8
      *     produces:
      *       - application/json
+     *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *     responses:
      *       200:
      *         description: Mensaje de feedback para el usuario.
@@ -44,6 +52,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.get("/users", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         User.find({admin: false}, function(err, result){
 
@@ -117,11 +133,18 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: json
      *         description: Booleano que indica si la información llega en XLM o JSON.
      *         in: header
      *         required: true
-     *         trype: boolean
+     *         type: boolean
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -157,6 +180,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/users/:email", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         // Checks all body fields
         if(!req.body.name || !req.body.lastname || !req.body.newEmail){
@@ -210,6 +241,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -235,6 +273,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/users/:email/ban", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         // Checks all body fields
         if(!req.body.time && req.body.time<0){
@@ -292,6 +338,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -312,6 +365,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/users/:email/unban", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         User.findOneAndUpdate({email: req.params.email}, {banInitDate:null, banFinishDate: null}, function(err, result){
 
@@ -355,6 +416,13 @@ module.exports = function (app) {
      *     produces:
      *       - application/json
      *     parameters:
+     *       - name: Authorization
+     *         description: |
+     *           JWT estándar: `Authorization: Bearer + JWT`.
+     *         in: header
+     *         required: true
+     *         type: string
+     *         format: byte
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -375,6 +443,14 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/users/:email/useDragonBalls", function(req, res){
+
+        if (!req.user.admin) {
+            res.status(401).send({
+                "success": false,
+                "message": "No estás autorizado a acceder."
+            });
+            return;
+        }
 
         User.findOneAndUpdate({email: req.params.email}, {isActive: true, deactivationDate: null}, function(err, result){
 

@@ -1,5 +1,5 @@
 angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgoogle-maps', 'dndLists',
-                                'ui-notification', 'ngSanitize', 'chart.js', 'satellizer'])
+                                'ui-notification', 'ngSanitize', 'chart.js', 'satellizer', 'angular-jwt'])
 
     // Config UI-Google-maps angularjs module
     .config(function(uiGmapGoogleMapApiProvider) {
@@ -196,4 +196,36 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
         });
 
         $urlRouterProvider.otherwise('login');
-    });
+    })
+
+    .config(['$httpProvider',function ($httpProvider) {
+        /**
+         *  HTTP Interceptor.
+         *  Authorization JWT is sent in every request if exist.
+         *  LogOut function is execute in every response if http 401.
+         */
+        $httpProvider.interceptors.push(['$q','$injector', function ($q, $injector) {
+            return {
+                'request': function (config) {
+                    var authService = $injector.get('auth');
+                    config.headers = config.headers || {};
+                    if (authService.getToken()) {
+                        config.headers.Authorization = 'Bearer ' + authService.getToken();
+                    }
+                    return config;
+                },
+                'responseError': function (response) {
+
+                    if (response.status === 401) {
+                        var authService = $injector.get('auth');
+                        //Si el token está caducado -> Vamos a login
+                        if(authService.getToken() && authService.isTokenExpired()){
+                            console.log("Expired token! Redirecting to login...");
+                            authService.logout();
+                        }
+                    }
+                    return $q.reject(response);
+                }
+            };
+        }]);
+    }]);

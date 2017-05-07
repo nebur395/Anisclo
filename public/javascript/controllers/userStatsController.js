@@ -124,7 +124,12 @@ angular.module('pirineoPOIApp')
         // Most frequent transportation
         $scope.labels9Stat = [];
         $scope.data9Stat = [];
-        $scope.options9Stat = { responsive: true, maintainAspectRatio: false};
+        $scope.options9Stat = { responsive: true, maintainAspectRatio: false,
+        scale:{
+            ticks:{
+                beginAtZero: true
+            }
+        }};
         userStats.getTransportUsage(function (list) {
             for (i=0;i<list.length;i++) {
                 $scope.labels9Stat.push(list[i].transport);

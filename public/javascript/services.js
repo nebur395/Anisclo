@@ -1,7 +1,7 @@
 angular.module('pirineoPOIApp')
 
     // 'auth' service manage the authentication function of the page with the server
-    .factory('auth', function ($state, $http, $base64) {
+    .factory('auth', function ($state, $http, $base64, jwtHelper) {
 
         var _identity = undefined,
             _authenticated = false;
@@ -13,7 +13,7 @@ angular.module('pirineoPOIApp')
                     return _authenticated;
                 } else {
                     var tmp = angular.fromJson(localStorage.userIdentity);
-                    if (tmp !== undefined) {
+                    if (typeof tmp !== 'undefined' && tmp !== null) {
                         this.authenticate(tmp);
                         return _authenticated;
                     } else {
@@ -25,7 +25,7 @@ angular.module('pirineoPOIApp')
             //authenticate the [identity] user
             authenticate: function (identity) {
                 _identity = identity;
-                _authenticated = identity !== undefined;
+                _authenticated = (typeof identity !== 'undefined' && identity !== null);
                 localStorage.userIdentity = angular.toJson(_identity);
             },
 
@@ -38,39 +38,91 @@ angular.module('pirineoPOIApp')
             },
 
             getUserObject: function () {
-                return _identity;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity._identity;
+                } else {
+                    return "";
+                }
             },
 
             getUsername: function () {
-                return _identity.name;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.name;
+                } else {
+                    return "";
+                }
             },
 
             getEmail: function () {
-                return _identity.email;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.email;
+                } else {
+                    return "";
+                }
             },
 
             getLastname: function () {
-                return _identity.lastname;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.lastname;
+                } else {
+                    return "";
+                }
             },
 
             getAdmin: function () {
-                return _identity.admin;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.admin;
+                } else {
+                    return "";
+                }
             },
 
             getFirstLogin: function () {
-                return _identity.firstLogin;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.firstLogin;
+                } else {
+                    return "";
+                }
             },
 
             getFavs: function () {
-                return _identity.favs;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.favs;
+                } else {
+                    return "";
+                }
             },
 
             getFollows: function () {
-                return _identity.follows;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.follows;
+                } else {
+                    return "";
+                }
             },
 
             getGoogle: function () {
-                return _identity.google;
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.google;
+                } else {
+                    return "";
+                }
+            },
+
+            getToken: function () {
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return _identity.token;
+                } else {
+                    return "";
+                }
+            },
+
+            isTokenExpired: function () {
+                if (typeof _identity !== 'undefined' && _identity !== null) {
+                    return jwtHelper.isTokenExpired(_identity.token);
+                } else {
+                    return true;
+                }
             },
 
             //send the login info to the server
@@ -102,7 +154,9 @@ angular.module('pirineoPOIApp')
                             $base64.encode(user + ":" + password)
                         }
                     }).success(function (data) {
-                        that.authenticate(data);
+                        var user = jwtHelper.decodeToken(data.token);
+                        user.token = data.token;
+                        that.authenticate(user);
                         if (data.firstLogin) {
                             $state.go('changePassword');
                         } else {
@@ -808,7 +862,125 @@ angular.module('pirineoPOIApp')
                 });
             }
         };
-    });
+    })
 
+    // 'adminStats' service manages the adminStats settings functions of the page with the server
+    .factory('adminStats', function ($http) {
+        return{
+            // returns the number of users in the system, including bans
+            getTotalUsers: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/totalUsers',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data) {
+                    callbackSuccess(data.totalUsers);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // return the number of pois in the system
+            getTotalPois: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/totalPois',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.totalPois);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // return the number of routes in the system
+            getTotalRoutes: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/totalRoutes',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.totalRoutes);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns an array of number of users by account state (active, inactive, temporally banned, permanently banned)
+            getUsersStatus: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/usersStatus',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.usersStatus);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns the average number of pois per user
+            getPoisPerUser: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/poisPerUser',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.poisPerUser);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns the average number of routes per user
+            getRoutesPerUser: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/routesPerUser',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.routesPerUser);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns an array with the number of the last login of every user, grouped by month
+            getLastLogins: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/lastLogins',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.lastLogins);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            },
+            // returns two arrays: the number of new signUps and the number of accounts removed,
+            // both grouped by months
+            getSignUpAndRemove: function (callbackSuccess, callbackError) {
+                $http({
+                    method: 'GET',
+                    url: 'adminStats/signUpAndRemove',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                }).success(function(data){
+                    callbackSuccess(data.signUps,data.removes);
+                }).error(function(data){
+                    callbackError(data.message);
+                })
+            }
+        }
+    });
 
 
