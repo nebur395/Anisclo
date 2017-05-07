@@ -187,6 +187,7 @@ module.exports = function (app) {
             return;
         }
 
+        // Checks if the JSON header exists
         if(!req.headers["json"]){
             res.status(404).send({
                 "success": false,
@@ -197,15 +198,17 @@ module.exports = function (app) {
 
         var name, lastname, newEmail;
 
+        // Checks if the body is comming on JSON or XML
         if(req.headers['json'] === 'true'){
             name = req.body.name;
             lastname = req.body.lastname;
             newEmail = req.body.newEmail;
         }
         else{
+            // Since the body-parser-xml already transfroms the xml into an js object, it only extracts the fields
             name = req.body.user.name;
             lastname = req.body.user.lastname;
-            newEmail = req.body.user.newEmail[0];
+            newEmail = req.body.user.newEmail;
         }
 
         // Checks all body fields

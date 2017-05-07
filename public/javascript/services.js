@@ -433,7 +433,8 @@ angular.module('pirineoPOIApp')
                     url: 'pois/',
                     data: JSON.stringify(poiTemp),
                     headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Json': true
                     }
                 }).success(function (data) {
                     callbackSuccess(data.poi, 'POI añadido correctamente.');

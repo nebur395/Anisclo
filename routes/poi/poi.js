@@ -134,6 +134,11 @@ module.exports = function (app) {
      *         required: true
      *         type: string
      *         format: byte
+     *       - name: Json
+     *         description: Booleano que indica si la información llega en XLM o JSON. True = JSON.
+     *         in: header
+     *         required: true
+     *         type: boolean
      *       - name: userEmail
      *         description: Email del usuario que sirve como identificador.
      *         in: body
@@ -187,17 +192,47 @@ module.exports = function (app) {
         // Sets the mongo database connection to gridfs in order to store and retrieve files in the DB.
         gfs = grid(mongoose.connection.db);
 
+        // Checks if the JSON header exists
+        if(!req.headers["json"]){
+            res.status(404).send({
+                "success": false,
+                "message": "El campo 'Json' de las cabeceras no existe o no es válido."
+            });
+            return;
+        }
+
+        var userEmail, poi;
+
+        // Checks if the body is comming on JSON or XML
+        if(req.headers['json'] === 'true') {
+            userEmail = req.body.userEmail;
+            poi = req.body.poi;
+        }
+        // The body-parser-xml transfroms the body into js object, but it's neccessary to check if there's a poi field
+            // since it takes the element [0] from the poi array (xml transformation stuff)
+        else if(req.body.nuevoPoi.poi){
+            userEmail = req.body.nuevoPoi.userEmail;
+            poi = req.body.nuevoPoi.poi[0];
+            // Transform the tags and the image to a string since they need to be strings insted of objects with a string
+            poi.tags = JSON.stringify(poi.tags).replace("[", "").replace("]", "").replace(/"/g, "");
+            // Transform the lat and lng to a float since they need to be floats insted of objects with a string
+            poi.lat = parseFloat(JSON.stringify(poi.lat).replace("[", "").replace("]", "").replace(/"/g, ""));
+            poi.lng = parseFloat(JSON.stringify(poi.lng).replace("[", "").replace("]", "").replace(/"/g, ""));
+            if (poi.image) poi.image = JSON.stringify(poi.image).replace("[", "").replace("]", "").replace(/"/g, "");
+        }
+
         // Checks all body fields
-        if(!req.body.userEmail || !req.body.poi){
+        if(!userEmail || !poi){
             res.status(404).send({
                 "success": false,
                 "message": "Usuario o POI incorrectos"
             });
             return;
         }
+
         // Checks all POI fields
-        if(!req.body.poi.name || !req.body.poi.description || !req.body.poi.tags ||
-            !req.body.poi.lat || !req.body.poi.lng){
+        if(!poi.name || !poi.description || !poi.tags ||
+            !poi.lat || !poi.lng){
             res.status(404).send({
                 "success": false,
                 "message": "Uno o más campos del POI son incorrectos"
@@ -206,7 +241,7 @@ module.exports = function (app) {
         }
 
         // It searches for the user.
-        User.findOne({"email": req.body.userEmail}, function(err, user){
+        User.findOne({"email": userEmail}, function(err, user){
 
             if(err) {
                 res.status(500).send({
@@ -218,37 +253,36 @@ module.exports = function (app) {
 
             // If the user exists.
             if(user){
-                if(req.body.poi.tags.charAt(0)==='#'){
+                if(poi.tags.charAt(0)==='#'){
                     // Transforms all the tags to an array with the tags in lowercase
-                    tagsToArray(req.body.poi.tags, function(lowerCaseTags){
+                    tagsToArray(poi.tags, function(lowerCaseTags){
                         // Creates a new POI with the basic and required info.
 
                         // Extracts the continent of the POI based on the coordinates
-                        var country = wc([req.body.poi.lng, req.body.poi.lat]);
+                        var country = wc([poi.lng, poi.lat]);
                         var continent = country===null ? "Otros": lookup.byIso(country).continent;
                         var newPoi = new POI({
 
-                            name: req.body.poi.name,
-                            description: req.body.poi.description,
+                            name: poi.name,
+                            description: poi.description,
                             tags: lowerCaseTags,
-                            lat: req.body.poi.lat,
-                            lng: req.body.poi.lng,
+                            lat: poi.lat,
+                            lng: poi.lng,
                             location: continent,
-                            owner: req.body.userEmail
+                            owner: userEmail
                         });
 
-                        if(req.body.poi.url){
-                            newPoi.url = req.body.poi.url;
+                        if(poi.url){
+                            newPoi.url = poi.url;
                         }
 
                         // Checks if there's an image attached to the POI.
-                        if(req.body.poi.image){
-                            // TODO: Extraer nombre y path de la request
-                            var name = req.body.poi.name + "_image";
+                        if(poi.image){
+                            var name = poi.name + "_image";
 
                             // Creates a readable stream with the image string that is in base64
                             var imageStream = new Readable();
-                            imageStream.push(req.body.poi.image);
+                            imageStream.push(poi.image);
                             imageStream.push(null);
                             // Stores the image in the system and adds it to the POI
                             storeImage(name, imageStream, function(imageId){
@@ -274,6 +308,7 @@ module.exports = function (app) {
                         else{
                             newPoi.save(function(err, result){
                                 if(err){
+                                    console.log(err);
                                     res.status(500).send({
                                         "success": false,
                                         "message": "Error guardando POI"
