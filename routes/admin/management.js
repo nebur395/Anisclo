@@ -206,9 +206,9 @@ module.exports = function (app) {
         }
         else{
             // Since the body-parser-xml already transfroms the xml into an js object, it only extracts the fields
-            name = req.body.user.name;
-            lastname = req.body.user.lastname;
-            newEmail = req.body.user.newEmail;
+            name = req.body.newUser.name;
+            lastname = req.body.newUser.lastname;
+            newEmail = req.body.newUser.newEmail;
         }
 
         // Checks all body fields

@@ -210,9 +210,9 @@ module.exports = function (app) {
         }
         // The body-parser-xml transfroms the body into js object, but it's neccessary to check if there's a poi field
             // since it takes the element [0] from the poi array (xml transformation stuff)
-        else if(req.body.nuevoPoi.poi){
-            userEmail = req.body.nuevoPoi.userEmail;
-            poi = req.body.nuevoPoi.poi[0];
+        else if(req.body.newPoi.poi){
+            userEmail = req.body.newPoi.userEmail;
+            poi = req.body.newPoi.poi[0];
             // Transform the tags and the image to a string since they need to be strings insted of objects with a string
             poi.tags = JSON.stringify(poi.tags).replace("[", "").replace("]", "").replace(/"/g, "");
             // Transform the lat and lng to a float since they need to be floats insted of objects with a string

@@ -170,6 +170,7 @@ module.exports = function (app) {
 
                     var duration = 0;
                     var length = 0;
+                    // Calculates the total duration and length for the route
                     async.each(req.body.routeInfo, function(section, callback){
 
                         duration += section.duration.value;
@@ -246,6 +247,11 @@ module.exports = function (app) {
      *         required: true
      *         type: string
      *         format: byte
+     *       - name: Json
+     *         description: Booleano que indica si la información llega en XLM o JSON. True = JSON.
+     *         in: header
+     *         required: true
+     *         type: boolean
      *       - name: id
      *         description: Id de la ruta.
      *         in: path
@@ -277,8 +283,30 @@ module.exports = function (app) {
      */
     router.post("/:id/sendRoute", function(req, res){
 
+        // Checks if the JSON header exists
+        if(!req.headers["json"]){
+            res.status(404).send({
+                "success": false,
+                "message": "El campo 'Json' de las cabeceras no existe o no es válido."
+            });
+            return;
+        }
+
+        var ownerEmail, receiverEmail;
+
+        // Checks if the body is comming on JSON or XML
+        if(req.headers['json'] === 'true'){
+            ownerEmail = req.body.ownerEmail;
+            receiverEmail = req.body.receiverEmail;
+        }
+        else{
+            // Since the body-parser-xml already transfroms the xml into an js object, it only extracts the fields
+            ownerEmail = req.body.sendRoute.ownerEmail;
+            receiverEmail = req.body.sendRoute.receiverEmail;
+        }
+
         // Checks all body fields
-        if(!req.body.ownerEmail || !req.body.receiverEmail){
+        if(!ownerEmail || !receiverEmail){
             res.status(404).send({
                 "success": false,
                 "message": "Uno o los dos emails no son válidos"
@@ -286,7 +314,7 @@ module.exports = function (app) {
             return;
         }
 
-        User.findOne({"email":req.body.ownerEmail}, function(err, owner){
+        User.findOne({"email":ownerEmail}, function(err, owner){
 
             if (err){
                 res.status(500).send({
@@ -298,7 +326,7 @@ module.exports = function (app) {
 
             if(owner){
 
-                Route.findOne({"_id":req.params.id, "owner":req.body.ownerEmail}, function(err, route){
+                Route.findOne({"_id":req.params.id, "owner":ownerEmail}, function(err, route){
 
                     if (err){
                         res.status(500).send({
@@ -314,10 +342,10 @@ module.exports = function (app) {
                         var urlSignUp = "http://"+ipAddr+":8080/#/signUp";
                         var mailOptions = {
                             from: 'No-Reply <verif.anisclo@gmail.com>',
-                            to: req.body.receiverEmail,
+                            to: receiverEmail,
                             subject: '[Pirineo\'s POI] Someone has sent you a route!',
                             html: 'Hello there!</p>' +
-                            '<p>The user '+req.body.ownerEmail+' has sent you a route!</p>' +
+                            '<p>The user '+ownerEmail+' has sent you a route!</p>' +
                             '<p>Check it out <a href='+urlLogin+' target="_blank">here</a> using the following code to create the route!</p>' +
                             '<p>Route\'s code: '+req.params.id+'</p>' +
                             '<p>Still don\'t have an account on Pirineo\'s POI? Enter <a href='+urlSignUp+' target="_blank">here</a> to create one!</p>' +
