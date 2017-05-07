@@ -65,14 +65,14 @@ angular.module('pirineoPOIApp')
                 'Septiembre','Octubre','Noviembre','Diciembre'];
             $scope.dataLastLoginChart = [[0,0,0,0,0,0,0,0,0,0,0,0]];
             adminStats.getLastLogins(function(list) {
-                $scope.dataLastLoginChart = list;
+                $scope.dataLastLoginChart[0] = list;
             });
 
             // Evolution of signups and removes grouped by month
             $scope.dataSignUpsChart = [[0,0,0,0,0,0,0,0,0,0,0,0]];
             $scope.dataRemovesChart = [[0,0,0,0,0,0,0,0,0,0,0,0]];
             adminStats.getSignUpAndRemove(function(signups, removes) {
-                $scope.dataSignUpsChart = signups;
-                $scope.dataRemovesChart = removes;
+                $scope.dataSignUpsChart[0] = signups;
+                $scope.dataRemovesChart[0] = removes;
             });
     }]);
