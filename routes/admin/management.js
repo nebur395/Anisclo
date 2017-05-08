@@ -138,6 +138,11 @@ module.exports = function (app) {
      *         required: true
      *         type: string
      *         format: byte
+     *       - name: Json
+     *         description: Booleano que indica si la información llega en XLM o JSON. True = JSON.
+     *         in: header
+     *         required: true
+     *         type: boolean
      *       - name: email
      *         description: Email del usuario que sirve como identificador.
      *         in: path
@@ -182,8 +187,32 @@ module.exports = function (app) {
             return;
         }
 
+        // Checks if the JSON header exists
+        if(!req.headers["json"]){
+            res.status(404).send({
+                "success": false,
+                "message": "El campo 'Json' de las cabeceras no existe o no es válido."
+            });
+            return;
+        }
+
+        var name, lastname, newEmail;
+
+        // Checks if the body is comming on JSON or XML
+        if(req.headers['json'] === 'true'){
+            name = req.body.name;
+            lastname = req.body.lastname;
+            newEmail = req.body.newEmail;
+        }
+        else{
+            // Since the body-parser-xml already transfroms the xml into an js object, it only extracts the fields
+            name = req.body.newUser.name;
+            lastname = req.body.newUser.lastname;
+            newEmail = req.body.newUser.newEmail;
+        }
+
         // Checks all body fields
-        if(!req.body.name || !req.body.lastname || !req.body.newEmail){
+        if(!name || !lastname || !newEmail){
             res.status(404).send({
                 "success": false,
                 "message": "Nombre, apellido o nuevo email incorrectos"
@@ -191,8 +220,8 @@ module.exports = function (app) {
             return;
         }
 
-        User.findOneAndUpdate({email: req.params.email}, {name: req.body.name,
-            lastname: req.body.lastname, email: req.body.newEmail}, function(err, result){
+        User.findOneAndUpdate({email: req.params.email}, {name: name,
+            lastname: lastname, email: newEmail}, function(err, result){
 
             if (err){
                 res.status(500).send({

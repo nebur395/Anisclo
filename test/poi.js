@@ -125,6 +125,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(poiRequest)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -167,6 +168,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(200);
@@ -208,6 +210,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -231,6 +234,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -254,6 +258,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -277,6 +282,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -300,6 +306,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -323,6 +330,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -346,6 +354,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -369,6 +378,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);
@@ -392,6 +402,7 @@ describe('POI', function(){
                 .post('/pois')
                 .send(duplicatedPoi)
                 .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
                 .end(function(err, result){
 
                     result.should.have.status(404);

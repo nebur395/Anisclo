@@ -8,6 +8,7 @@ var express = require("express"),
     config = require("./config"),
     jwt = require("express-jwt"),
     https = require("https");
+require('body-parser-xml')(bodyParser);
 
 
 var app = express();
@@ -49,6 +50,7 @@ require('./security/jwt-handler')(app);
 
 app.use(bodyParser.json({limit: '20mb'}));
 app.use(bodyParser.urlencoded({limit: '20mb', extended : true}));
+app.use(bodyParser.xml());
 
 // serve swagger
 app.get('/swagger.json', function(req, res) {
