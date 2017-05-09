@@ -1,3 +1,5 @@
+codecov:
+  token: d2498f2f-1304-4288-8755-7175397e9e24
 comment: off
 coverage:
   range: 25..60
