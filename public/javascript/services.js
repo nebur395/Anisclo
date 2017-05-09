@@ -435,7 +435,8 @@ angular.module('pirineoPOIApp')
                     url: 'pois/',
                     data: JSON.stringify(poiTemp),
                     headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Json': true
                     }
                 }).success(function (data) {
                     callbackSuccess(data.poi, 'POI añadido correctamente.');
@@ -588,7 +589,8 @@ angular.module('pirineoPOIApp')
                     url: 'routes/' + routeId + '/sendRoute/',
                     data: JSON.stringify(emails),
                     headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Json': true
                     }
                 }).success(function (data) {
                     callbackSuccess(data.message);
@@ -809,7 +811,8 @@ angular.module('pirineoPOIApp')
                     url: 'admin/users/' + email,
                     data: JSON.stringify(user),
                     headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Json': true
                     }
                 }).success(function (data) {
                     callbackSuccess(data.message);
