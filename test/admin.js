@@ -12,6 +12,8 @@ chai.use(chaiHttp);
  */
 describe('Admin', function(){
 
+    var notAuthorizeErrorMessage = "No estás autorizado a acceder.";
+
     var name = "Testing";
     var lastname = "Test";
     var email = "testUser@email.com";
@@ -53,8 +55,6 @@ describe('Admin', function(){
      * Tests for getUsers functionality.
      */
     describe('#getUsers', function(){
-
-        var notAuthorizeErrorMessage = "No estás autorizado a acceder.";
 
         /*
          * It creates a new user before the test for getUsers starts executing.
@@ -141,6 +141,447 @@ describe('Admin', function(){
             done();
         });
 
+    });
+
+    /**
+     * Tests for getUsers functionality.
+     */
+    describe('#modifyUser', function(){
+
+        var modificationSuccessfulMessage = "Usuario actualizado correctamente";
+        var jsonHeaderMissingErrorMessage = "El campo 'Json' de las cabeceras no existe o no es válido.";
+        var notExistingUserErrorMessage = "El usuario no existe";
+        var missingFieldInModifyRequestErrorMessage = "Nombre, apellido o nuevo email incorrectos";
+
+        /*
+         * It creates a new user before the test for modifyUser starts executing.
+         */
+        before(function(done){
+
+            User.create({
+
+                email: email2,
+                name: name2,
+                lastname: lastname2,
+                password: hashPass2,
+                firstLogin: false,
+                admin: false
+
+            }, function(){
+                done();
+            });
+        });
+
+        it('should modify a user making a PUT request to /admin/users/email', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2)
+                .send({name: name2+'_modified', lastname:lastname2+'_modified', newEmail:email2})
+                .set('Authorization','Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(modificationSuccessfulMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the user\'s credentials have no admin authorization making a PUT request to /admin/users/email', function(done) {
+
+            chai.request(server)
+                .put('/admin/users/' + email2)
+                .send({name: name2 + '_modified', lastname: lastname2 + '_modified', newEmail: email2})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(401);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notAuthorizeErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the \'Json\' header is blank making a PUT request to /admin/users/email', function(done) {
+
+            chai.request(server)
+                .put('/admin/users/' + email2)
+                .send({name: name2 + '_modified', lastname: lastname2 + '_modified', newEmail: email2})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', "")
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(jsonHeaderMissingErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the user to modify does not exist making a PUT request to /admin/users/email', function(done) {
+
+            chai.request(server)
+                .put('/admin/users/fakeEmail')
+                .send({name: name2 + '_modified', lastname: lastname2 + '_modified', newEmail: email2})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingUserErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the name field for the user is blank making a PUT request to /admin/users/email', function(done) {
+
+            chai.request(server)
+                .put('/admin/users/'+email2)
+                .send({name: "", lastname: lastname2 + '_modified', newEmail: email2})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(missingFieldInModifyRequestErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the lastname field for the user is blank making a PUT request to /admin/users/email', function(done) {
+
+            chai.request(server)
+                .put('/admin/users/'+email2)
+                .send({name: name2 + '_modified', lastname: "", newEmail: email2})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(missingFieldInModifyRequestErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the newEmail field for the user is blank making a PUT request to /admin/users/email', function(done) {
+
+            chai.request(server)
+                .put('/admin/users/'+email2)
+                .send({name: name2 + '_modified', lastname: lastname2 + '_modified', newEmail: ""})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(missingFieldInModifyRequestErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        /*
+         * Removes the user created before the getUsers tests.
+         */
+        after(function(done){
+            User.collection.remove({"email": email2});
+            done();
+        });
+    });
+
+    describe('#banUser', function(){
+
+        var banSuccessfulMessage = "Usuario baneado correctamente";
+        var wrongBanTimeErrorMessage = "Tiempo de baneo incorrecto";
+        var notExistingUserErrorMessage = "El usuario no existe";
+
+        /*
+         * It creates a new user before the test for modifyUser starts executing.
+         */
+        before(function(done){
+
+            User.create({
+
+                email: email2,
+                name: name2,
+                lastname: lastname2,
+                password: hashPass2,
+                firstLogin: false,
+                admin: false
+
+            }, function(){
+                done();
+            });
+        });
+
+        it('should ban a user permanently making a PUT request to /admin/users/email/ban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/ban')
+                .send({time: 0})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(banSuccessfulMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should ban a user temporarily making a PUT request to /admin/users/email/ban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/ban')
+                .send({time: 10})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(banSuccessfulMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the user\'s credentials have no admin authorization making a PUT request to /admin/users/email/ban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/ban')
+                .send({time: 10})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(401);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notAuthorizeErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the time field is blank making a PUT request to /admin/users/email/ban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/ban')
+                .send({time: ""})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(wrongBanTimeErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the ban time is negative making a PUT request to /admin/users/email/ban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/ban')
+                .send({time: -1})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(wrongBanTimeErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since user does not exist making a PUT request to /admin/users/email/ban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/fakeUser/ban')
+                .send({time: 0})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingUserErrorMessage);
+
+                    done();
+
+                });
+        });
+
+
+        /*
+         * Removes the user created before the getUsers tests.
+         */
+        after(function(done){
+            User.collection.remove({"email": email2});
+            done();
+        });
+    });
+
+    describe('#unbanUser', function(){
+
+        var unbanSuccessfulMessage = "Usuario desbaneado correctamente";
+        var notExistingUserErrorMessage = "El usuario no existe";
+
+        /*
+         * It creates a new user before the test for modifyUser starts executing.
+         */
+        before(function(done){
+
+            User.create({
+
+                email: email2,
+                name: name2,
+                lastname: lastname2,
+                password: hashPass2,
+                firstLogin: false,
+                admin: false
+
+            }, function(){
+                done();
+            });
+        });
+
+        it('should unban a user making a PUT request to /admin/users/email/unban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/unban')
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(unbanSuccessfulMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the user\'s credentials have no admin authorization making a PUT request to /admin/users/email/unban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/unban')
+                .send({time: 10})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(401);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notAuthorizeErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since user does not exist making a PUT request to /admin/users/email/ban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/fakeUser/ban')
+                .send({time: 0})
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingUserErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        /*
+         * Removes the user created before the getUsers tests.
+         */
+        after(function(done){
+            User.collection.remove({"email": email2});
+            done();
+        });
     });
 
     /*

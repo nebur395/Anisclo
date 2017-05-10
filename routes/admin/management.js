@@ -303,8 +303,21 @@ module.exports = function (app) {
             return;
         }
 
-        // Checks all body fields
-        if(!req.body.time && req.body.time<0){
+        /*
+         * Checks all body fields.
+         *
+         * The first '!req.body.time' checks that the time field is not missing. If the value of the
+         * field is 0, which is a correct value, this check will say the field is missing, hence the next check
+         * to verify that the field is greater or equal to 0.
+         *
+         * Also, in case the time field is not greater than 0, it's necessary to check if the field is not blank.
+         *
+         * Finally, if the field passes all the first checks, it's necessary to check if the field, knowing is not
+         * missing or blank, is greater than 0.
+         *
+         * It will enter the if in case: the field is missing, blank ("") or lesser than 0.
+         */
+        if((!req.body.time && (req.body.time<0 || req.body.time === "")) || req.body.time<0){
             res.status(404).send({
                 "success": false,
                 "message": "Tiempo de baneo incorrecto"
