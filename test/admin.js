@@ -86,7 +86,7 @@ describe('Admin', function(){
                     result.body.should.be.a('object');
                     result.body.should.have.property('users');
                     result.body.users.should.be.a('array');
-                    result.body.users.should.have.length.above(1);
+                    result.body.users.should.have.length.of.at.least(1);
 
                     var testUserIndex = result.body.users.length-1;
 
