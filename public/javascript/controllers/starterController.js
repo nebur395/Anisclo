@@ -8,6 +8,7 @@ angular.module('pirineoPOIApp')
 
             $scope.poiList = [];
             $scope.firstLoad;
+            $scope.esJson = 'true';
 
             // FEEDBACK MESSAGES
 
@@ -130,7 +131,7 @@ angular.module('pirineoPOIApp')
             // save record
             $scope.savePOI = function () {
                 if ($scope.poiModal._id == "") { // It is a new POI
-                    poiService.addPoi($scope.poiModal,
+                    poiService.addPoi($scope.poiModal, $scope.esJson,
                         function (poi, message) {
                             $scope.poiList.push(poi);
                             var marker= {};

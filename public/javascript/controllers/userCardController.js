@@ -8,6 +8,7 @@ angular.module('pirineoPOIApp')
             $scope.currentEmail = $scope.user.email;
             $scope.isActive = $scope.user.isActive;
             $scope.isBanned = $scope.user.ban >= 0;
+            $scope.esJson = 'true';
 
             // FEEDBACK MESSAGES
 
@@ -56,7 +57,7 @@ angular.module('pirineoPOIApp')
                             lastname: $scope.user.lastname,
                             newEmail: $scope.user.email
                         };
-                        userManagement.setUser(user, $scope.currentEmail, function (message) {
+                        userManagement.setUser(user, $scope.currentEmail, $scope.esJson, function (message) {
                             $scope.currentEmail = $scope.user.email;
                             $scope.editing = !$scope.editing;
                             showSuccess(message);

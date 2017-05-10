@@ -245,8 +245,20 @@
               </div>
 
               <p style="font-size: 75%;text-align: center">* Campos obligatorios.</p>
+
+              <!-- Código para elegir entre XML o JSON -->
+              <p style="text-align:center">
+                <label class="radio-inline">
+                  <input type="radio" ng-model="esJson" value='true' checked> JSON
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" ng-model="esJson" value='false'> XML
+                </label>
+              </p>
               <div class="text-center">
-                <button class="btn btn-info customButton" ng-click="modalButton=4">Centrar</button>
+
+
+                <button ng-hide="poiModal._id==0" class="btn btn-info customButton" ng-click="modalButton=4">Centrar</button>
                 <button class="btn btn-default customButton"
                         ng-click="modalButton=0;closePOIModal()">Cancelar</button>
                 <button class="btn btn-danger customButton" ng-click="modalButton=1">Borrar</button>
