@@ -98,7 +98,17 @@
 
         <div class="divider"></div>
         <form ng-submit="sendRoute()"><!-- SEND ROUTE -->
+          <!-- Código para elegir entre XML o JSON -->
+          <p style="text-align:center">
+            <label class="radio-inline">
+              <input type="radio" ng-model="esJsonEmail" value='true' checked> JSON
+            </label>
+            <label class="radio-inline">
+              <input type="radio" ng-model="esJsonEmail" value='false'> XML
+            </label>
+          </p>
           <div class="input-group" style="padding:5%;padding-top:0">
+
             <input type="email" class="form-control" placeholder="Email para enviar la ruta"
                    ng-model="sendRouteEmail">
             <div class="input-group-btn">

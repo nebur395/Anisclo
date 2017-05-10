@@ -9,6 +9,7 @@ angular.module('pirineoPOIApp')
             $scope.poiList = [];
             $scope.firstLoad;
             $scope.esJson = 'true';
+            $scope.esJsonEmail = 'true';
 
             // FEEDBACK MESSAGES
 
@@ -393,7 +394,7 @@ angular.module('pirineoPOIApp')
                     ownerEmail: auth.getEmail(),
                     receiverEmail: $scope.sendRouteEmail
                 };
-                routesService.sendRouteByEmail($scope.currentIdRoute, emailsTemp, showSuccess, showError);
+                routesService.sendRouteByEmail($scope.currentIdRoute, emailsTemp, $scope.esJsonEmail, showSuccess, showError);
             };
 
             // MAP SECTION

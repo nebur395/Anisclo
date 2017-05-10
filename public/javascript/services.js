@@ -448,7 +448,6 @@ angular.module('pirineoPOIApp')
                 else{
                     var x2js = new X2JS;
                     var xml = "<newPoi>" + x2js.js2xml(poiTemp) + "</newPoi>";
-                    console.log(xml);
                     $http({
                         method: 'POST',
                         url: 'pois/',
@@ -604,7 +603,39 @@ angular.module('pirineoPOIApp')
             },
 
             // Send a route by email
-            sendRouteByEmail: function (routeId, emails, callbackSuccess, callbackError) {
+            sendRouteByEmail: function (routeId, emails, json, callbackSuccess, callbackError) {
+                if(json === 'true'){
+                    $http({
+                        method: 'POST',
+                        url: 'routes/' + routeId + '/sendRoute/',
+                        data: JSON.stringify(emails),
+                        headers: {
+                            'Content-Type': 'application/json; charset=UTF-8',
+                            'Json': true
+                        }
+                    }).success(function (data) {
+                        callbackSuccess(data.message);
+                    }).error(function (data) {
+                        callbackError(data.message);
+                    });
+                }
+                else{
+                    var x2js = new X2JS;
+                    var emailsXML = "<sendRoute>" + x2js.js2xml(emails) + "</sendRoute>";
+                    $http({
+                        method: 'POST',
+                        url: 'routes/' + routeId + '/sendRoute/',
+                        data: emailsXML,
+                        headers: {
+                            'Content-Type': 'application/xml; charset=UTF-8',
+                            'Json': false
+                        }
+                    }).success(function (data) {
+                        callbackSuccess(data.message);
+                    }).error(function (data) {
+                        callbackError(data.message);
+                    });
+                }
                 $http({
                     method: 'POST',
                     url: 'routes/' + routeId + '/sendRoute/',
@@ -844,10 +875,8 @@ angular.module('pirineoPOIApp')
                     });
                 }
                 else{ //XML
-                    console.log("no es JSON");
                     var x2js = new X2JS;
                     var userXML = "<newUser>" + x2js.js2xml(user) + "</newUser>";
-                    console.log(userXML);
                     $http({
                         method: 'PUT',
                         url: 'admin/users/' + email,
