@@ -506,7 +506,8 @@ describe('Admin', function(){
                 lastname: lastname2,
                 password: hashPass2,
                 firstLogin: false,
-                admin: false
+                admin: false,
+                banInitDate: new Date()
 
             }, function(){
                 done();
@@ -537,7 +538,6 @@ describe('Admin', function(){
 
             chai.request(server)
                 .put('/admin/users/'+email2+'/unban')
-                .send({time: 10})
                 .set('Authorization', 'Bearer ' + createUserToken(email, false, false))
                 .set('Json', true)
                 .end(function (err, result) {
@@ -557,8 +557,101 @@ describe('Admin', function(){
         it('should return an error message since user does not exist making a PUT request to /admin/users/email/ban', function(done){
 
             chai.request(server)
-                .put('/admin/users/fakeUser/ban')
-                .send({time: 0})
+                .put('/admin/users/fakeUser/unban')
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingUserErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        /*
+         * Removes the user created before the getUsers tests.
+         */
+        after(function(done){
+            User.collection.remove({"email": email2});
+            done();
+        });
+    });
+
+    describe('#activateUserAccount', function(){
+
+        var reactivationSuccessfulMessage = "Cuenta de usuario reactivada correctamente";
+        var notExistingUserErrorMessage = "El usuario no existe";
+
+        /*
+         * It creates a new user before the test for modifyUser starts executing.
+         */
+        before(function(done){
+
+            User.create({
+
+                email: email2,
+                name: name2,
+                lastname: lastname2,
+                password: hashPass2,
+                firstLogin: false,
+                admin: false,
+                isActive: false
+
+            }, function(){
+                done();
+            });
+        });
+
+        it('should reactive a user\'s account making a PUT request to /admin/users/email/useDragonBalls', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/useDragonBalls')
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(reactivationSuccessfulMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since the user\'s credentials have no admin authorization making a PUT request to /admin/users/email/unban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/'+email2+'/useDragonBalls')
+                .set('Authorization', 'Bearer ' + createUserToken(email, false, false))
+                .set('Json', true)
+                .end(function (err, result) {
+
+                    result.should.have.status(401);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notAuthorizeErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message since user does not exist making a PUT request to /admin/users/email/ban', function(done){
+
+            chai.request(server)
+                .put('/admin/users/fakeUser/useDragonBalls')
                 .set('Authorization', 'Bearer ' + createUserToken(email, false, true))
                 .set('Json', true)
                 .end(function (err, result) {
