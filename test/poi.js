@@ -7,7 +7,6 @@ var POI = server.models.POI;
 var ObjectId = require('mongoose').Types.ObjectId;
 var wc = require('which-country');
 var lookup = require('country-code-lookup');
-var jwt = require('jsonwebtoken');
 var createUserToken = require('./jwtCreator').createUserToken;
 
 chai.use(chaiHttp);
