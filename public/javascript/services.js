@@ -636,19 +636,6 @@ angular.module('pirineoPOIApp')
                         callbackError(data.message);
                     });
                 }
-                $http({
-                    method: 'POST',
-                    url: 'routes/' + routeId + '/sendRoute/',
-                    data: JSON.stringify(emails),
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Json': true
-                    }
-                }).success(function (data) {
-                    callbackSuccess(data.message);
-                }).error(function (data) {
-                    callbackError(data.message);
-                });
             },
 
             // Get the info of an [routeId] route
