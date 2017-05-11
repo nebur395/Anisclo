@@ -8,8 +8,8 @@ angular.module('pirineoPOIApp')
 
             $scope.poiList = [];
             $scope.firstLoad;
-            $scope.esJson = 'true';
-            $scope.esJsonEmail = 'true';
+            $scope.esJson = 1;
+            $scope.esJsonEmail = 1;
 
             // FEEDBACK MESSAGES
 

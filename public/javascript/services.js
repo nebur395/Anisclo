@@ -430,7 +430,7 @@ angular.module('pirineoPOIApp')
                     userEmail: auth.getEmail(),
                     poi: poi
                 };
-                if(esJson === 'true'){
+                if(esJson === 1){
                     $http({
                         method: 'POST',
                         url: 'pois/',
@@ -604,7 +604,7 @@ angular.module('pirineoPOIApp')
 
             // Send a route by email
             sendRouteByEmail: function (routeId, emails, json, callbackSuccess, callbackError) {
-                if(json === 'true'){
+                if(json === 1){
                     $http({
                         method: 'POST',
                         url: 'routes/' + routeId + '/sendRoute/',
@@ -846,7 +846,7 @@ angular.module('pirineoPOIApp')
             // modify a current user with admin privileges
             setUser: function (user, email, json, callbackSuccess, callbackError) {
 
-                if(json === 'true'){
+                if(json === 1){
                     $http({
                         method: 'PUT',
                         url: 'admin/users/' + email,

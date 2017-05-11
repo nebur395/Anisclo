@@ -101,10 +101,10 @@
           <!-- Código para elegir entre XML o JSON -->
           <p style="text-align:center">
             <label class="radio-inline">
-              <input type="radio" ng-model="esJsonEmail" value='true' checked> JSON
+              <input type="radio" ng-model="esJsonEmail" value=1 checked> JSON
             </label>
             <label class="radio-inline">
-              <input type="radio" ng-model="esJsonEmail" value='false'> XML
+              <input type="radio" ng-model="esJsonEmail" value=0> XML
             </label>
           </p>
           <div class="input-group" style="padding:5%;padding-top:0">
@@ -257,12 +257,12 @@
               <p style="font-size: 75%;text-align: center">* Campos obligatorios.</p>
 
               <!-- Código para elegir entre XML o JSON -->
-              <p style="text-align:center">
+              <p ng-hide="poiModal._id!=''" style="text-align:center">
                 <label class="radio-inline">
-                  <input type="radio" ng-model="esJson" value='true' checked> JSON
+                  <input type="radio" ng-model="esJson" value=1 checked> JSON
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" ng-model="esJson" value='false'> XML
+                  <input type="radio" ng-model="esJson" value=0> XML
                 </label>
               </p>
               <div class="text-center">

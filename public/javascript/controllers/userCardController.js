@@ -8,7 +8,7 @@ angular.module('pirineoPOIApp')
             $scope.currentEmail = $scope.user.email;
             $scope.isActive = $scope.user.isActive;
             $scope.isBanned = $scope.user.ban >= 0;
-            $scope.esJson = 'true';
+            $scope.esJson = 1;
 
             // FEEDBACK MESSAGES
 
