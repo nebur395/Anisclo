@@ -98,7 +98,17 @@
 
         <div class="divider"></div>
         <form ng-submit="sendRoute()"><!-- SEND ROUTE -->
+          <!-- Código para elegir entre XML o JSON -->
+          <p style="text-align:center">
+            <label class="radio-inline">
+              <input type="radio" ng-model="esJsonEmail" value=1 checked> JSON
+            </label>
+            <label class="radio-inline">
+              <input type="radio" ng-model="esJsonEmail" value=0> XML
+            </label>
+          </p>
           <div class="input-group" style="padding:5%;padding-top:0">
+
             <input type="email" class="form-control" placeholder="Email para enviar la ruta"
                    ng-model="sendRouteEmail">
             <div class="input-group-btn">
@@ -245,8 +255,20 @@
               </div>
 
               <p style="font-size: 75%;text-align: center">* Campos obligatorios.</p>
+
+              <!-- Código para elegir entre XML o JSON -->
+              <p ng-hide="poiModal._id!=''" style="text-align:center">
+                <label class="radio-inline">
+                  <input type="radio" ng-model="esJson" value=1 checked> JSON
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" ng-model="esJson" value=0> XML
+                </label>
+              </p>
               <div class="text-center">
-                <button class="btn btn-info customButton" ng-click="modalButton=4">Centrar</button>
+
+
+                <button ng-hide="poiModal._id==0" class="btn btn-info customButton" ng-click="modalButton=4">Centrar</button>
                 <button class="btn btn-default customButton"
                         ng-click="modalButton=0;closePOIModal()">Cancelar</button>
                 <button class="btn btn-danger customButton" ng-click="modalButton=1">Borrar</button>

@@ -425,24 +425,44 @@ angular.module('pirineoPOIApp')
             },
 
             // add a new poi
-            addPoi: function (poi, callbackSuccess, callbackError) {
+            addPoi: function (poi, esJson, callbackSuccess, callbackError) {
                 var poiTemp = {
                     userEmail: auth.getEmail(),
                     poi: poi
                 };
-                $http({
-                    method: 'POST',
-                    url: 'pois/',
-                    data: JSON.stringify(poiTemp),
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Json': true
-                    }
-                }).success(function (data) {
-                    callbackSuccess(data.poi, 'POI añadido correctamente.');
-                }).error(function (data) {
-                    callbackError(data.message);
-                });
+                if(esJson === 1){
+                    $http({
+                        method: 'POST',
+                        url: 'pois/',
+                        data: JSON.stringify(poiTemp),
+                        headers: {
+                            'Content-Type': 'application/json; charset=UTF-8',
+                            'Json': true
+                        }
+                    }).success(function (data) {
+                        callbackSuccess(data.poi, 'POI añadido correctamente.');
+                    }).error(function (data) {
+                        callbackError(data.message);
+                    });
+                }
+                else{
+                    var x2js = new X2JS;
+                    var xml = "<newPoi>" + x2js.js2xml(poiTemp) + "</newPoi>";
+                    $http({
+                        method: 'POST',
+                        url: 'pois/',
+                        data: xml,
+                        headers: {
+                            'Content-Type': 'application/xml; charset=UTF-8',
+                            'Json': false
+                        }
+                    }).success(function (data) {
+                        callbackSuccess(data.poi, 'POI añadido correctamente.');
+                    }).error(function (data) {
+                        callbackError(data.message);
+                    });
+                }
+
             },
 
             // modify an existing poi
@@ -583,20 +603,39 @@ angular.module('pirineoPOIApp')
             },
 
             // Send a route by email
-            sendRouteByEmail: function (routeId, emails, callbackSuccess, callbackError) {
-                $http({
-                    method: 'POST',
-                    url: 'routes/' + routeId + '/sendRoute/',
-                    data: JSON.stringify(emails),
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Json': true
-                    }
-                }).success(function (data) {
-                    callbackSuccess(data.message);
-                }).error(function (data) {
-                    callbackError(data.message);
-                });
+            sendRouteByEmail: function (routeId, emails, json, callbackSuccess, callbackError) {
+                if(json === 1){
+                    $http({
+                        method: 'POST',
+                        url: 'routes/' + routeId + '/sendRoute/',
+                        data: JSON.stringify(emails),
+                        headers: {
+                            'Content-Type': 'application/json; charset=UTF-8',
+                            'Json': true
+                        }
+                    }).success(function (data) {
+                        callbackSuccess(data.message);
+                    }).error(function (data) {
+                        callbackError(data.message);
+                    });
+                }
+                else{
+                    var x2js = new X2JS;
+                    var emailsXML = "<sendRoute>" + x2js.js2xml(emails) + "</sendRoute>";
+                    $http({
+                        method: 'POST',
+                        url: 'routes/' + routeId + '/sendRoute/',
+                        data: emailsXML,
+                        headers: {
+                            'Content-Type': 'application/xml; charset=UTF-8',
+                            'Json': false
+                        }
+                    }).success(function (data) {
+                        callbackSuccess(data.message);
+                    }).error(function (data) {
+                        callbackError(data.message);
+                    });
+                }
             },
 
             // Get the info of an [routeId] route
@@ -805,20 +844,40 @@ angular.module('pirineoPOIApp')
             },
 
             // modify a current user with admin privileges
-            setUser: function (user, email, callbackSuccess, callbackError) {
-                $http({
-                    method: 'PUT',
-                    url: 'admin/users/' + email,
-                    data: JSON.stringify(user),
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8',
-                        'Json': true
-                    }
-                }).success(function (data) {
-                    callbackSuccess(data.message);
-                }).error(function (data) {
-                    callbackError(data.message);
-                });
+            setUser: function (user, email, json, callbackSuccess, callbackError) {
+
+                if(json === 1){
+                    $http({
+                        method: 'PUT',
+                        url: 'admin/users/' + email,
+                        data: JSON.stringify(user),
+                        headers: {
+                            'Content-Type': 'application/json; charset=UTF-8',
+                            'Json': true
+                        }
+                    }).success(function (data) {
+                        callbackSuccess(data.message);
+                    }).error(function (data) {
+                        callbackError(data.message);
+                    });
+                }
+                else{ //XML
+                    var x2js = new X2JS;
+                    var userXML = "<newUser>" + x2js.js2xml(user) + "</newUser>";
+                    $http({
+                        method: 'PUT',
+                        url: 'admin/users/' + email,
+                        data: userXML,
+                        headers: {
+                            'Content-Type': 'application/xml; charset=UTF-8',
+                            'Json': false
+                        }
+                    }).success(function (data) {
+                        callbackSuccess(data.message);
+                    }).error(function (data) {
+                        callbackError(data.message);
+                    });
+                }
             },
 
             // ban a current user with admin privileges
