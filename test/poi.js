@@ -1059,6 +1059,139 @@ describe('POI', function(){
 
     });
 
+    describe('#ratePOI()', function(){
+
+        var poiId;
+        var rateSuccessfulMessage = "Valoración añadida correctamente.";
+        var wrongRatingErrorMessage = "Valoración incorrecta.";
+        var invalidRatingErrorMessage = "Valoración no válida. Indique una valoración entre 1 y 5.";
+        var notExistingPoiErrorMessage = "El POI no existe.";
+
+        /*
+         * It creates a new poi before the test suite for ratePOI starts executing.
+         */
+        before(function(done){
+
+            var nPoi = new POI(poi);
+            nPoi.save(function(err, result){
+                poiId = result._id;
+
+                done();
+            });
+        });
+
+        it('should add a new rating for the POI making a PUT request to /pois/id/rate', function(done){
+
+            chai.request(server)
+                .put('/pois/'+poiId+'/rate')
+                .send({rating: 5})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(rateSuccessfulMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message making a PUT request to /pois/id/rate since the rating field is blank', function(done){
+
+            chai.request(server)
+                .put('/pois/'+poiId+'/rate')
+                .send({rating: ""})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(wrongRatingErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message making a PUT request to /pois/id/rate since the rating is lower than 0', function(done){
+
+            chai.request(server)
+                .put('/pois/'+poiId+'/rate')
+                .send({rating: -1})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(invalidRatingErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message making a PUT request to /pois/id/rate since the rating is greater than 5', function(done){
+
+            chai.request(server)
+                .put('/pois/'+poiId+'/rate')
+                .send({rating: 6})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(invalidRatingErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message making a PUT request to /pois/id/rate since the POI doesn\'t exist', function(done){
+
+            chai.request(server)
+                .put('/pois/58f7301f33073d1a24bc22e6/rate')
+                .send({rating: 0})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingPoiErrorMessage);
+
+                    done();
+
+                });
+        });
+
+
+        /*
+         * Removes the POI created at the begening of the tests for ratePOI.
+         */
+        after(function(done){
+            POI.collection.remove({"_id": poiId}, function(){
+                done();
+            });
+        });
+
+    });
+
     /*
      * Removes the user created at the begining of the tests
      * after every test is finished.
