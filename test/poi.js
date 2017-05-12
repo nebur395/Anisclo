@@ -1314,7 +1314,7 @@ describe('POI', function(){
         });
 
         /*
-         * Removes the POI created at the begening of the tests for ratePOI.
+         * Removes the POI created at the begening of the tests for getPOI.
          */
         after(function(done){
             POI.collection.remove({"_id": {$in: [poiId1, poiId2]}}, function(){
@@ -1323,6 +1323,140 @@ describe('POI', function(){
         });
 
     });
+
+    describe('#searchPOI()', function(){
+
+        var poiId1;
+        var poiId2;
+        var wrongTagsErrorMessage = "Tags incorrectos";
+
+        /*
+         * It creates a two new pois before the test suite for searchPOI starts executing.
+         */
+        before(function(done){
+
+            var nPoi = new POI(poi);
+            nPoi.save(function(err, result) {
+                poiId1 = result._id;
+
+                nPoi = new POI(poi);
+                nPoi.tags = ['anothertest'];
+                nPoi.save(function(err, result){
+                    poiId2 = result._id;
+
+                    done();
+                });
+            });
+        });
+
+        it('should return the POI that have the tag indicated making a GET request to /pois/id', function(done){
+
+            chai.request(server)
+                .get('/pois/filter')
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('tags', '#test')
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('pois');
+                    result.body.pois.should.be.a('array');
+                    result.body.pois.should.have.lengthOf(1);
+                    result.body.pois[0].should.be.a('object');
+                    result.body.pois[0].should.have.property('_id');
+                    result.body.pois[0].should.have.property('name');
+                    result.body.pois[0].name.should.equal(poiRequest.poi.name);
+                    result.body.pois[0].should.have.property('description');
+                    result.body.pois[0].description.should.equal(poiRequest.poi.description);
+                    result.body.pois[0].should.have.property('tags');
+                    result.body.pois[0].tags.should.equal(poiRequest.poi.tags.toLowerCase());
+                    result.body.pois[0].should.have.property('lat');
+                    result.body.pois[0].lat.should.equal(poiRequest.poi.lat);
+                    result.body.pois[0].should.have.property('lng');
+                    result.body.pois[0].lng.should.equal(poiRequest.poi.lng);
+                    result.body.pois[0].should.have.property('owner');
+                    result.body.pois[0].owner.should.equal(email);
+                    result.body.pois[0].should.have.property('url');
+                    result.body.pois[0].url.should.equal('');
+                    result.body.pois[0].should.have.property('image');
+                    result.body.pois[0].image.should.equal('');
+
+                    done();
+
+                });
+        });
+
+        it('should return the POIs that have the tags indicated making a GET request to /pois/id', function(done){
+
+            chai.request(server)
+                .get('/pois/filter')
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('tags', '#test#anotherTest')
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('pois');
+                    result.body.pois.should.be.a('array');
+                    result.body.pois.should.have.lengthOf(2);
+
+                    done();
+
+                });
+        });
+
+        it('should return an empty list making a GET request to /pois/id since there are no POIs with that tag', function(done){
+
+            chai.request(server)
+                .get('/pois/filter')
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('tags', '#testProbando')
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('pois');
+                    result.body.pois.should.be.a('array');
+                    result.body.pois.should.have.lengthOf(0);
+
+                    done();
+
+                });
+        });
+
+        it('should return error message making a GET request to /pois/id since there tags field is wrong', function(done){
+
+            chai.request(server)
+                .get('/pois/filter')
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .set('tags', 'test#Probando')
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(wrongTagsErrorMessage);
+
+
+                    done();
+
+                });
+        });
+
+        /*
+         * Removes the POI created at the begening of the tests for searchPOI.
+         */
+        after(function(done){
+            POI.collection.remove({"_id": {$in: [poiId1, poiId2]}}, function(){
+                done();
+            });
+        });
+
+    });
+
+
 
     /*
      * Removes the user created at the begining of the tests
