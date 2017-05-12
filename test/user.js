@@ -35,6 +35,8 @@ describe('User', function(){
         .update(password2)
         .digest('base64');
 
+    var email3 = "otro@email.com";
+
     var lat = 41.64469659784919;
     var lng = -0.8703231811523438;
     var continent = lookup.byIso(wc([lng, lat])).continent;
@@ -711,7 +713,7 @@ describe('User', function(){
         var notExistingUserErrorMessage = "El usuario no existe.";
 
         /*
-         * It creates a new poi before the test suite for addPoiToFavs starts executing.
+         * It creates a two new pois and a user before the test suite for addPoiToFavs starts executing.
          */
         before(function(done){
 
@@ -835,14 +837,157 @@ describe('User', function(){
                 });
         });
 
+        /*
+         * Removes the two POIs and the user created at the begening of the tests for addPoiToFavs.
+         */
+        after(function(done){
+            POI.collection.remove({"_id": {$in: [poiId1, poiId2]}}, function(){
+                User.collection.remove({"email":email2});
+                done();
+            });
+        });
+    });
 
+    describe("#followUser()", function(){
+
+        var userAddedSuccessfulMessage = "Usuario añadido a la lista de seguimientos";
+        var userRemovedSuccessfulMessage = "Usuario eliminado de la lista de seguimientos";
+        var wrongEmailErrorMessage = "El email del usuario al que desea seguir no es válido";
+        var notExistinguserToFollowErrorMessage = "El usuario al que desea seguir no existe.";
+        var notExistingUserErrorMessage = "El usuario no existe.";
+
+        /*
+         * It creates a two new users before the test suite for addPoiToFavs starts executing.
+         */
+        before(function(done){
+
+            User.create({
+
+                email: email2,
+                name: name2,
+                lastname: lastname2,
+                password: hashPass2,
+                firstLogin: true,
+                admin: false
+
+            }, function(){
+
+                User.create({
+
+                    email: email3,
+                    name: name2,
+                    lastname: lastname2,
+                    password: hashPass2,
+                    firstLogin: true,
+                    admin: false,
+                    follows: [ email2 ]
+
+                }, function(){
+                    done();
+                });
+            });
+        });
+
+        it('should add the user with email \'testUser@email.com\' to the user\'s follows list making a PUT request to /users/email/follow', function(done){
+
+            chai.request(server)
+                .put('/users/'+email2+'/follow')
+                .send({userToFollowEmail: email})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(userAddedSuccessfulMessage);
+
+                    done();
+                });
+        });
+
+        it('should remove the user with email \'prueba@email.com\' from the user\'s follow list making a PUT request to /users/email/follow', function(done){
+
+            chai.request(server)
+                .put('/users/'+email3+'/follow')
+                .send({userToFollowEmail: email2})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(userRemovedSuccessfulMessage);
+
+                    done();
+                });
+        });
+
+        it('should return an error message making a PUT request to /users/email/follow since the userToFollowEmail field is blank', function(done){
+
+            chai.request(server)
+                .put('/users/'+email2+'/follow')
+                .send({userToFollowEmail: ""})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(wrongEmailErrorMessage);
+
+                    done();
+                });
+        });
+
+        it('should return an error message making a PUT request to /users/email/follow since the user to follow doesn\'t exist', function(done){
+
+            chai.request(server)
+                .put('/users/'+email2+'/follow')
+                .send({userToFollowEmail: "fakeEmail"})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistinguserToFollowErrorMessage);
+
+                    done();
+                });
+        });
+
+        it('should return an error message making a PUT request to /users/email/follow since the user doesn\'t exist', function(done){
+
+            chai.request(server)
+                .put('/users/fakeUser/follow')
+                .send({userToFollowEmail: email})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingUserErrorMessage);
+
+                    done();
+                });
+        });
 
         /*
          * Removes the POI created at the begening of the tests for addPoiToFavs.
          */
         after(function(done){
-            POI.collection.remove({"_id": {$in: [poiId1, poiId2]}}, function(){
-                User.collection.remove({"email":email2});
+            User.collection.remove({"email": {$in: [email2, email3]}}, function(){
                 done();
             });
         });
