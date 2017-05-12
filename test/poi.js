@@ -1457,6 +1457,59 @@ describe('POI', function(){
     });
 
 
+    describe('#getPOIs()', function(){
+
+        var poiId1;
+        var poiId2;
+        var wrongTagsErrorMessage = "Tags incorrectos";
+
+        /*
+         * It creates a two new pois before the test suite for searchPOI starts executing.
+         */
+        before(function(done){
+
+            var nPoi = new POI(poi);
+            nPoi.save(function(err, result) {
+                poiId1 = result._id;
+
+                nPoi = new POI(poi);
+                nPoi.tags = ['anothertest'];
+                nPoi.save(function(err, result){
+                    poiId2 = result._id;
+
+                    done();
+                });
+            });
+        });
+
+        it('should return the POI that have the tag indicated making a GET request to /pois/id', function(done){
+
+            chai.request(server)
+                .get('/pois')
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('pois');
+                    result.body.pois.should.be.a('array');
+                    result.body.pois.should.have.length.of.at.least(2);
+
+                    done();
+
+                });
+        });
+
+        /*
+         * Removes the POI created at the begening of the tests for searchPOI.
+         */
+        after(function(done){
+            POI.collection.remove({"_id": {$in: [poiId1, poiId2]}}, function(){
+                done();
+            });
+        });
+
+    });
 
     /*
      * Removes the user created at the begining of the tests
