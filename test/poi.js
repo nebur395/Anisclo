@@ -147,7 +147,7 @@ describe('POI', function(){
                     result.body.poi.should.have.property('url');
                     result.body.poi.url.should.equal('');
                     result.body.poi.should.have.property('image');
-                    result.body.poi.url.should.equal('');
+                    result.body.poi.image.should.equal('');
 
                     poisIds.push(new ObjectId(result.body.poi._id));
 
@@ -490,7 +490,7 @@ describe('POI', function(){
                     result.body.poi.should.have.property('url');
                     result.body.poi.url.should.equal('');
                     result.body.poi.should.have.property('image');
-                    result.body.poi.url.should.equal('');
+                    result.body.poi.image.should.equal('');
 
                     poisIds.push(new ObjectId(result.body.poi._id));
 
@@ -1180,12 +1180,144 @@ describe('POI', function(){
                 });
         });
 
-
         /*
          * Removes the POI created at the begening of the tests for ratePOI.
          */
         after(function(done){
             POI.collection.remove({"_id": poiId}, function(){
+                done();
+            });
+        });
+
+    });
+
+
+    describe('#getPOI()', function(){
+
+        var poiId1;
+        var poiId2;
+        var notExistingPoiErrorMessage = "El POI buscado no existe";
+
+        /*
+         * It creates a two new pois before the test suite for getPOI starts executing.
+         */
+        before(function(done){
+
+            var nPoi = new POI(poi);
+            nPoi.save(function(err, result){
+                poiId1 = result._id;
+
+                var duplicatedPoi = (JSON.parse(JSON.stringify(poiRequest)));
+                duplicatedPoi.poi.url = url;
+                duplicatedPoi.poi.image = image;
+
+                // To create a new POI with an image is necessary to make a request to the createPOI endpoint
+                chai.request(server)
+                    .post('/pois')
+                    .send(duplicatedPoi)
+                    .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                    .set('Json', true)
+                    .end(function(err, result){
+
+                        poiId2 = new ObjectId(result.body.poi._id);
+
+                        done();
+                    });
+            });
+        });
+
+        it('should return the POI making a GET request to /pois/id', function(done){
+
+            chai.request(server)
+                .get('/pois/'+poiId1)
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('poi');
+                    result.body.poi.should.be.a('object');
+                    result.body.poi.should.have.property('_id');
+                    result.body.poi.should.have.property('name');
+                    result.body.poi.name.should.equal(poiRequest.poi.name);
+                    result.body.poi.should.have.property('description');
+                    result.body.poi.description.should.equal(poiRequest.poi.description);
+                    result.body.poi.should.have.property('tags');
+                    result.body.poi.tags.should.equal(poiRequest.poi.tags.toLowerCase());
+                    result.body.poi.should.have.property('lat');
+                    result.body.poi.lat.should.equal(poiRequest.poi.lat);
+                    result.body.poi.should.have.property('lng');
+                    result.body.poi.lng.should.equal(poiRequest.poi.lng);
+                    result.body.poi.should.have.property('owner');
+                    result.body.poi.owner.should.equal(email);
+                    result.body.poi.should.have.property('url');
+                    result.body.poi.url.should.equal('');
+                    result.body.poi.should.have.property('image');
+                    result.body.poi.image.should.equal('');
+
+                    done();
+
+                });
+        });
+
+        it('should return the POI with an imagen and an url making a GET request to /pois/id', function(done){
+
+            chai.request(server)
+                .get('/pois/'+poiId2.toString())
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('poi');
+                    result.body.poi.should.be.a('object');
+                    result.body.poi.should.have.property('_id');
+                    result.body.poi.should.have.property('name');
+                    result.body.poi.name.should.equal(poiRequest.poi.name);
+                    result.body.poi.should.have.property('description');
+                    result.body.poi.description.should.equal(poiRequest.poi.description);
+                    result.body.poi.should.have.property('tags');
+                    result.body.poi.tags.should.equal(poiRequest.poi.tags.toLowerCase());
+                    result.body.poi.should.have.property('lat');
+                    result.body.poi.lat.should.equal(poiRequest.poi.lat);
+                    result.body.poi.should.have.property('lng');
+                    result.body.poi.lng.should.equal(poiRequest.poi.lng);
+                    result.body.poi.should.have.property('owner');
+                    result.body.poi.owner.should.equal(email);
+                    result.body.poi.should.have.property('url');
+                    result.body.poi.url.should.equal(url);
+                    result.body.poi.should.have.property('image');
+                    result.body.poi.image.should.equal(image);
+
+                    done();
+
+                });
+        });
+
+        it('should return an error message making a GET request to /pois/id since the POI doesn\'t exist', function(done){
+
+            chai.request(server)
+                .get('/pois/58f7301f33073d1a24bc22e6')
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingPoiErrorMessage);
+
+                    done();
+
+                });
+        });
+
+        /*
+         * Removes the POI created at the begening of the tests for ratePOI.
+         */
+        after(function(done){
+            POI.collection.remove({"_id": {$in: [poiId1, poiId2]}}, function(){
                 done();
             });
         });
