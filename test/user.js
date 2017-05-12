@@ -3,9 +3,12 @@ var chaiHttp = require('chai-http');
 var should = chai.should();
 var server = require('../server.js');
 var User = server.models.User;
+var POI = server.models.POI;
 var config = require("../config");
 var jwt = require('jsonwebtoken');
 var createUserToken = require('./jwtCreator').createUserToken;
+var wc = require('which-country');
+var lookup = require('country-code-lookup');
 
 chai.use(chaiHttp);
 
@@ -31,6 +34,22 @@ describe('User', function(){
         .createHash('sha1')
         .update(password2)
         .digest('base64');
+
+    var lat = 41.64469659784919;
+    var lng = -0.8703231811523438;
+    var continent = lookup.byIso(wc([lng, lat])).continent;
+
+    var poi = {
+
+        "name": "TestPOI",
+        "description": "A test POI",
+        "tags": ['test', 'poitest'],
+        "lat": lat,
+        "lng": lng,
+        "owner": email,
+        "location": continent
+    };
+
 
     /*
      * It creates a new user before the test suite starts executing.
@@ -679,6 +698,154 @@ describe('User', function(){
         });
 
 
+    });
+
+    describe("#addPoiToFavs()", function(){
+
+        var poiId1;
+        var poiId2;
+        var poiAddedSuccessfulMessage = "POI añadido a favoritos.";
+        var poiRemovedSuccessfulMessage = "POI eliminado de favoritos.";
+        var wrongPOIErrorMessage = "ID del POI no válido.";
+        var notExistingPOIErrorMessage = "El POI no existe.";
+        var notExistingUserErrorMessage = "El usuario no existe.";
+
+        /*
+         * It creates a new poi before the test suite for addPoiToFavs starts executing.
+         */
+        before(function(done){
+
+            var nPoi = new POI(poi);
+            nPoi.save(function(err, result){
+                poiId1 = result._id;
+
+                nPoi = new POI(poi);
+                nPoi.save(function(err, result){
+                    poiId2 = result._id;
+
+                    User.create({
+
+                        email: email2,
+                        name: name2,
+                        lastname: lastname2,
+                        password: hashPass2,
+                        firstLogin: true,
+                        admin: false,
+                        favs: [ poiId2 ]
+
+                    }, function(){
+                        done();
+                    });
+                });
+            });
+        });
+
+        it('should add the POI to the user\'s favs list making a PUT request to /users/email/fav', function(done){
+
+            chai.request(server)
+                .put('/users/'+email+'/fav')
+                .send({poiId: poiId1})
+                .set('Authorization','Bearer ' + createUserToken(email, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(poiAddedSuccessfulMessage);
+
+                    done();
+                });
+        });
+
+        it('should remove the POI from the user\'s favs list making a PUT request to /users/email/fav', function(done){
+
+            chai.request(server)
+                .put('/users/'+email2+'/fav')
+                .send({poiId: poiId2})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(200);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(true);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(poiRemovedSuccessfulMessage);
+
+                    done();
+                });
+        });
+
+        it('should return an error message making a PUT request to /users/email/fav since the POI field is blank', function(done){
+
+            chai.request(server)
+                .put('/users/'+email2+'/fav')
+                .send({poiId: ""})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(wrongPOIErrorMessage);
+
+                    done();
+                });
+        });
+
+        it('should return an error message making a PUT request to /users/email/fav since the POI doesn\'t exist', function(done){
+
+            chai.request(server)
+                .put('/users/'+email2+'/fav')
+                .send({poiId: "58f7301f33073d1a24bc22e6"})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingPOIErrorMessage);
+
+                    done();
+                });
+        });
+
+        it('should return an error message making a PUT request to /users/email/fav since the user doesn\'t exist', function(done){
+
+            chai.request(server)
+                .put('/users/fakeUser/fav')
+                .send({poiId: poiId1})
+                .set('Authorization','Bearer ' + createUserToken(email2, false, false))
+                .end(function(err, result){
+
+                    result.should.have.status(404);
+                    result.body.should.be.a('object');
+                    result.body.should.have.property('success');
+                    result.body.success.should.equal(false);
+                    result.body.should.have.property('message');
+                    result.body.message.should.equal(notExistingUserErrorMessage);
+
+                    done();
+                });
+        });
+
+
+
+        /*
+         * Removes the POI created at the begening of the tests for addPoiToFavs.
+         */
+        after(function(done){
+            POI.collection.remove({"_id": {$in: [poiId1, poiId2]}}, function(){
+                User.collection.remove({"email":email2});
+                done();
+            });
+        });
     });
 
     /*
