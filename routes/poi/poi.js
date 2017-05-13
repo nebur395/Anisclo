@@ -390,7 +390,7 @@ module.exports = function (app) {
     router.get("/filter", function(req, res){
 
         var tags = req.headers["tags"];
-        console.log(tags);
+
         if(tags.charAt(0)==='#'){
             // Transforms all the tags to an array with the tags in lowercase
             tagsToArray(tags, function(lowerCaseTags){

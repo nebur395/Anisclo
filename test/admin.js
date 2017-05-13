@@ -105,7 +105,7 @@ describe('Admin', function(){
                     result.body.users[testUserIndex].favs.should.be.have.lengthOf(0);
                     result.body.users[testUserIndex].should.have.property('follows');
                     result.body.users[testUserIndex].follows.should.be.a('array');
-                    result.body.users[testUserIndex].follows.should.be.have.lengthOf(0);
+                    result.body.users[testUserIndex].follows.should.have.lengthOf(0);
                     result.body.users[testUserIndex].should.have.property('isActive');
                     result.body.users[testUserIndex].isActive.should.equal(true);
                     result.body.users[testUserIndex].should.have.property('ban');
