@@ -7,7 +7,7 @@
       <p>Apellido: <span class="w3-text-theme">{{lastname}}</span></p>
       <p>Correo electrónico: <span class="w3-text-theme">{{email}}</span></p>
 
-      <form role="form" ng-submit="settings()">
+      <form novalidate role="form" ng-submit="settings()">
         <!-- this div will show only when an error occurs -->
         <div ng-if="error" class="alert alert-danger feedbackMessages">
           <strong>&#10008</strong> {{errorMsg}}
