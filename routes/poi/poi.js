@@ -954,7 +954,8 @@ module.exports = function (app) {
                             tagsToArray(req.body.poi.tags, function(lowerCaseTags){
 
                                 // Extracts the continent of the POI based on the coordinates
-                                var continent = lookup.byIso(wc([req.body.poi.lng, req.body.poi.lat])).continent;
+                                var country = wc([poi.lng, poi.lat]);
+                                var continent = country===null ? "Otros": lookup.byIso(country).continent;
                                 // Updates every modifiable field in the POI
                                 poi.name = req.body.poi.name;
                                 poi.description = req.body.poi.description;

@@ -95,16 +95,16 @@ module.exports = function (app) {
             return;
         }
 
-        /*
-        request.post({url:'https://www.google.com/recaptcha/api/siteverify',
+
+        /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
                 form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
                 function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         console.log(body)
                     }
                 }
-        );
-        */
+        );*/
+
 
         User.findOne({email: req.body.email}, function(err, result){
 
@@ -490,6 +490,15 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/retrievePass", function(req, res){
+
+        /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
+                form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
+            function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    console.log(body)
+                }
+            }
+        );*/
 
         var randomPass = randomstring.generate(8);
         var hashPass = require('crypto')
