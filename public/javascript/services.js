@@ -447,7 +447,22 @@ angular.module('pirineoPOIApp')
                 }
                 else{
                     var x2js = new X2JS;
-                    var xml = "<newPoi>" + x2js.js2xml(poiTemp) + "</newPoi>";
+                    var xml = "<?xml version=\"1.0\"?>" +
+                        "<!DOCTYPE newPoi [" +
+                        "<!ELEMENT newPoi (userEmail, poi id, name, description, tags, lat, lng, url, image, owner)" +
+                        "<!ELEMENT userEmail (#PCDATA)>" +
+                        "<!ELEMENT poi id (#PCDATA)>" +
+                        "<!ELEMENT name (#PCDATA)>" +
+                        "<!ELEMENT description (#PCDATA)>" +
+                        "<!ELEMENT tags (#PCDATA)>" +
+                        "<!ELEMENT lat (#PCDATA)>" +
+                        "<!ELEMENT lng (#PCDATA)>" +
+                        "<!ELEMENT url (#PCDATA)>" +
+                        "<!ELEMENT image (#PCDATA)>" +
+                        "<!ELEMENT owner (#PCDATA)>" +
+                        "]> "+
+                        "<newPoi>" + x2js.js2xml(poiTemp) + "</newPoi>";
+                    //console.log(xml);
                     $http({
                         method: 'POST',
                         url: 'pois/',
@@ -621,7 +636,14 @@ angular.module('pirineoPOIApp')
                 }
                 else{
                     var x2js = new X2JS;
-                    var emailsXML = "<sendRoute>" + x2js.js2xml(emails) + "</sendRoute>";
+                    var emailsXML ="<?xml version=\"1.0\"?>" +
+                        "<!DOCTYPE sendRoute [" +
+                        "<!ELEMENT sendRoute (ownerEmail, receiverEmail)" +
+                        "<!ELEMENT ownerEmail (#PCDATA)>" +
+                        "<!ELEMENT receiverEmail (#PCDATA)>" +
+                        "]> "+
+                        "<sendRoute>" + x2js.js2xml(emails) + "</sendRoute>";
+                    //console.log(emailsXML);
                     $http({
                         method: 'POST',
                         url: 'routes/' + routeId + '/sendRoute/',
@@ -863,7 +885,15 @@ angular.module('pirineoPOIApp')
                 }
                 else{ //XML
                     var x2js = new X2JS;
-                    var userXML = "<newUser>" + x2js.js2xml(user) + "</newUser>";
+                    var userXML = "<?xml version=\"1.0\"?>" +
+                        "<!DOCTYPE newUser [" +
+                        "<!ELEMENT newUser (name, lastName, newEmail)" +
+                        "<!ELEMENT name (#PCDATA)>" +
+                        "<!ELEMENT lastName (#PCDATA)>" +
+                        "<!ELEMENT newEmail (#PCDATA)>" +
+                        "]> "+
+                        "<newUser>" + x2js.js2xml(user) + "</newUser>";
+                    //console.log(userXML);
                     $http({
                         method: 'PUT',
                         url: 'admin/users/' + email,
