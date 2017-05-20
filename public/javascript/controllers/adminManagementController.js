@@ -10,11 +10,6 @@ angular.module('pirineoPOIApp')
             Notification.error('&#10008' + message);
         };
 
-        // show the error message
-        var showSuccess = function (message) {
-            Notification.success('&#10004' + message);
-        };
-
         $scope.userList = [];
 
         $scope.isEmpty = function() {
