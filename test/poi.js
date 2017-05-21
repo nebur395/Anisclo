@@ -1361,7 +1361,7 @@ describe('POI', function(){
                     result.body.should.be.a('object');
                     result.body.should.have.property('pois');
                     result.body.pois.should.be.a('array');
-                    result.body.pois.should.have.lengthOf(1);
+                    result.body.pois.should.have.length.of.at.least(1);
                     result.body.pois[0].should.be.a('object');
                     result.body.pois[0].should.have.property('_id');
                     result.body.pois[0].should.have.property('name');
@@ -1398,7 +1398,7 @@ describe('POI', function(){
                     result.body.should.be.a('object');
                     result.body.should.have.property('pois');
                     result.body.pois.should.be.a('array');
-                    result.body.pois.should.have.lengthOf(2);
+                    result.body.pois.should.have.length.of.at.least(2);
 
                     done();
 
