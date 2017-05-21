@@ -66,9 +66,7 @@ angular.module('pirineoPOIApp')
             };
 
             $scope.$watch('user.ban', function () {
-                if ($scope.user.ban < 0) {
-                    $scope.user.ban = 0;
-                } else if ($scope.user.ban === null) {
+                if (($scope.user.ban < 0) || ($scope.user.ban === null)) {
                     $scope.user.ban = 0;
                 }
             });

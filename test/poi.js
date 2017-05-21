@@ -1461,7 +1461,6 @@ describe('POI', function(){
 
         var poiId1;
         var poiId2;
-        var wrongTagsErrorMessage = "Tags incorrectos";
 
         /*
          * It creates a two new pois before the test suite for searchPOI starts executing.

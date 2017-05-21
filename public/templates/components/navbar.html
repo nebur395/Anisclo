@@ -20,36 +20,36 @@
     <div  class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
         <!-- login button -->
-        <li ng-if="!logged"><a href="#/login"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>
+        <li ng-if="!logged"><a href="#/login"><em class="fa fa-sign-in fa-lg" aria-hidden="true"></em>
           Iniciar Sesión</a></li>
         <!-- sign up button -->
-        <li ng-if="!logged"><a href="#/signUp"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>
+        <li ng-if="!logged"><a href="#/signUp"><em class="fa fa-user-plus fa-lg" aria-hidden="true"></em>
           Registrarse</a></li>
 
 
         <!-- view follos button -->
-        <li ng-if="logged && !admin"><a href="#/follows"><i class="fa fa-users fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged && !admin"><a href="#/follows"><em class="fa fa-users fa-lg" aria-hidden="true"></em>
           Ver siguiendo</a></li>
         <!-- view favs button -->
-        <li ng-if="logged && !admin"><a href="#/favs"><i class="fa fa-star fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged && !admin"><a href="#/favs"><em class="fa fa-star fa-lg" aria-hidden="true"></em>
           Ver favoritos</a></li>
         <!-- view stats of normal user button -->
-        <li ng-if="logged && !admin"><a href="#/userStats"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged && !admin"><a href="#/userStats"><em class="fa fa-bar-chart fa-lg" aria-hidden="true"></em>
           Estadísticas</a></li>
 
         <!-- view stats of admin user button -->
-        <li ng-if="logged && admin"><a href="#/adminManagement"><i class="fa fa-wrench fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged && admin"><a href="#/adminManagement"><em class="fa fa-wrench fa-lg" aria-hidden="true"></em>
           Gestión de usuarios</a></li>
         <!-- view stats of admin user button -->
-        <li ng-if="logged && admin"><a href="#/adminStats"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged && admin"><a href="#/adminStats"><em class="fa fa-bar-chart fa-lg" aria-hidden="true"></em>
           Estado del sistema</a></li>
 
 
         <!-- log out button -->
-        <li ng-if="logged"><a href="#/profile"><i class="fa fa-cogs fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged"><a href="#/profile"><em class="fa fa-cogs fa-lg" aria-hidden="true"></em>
           Cuenta</a></li>
         <!-- log out button -->
-        <li ng-if="logged"><a ng-click="logout()"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
+        <li ng-if="logged"><a ng-click="logout()"><em class="fa fa-sign-out fa-lg" aria-hidden="true"></em>
           Salir</a></li>
       </ul>
     </div>
