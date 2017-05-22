@@ -125,7 +125,8 @@
 
     <!-- GOOGLE MAPS SECTION -->
 
-    <ui-gmap-google-map control="map.control" center="map.center" options="options" zoom="map.zoom" events="map.events"
+    <ui-gmap-google-map control="map.control" center="map.center" options="map.options"
+                        zoom="map.zoom" events="map.events"
                         style="height: 100%">
 
       <ui-gmap-marker idKey="'marker'" events = "map.markersEvents"ng-repeat="m in map.markers" coords="m.coords" icon="m.icon">
