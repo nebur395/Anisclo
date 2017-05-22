@@ -402,7 +402,7 @@ angular.module('pirineoPOIApp')
             $scope.map = {
                 control: {},
                 center: {latitude: 42.55870726267185, longitude: 0.050683021545410156}, zoom: 8,
-
+                options: {scrollwheel: true, streetViewControl: false, mapTypeControl: false, minZoom: 3},
                 markers: [],
                 markersEvents: {
                     click: function(marker, eventName, model, eventArgs){
@@ -446,7 +446,6 @@ angular.module('pirineoPOIApp')
                 }
 
             };
-            $scope.options = {scrollwheel: true, streetViewControl: false, mapTypeControl: false};
             // Paint all markers
             $scope.paintMarkers = function(){
                 var marker = {};
