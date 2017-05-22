@@ -42,7 +42,7 @@ Para cada uno de los lenguajes se han de seguir los siguientes pasos para verifi
 # 3.1 Estándar
 <a name="31" />
 
-Todas las peticiones que vaya a recibir el servidor de ***Smart CampUZ*** tienen que estar recogidas en el documento de la API web definida por Swagger y cumplir los siguientes requisitos:
+Todas las peticiones que vaya a recibir el servidor de ***Añisclo's POI*** tienen que estar recogidas en el documento de la API web definida por Swagger y cumplir los siguientes requisitos:
 - Tiene que tener el tipo de petición http definida (PUT, POST, GET, etc.).
 - Tiene que tener un nombre de end-point.
 - Tiene que tener los parámetros de la petición si los hubiera, en formato JSON.
