@@ -10,7 +10,7 @@
         Mostrar/ocultar Rutas</div>
     </div>
 
-    <div id="poiList" class="text-center" ng-hide="hidePOIs">
+    <div id="poiList" class="text-center" ng-hide="!hidePOIs">
       <form ng-submit="searchPOIs()"><!-- SEARCH POI INPUT -->
         <div class="input-group" style="padding:5%;padding-bottom:0">
           <input type="text" class="form-control" placeholder="Buscar" ng-model="searchedTags">
@@ -35,7 +35,7 @@
     </div>
 
     <!-- ROUTES SECTION -->
-    <div id="routesSection" class="text-center" ng-hide="hideRoutes">
+    <div id="routesSection" class="text-center" ng-hide="!hideRoutes">
       <div style="padding:5%;padding-bottom:0">
         <button class="btn w3-theme-action customButton" type="submit" ng-hide="editingRoute"
                 style="width: 100%;padding:6px 12px!important;" ng-click="makeNewRoute()">

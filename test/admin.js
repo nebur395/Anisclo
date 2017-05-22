@@ -180,8 +180,7 @@ describe('Admin', function(){
                 .set('Authorization','Bearer ' + createUserToken(email, false, true))
                 .set('Json', true)
                 .end(function(err, result){
-                    console.log("--------------------------------------------------");
-                    console.log(result.body.message);
+
                     result.should.have.status(200);
                     result.body.should.be.a('object');
                     result.body.should.have.property('success');
