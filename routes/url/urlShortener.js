@@ -63,9 +63,16 @@ module.exports = function (app){
             return;
         }
 
+        var url = req.body.url;
+        console.log(url.substring(0,7));
+        if(url.substring(0,7) !== "http://" && url.substring(0,8) !== "https://"){
+            url = "https://"+url;
+            console.log("He entrado");
+        }
+        console.log("Se va a guardar:"+url);
         Url.create({
 
-            originalUrl: req.body.url
+            originalUrl: url
 
         }, function(err, result){
 
