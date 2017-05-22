@@ -63,9 +63,15 @@ module.exports = function (app){
             return;
         }
 
+        var url = req.body.url;
+
+        if(url.substring(0,7) !== "http://" && url.substring(0,8) !== "https://"){
+            url = "https://"+url;
+        }
+
         Url.create({
 
-            originalUrl: req.body.url
+            originalUrl: url
 
         }, function(err, result){
 

@@ -14,9 +14,11 @@ In order to run this project you have to have installed
   3. Run the command `npm install`. This must be done the first time only, in order to
   install the dependencies of the project.
   4. Use the following command to start mongod: `sudo service mongod start`
-  5. Run `npm start` in order to launch two instances of the server on port 8080 (HTTP) and 8443 (HTTPS).
+  5. To add an administrator user, please run the following command: `node initialize.js`. You will be able to
+  log-in with this user with the email 'master@admin.com' and the password 'pass'.
+  6. Run `npm start` in order to launch two instances of the server on port 8080 (HTTP) and 8443 (HTTPS).
   Alternatively, you can also use `node server.js`.
-  6. Open a web browser (Preferably Mozilla Firefox or Chrome >55.X) and type http://localhost:8080 for the HTTP page, or https://localhost:8443 for the HTTPS equivalent.
+  7. Open a web browser (Preferably Mozilla Firefox or Chrome >55.X) and type http://localhost:8080 for the HTTP page, or https://localhost:8443 for the HTTPS equivalent.
   
 ## API DOC
 In order to have a look at the project's API you have to follow these steps:
