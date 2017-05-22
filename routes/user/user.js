@@ -95,6 +95,11 @@ module.exports = function (app) {
             return;
         }
 
+        ////////////////////////////////////////////////////////////
+        // Esta sección comentada pertenece al captcha de Google.//
+        // Se encuentra comentada para evitar problemas con la ///
+        // ejecución de los tests.                           ////
+        ////////////////////////////////////////////////////////
 
         /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
                 form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
@@ -490,6 +495,12 @@ module.exports = function (app) {
      *           $ref: '#/definitions/FeedbackMessage'
      */
     router.put("/retrievePass", function(req, res){
+
+        ////////////////////////////////////////////////////////////
+        // Esta sección comentada pertenece al captcha de Google.//
+        // Se encuentra comentada para evitar problemas con la ///
+        // ejecución de los tests.                           ////
+        ////////////////////////////////////////////////////////
 
         /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
                 form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
