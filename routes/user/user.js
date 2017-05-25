@@ -101,66 +101,71 @@ module.exports = function (app) {
         // ejecución de los tests.                           ////
         ////////////////////////////////////////////////////////
 
-        /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
-                form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
+        request.post({url:'https://www.google.com/recaptcha/api/siteverify',
+                form: {secret:'6Lf6JBoUAAAAAHO3BBxIPc0v3BYwSeOS0X0NjDjW', response:req.body.captcha}},
                 function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
-                        console.log(body)
-                    }
-                }
-        );*/
+                    console.log(body);
+                    body = JSON.parse(body);
+                    if (!error && response.statusCode == 200 && body.success) {
+                        User.findOne({email: req.body.email}, function(err, result){
 
+                            if(err){
+                                res.status(500).send({
+                                    "success": false,
+                                    "message": "Error recuperando datos"
+                                });
+                            }
 
-        User.findOne({email: req.body.email}, function(err, result){
+                            if(result){
+                                res.status(404).send({
+                                    "success": false,
+                                    "message": "Ya existe una cuenta con ese correo."
+                                });
+                            }
+                            else{
+                                console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
+                                User.create({
 
-            if(err){
-                res.status(500).send({
-                    "success": false,
-                    "message": "Error recuperando datos"
-                });
-            }
+                                    email: req.body.email,
+                                    name: req.body.name,
+                                    lastname: req.body.lastname,
+                                    firstLogin: true,
+                                    admin: false
 
-            if(result){
-                res.status(404).send({
-                    "success": false,
-                    "message": "Ya existe una cuenta con ese correo."
-                });
-            }
-            else{
-                console.log("Nombre: "+req.body.name+" Apellido: "+req.body.lastname+" Email: "+req.body.email);
-                User.create({
+                                }, function (err, result){
 
-                    email: req.body.email,
-                    name: req.body.name,
-                    lastname: req.body.lastname,
-                    firstLogin: true,
-                    admin: false
-
-                }, function (err, result){
-
-                    if(err){
-                        res.status(500).send({
-                            "success": false,
-                            "message": "Error guardando datos"
+                                    if(err){
+                                        res.status(500).send({
+                                            "success": false,
+                                            "message": "Error guardando datos"
+                                        });
+                                    }
+                                    else{
+                                        var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
+                                        var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
+                                        var mailOptions = {
+                                            from: 'No-Reply <verif.anisclo@gmail.com>',
+                                            to: req.body.email,
+                                            subject: 'Pirineo\'s POI account confirmation',
+                                            html: 'Hello there! Wellcome to Pirineo\'s POI.</p>' +
+                                            '<p>Click on the link below to confim you account and get your password :)</p>' +
+                                            '<a href='+url+' target="_blank">'+url+'</a>'+
+                                            '<p>The Pirineo\'s POI team.</p>'
+                                        };
+                                        sendEmail(mailOptions, res, message);
+                                    }
+                                });
+                            }
                         });
                     }
                     else{
-                        var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
-                        var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
-                        var mailOptions = {
-                            from: 'No-Reply <verif.anisclo@gmail.com>',
-                            to: req.body.email,
-                            subject: 'Pirineo\'s POI account confirmation',
-                            html: 'Hello there! Wellcome to Pirineo\'s POI.</p>' +
-                            '<p>Click on the link below to confim you account and get your password :)</p>' +
-                            '<a href='+url+' target="_blank">'+url+'</a>'+
-                            '<p>The Pirineo\'s POI team.</p>'
-                        };
-                        sendEmail(mailOptions, res, message);
+                        res.status(400).send({
+                            "success": false,
+                            "message": "Captcha erróneo"
+                        });
                     }
-                });
-            }
-        });
+                }
+        );
     });
 
     /**
@@ -502,49 +507,56 @@ module.exports = function (app) {
         // ejecución de los tests.                           ////
         ////////////////////////////////////////////////////////
 
-        /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
-                form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
+        request.post({url:'https://www.google.com/recaptcha/api/siteverify',
+                form: {secret:'6Lf6JBoUAAAAAHO3BBxIPc0v3BYwSeOS0X0NjDjW', response:req.body.captcha}},
             function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    console.log(body)
+                console.log(body);
+                body = JSON.parse(body);
+                if (!error && response.statusCode == 200 && body.success) {
+                    var randomPass = randomstring.generate(8);
+                    var hashPass = require('crypto')
+                        .createHash('sha1')
+                        .update(randomPass)
+                        .digest('base64');
+
+                    User.findOneAndUpdate({email: req.body.email}, {password: hashPass, firstLogin: true}, function(err, result){
+                        if(err){
+                            res.status(500).send({
+                                "success": false,
+                                "message": "Error recuperando y actualizando datos"
+                            });
+                            return;
+                        }
+                        if(result===null){
+                            res.status(404).send({
+                                "success": false,
+                                "message": "El usuario no existe"
+                            });
+                        }
+                        else{
+                            var message = "Nueva contraseña generada. Comprueba tu correo para inciar sesión con ella.";
+                            var mailOptions = {
+                                from: 'No-Reply <verif.anisclo@gmail.com>',
+                                to: req.body.email,
+                                subject: 'Pirineo\'s POI password retrieving',
+                                html: 'Whoops! It seems you have lost your password.</p>' +
+                                '<p>Your new password is \"'+randomPass+'\".</p>' +
+                                '<p>For your own security, you will be forced to change it after your first login.</p>' +
+                                '<p>The Pirineo\'s POI team.</p>'
+                            };
+                            sendEmail(mailOptions, res, message);
+                        }
+                    });
+                }
+                else{
+                    res.status(400).send({
+                        "success": false,
+                        "message": "Captcha erróneo"
+                    });
                 }
             }
-        );*/
+        );
 
-        var randomPass = randomstring.generate(8);
-        var hashPass = require('crypto')
-            .createHash('sha1')
-            .update(randomPass)
-            .digest('base64');
-
-        User.findOneAndUpdate({email: req.body.email}, {password: hashPass, firstLogin: true}, function(err, result){
-            if(err){
-                res.status(500).send({
-                    "success": false,
-                    "message": "Error recuperando y actualizando datos"
-                });
-                return;
-            }
-            if(result===null){
-                res.status(404).send({
-                    "success": false,
-                    "message": "El usuario no existe"
-                });
-            }
-            else{
-                var message = "Nueva contraseña generada. Comprueba tu correo para inciar sesión con ella.";
-                var mailOptions = {
-                    from: 'No-Reply <verif.anisclo@gmail.com>',
-                    to: req.body.email,
-                    subject: 'Pirineo\'s POI password retrieving',
-                    html: 'Whoops! It seems you have lost your password.</p>' +
-                    '<p>Your new password is \"'+randomPass+'\".</p>' +
-                    '<p>For your own security, you will be forced to change it after your first login.</p>' +
-                    '<p>The Pirineo\'s POI team.</p>'
-                };
-                sendEmail(mailOptions, res, message);
-            }
-        });
     });
 
 

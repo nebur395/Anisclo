@@ -13,6 +13,17 @@ angular.module('pirineoPOIApp')
             Notification.success('&#10004' + message);
         };
 
+        $scope.optionsLinealStat = {
+            scales: {
+                yAxes: [{
+                    id: 'y-axis-1',
+                    type: 'linear',
+                    position: 'left',
+                    ticks: {min: 0}
+                }]
+            }
+        };
+
         // Most rated owned POI
         $scope.labels1Stat = [];
         $scope.data1Stat = [];
@@ -123,7 +134,7 @@ angular.module('pirineoPOIApp')
 
         // Most frequent transportation
         $scope.labels9Stat = [];
-        $scope.data9Stat = [];
+        $scope.data9Stat = [[]];
         $scope.options9Stat = { responsive: true, maintainAspectRatio: false,
         scale:{
             ticks:{
@@ -133,7 +144,7 @@ angular.module('pirineoPOIApp')
         userStats.getTransportUsage(function (list) {
             for (i=0;i<list.length;i++) {
                 $scope.labels9Stat.push(list[i].transport);
-                $scope.data9Stat.push(list[i].routesNumber);
+                $scope.data9Stat[0].push(list[i].routesNumber);
             }
         }, showError);
 

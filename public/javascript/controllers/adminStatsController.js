@@ -28,6 +28,17 @@ angular.module('pirineoPOIApp')
                 $scope.totalRoutes = number;
             }, showError);
 
+            $scope.optionsLinealStat = {
+                scales: {
+                    yAxes: [{
+                        id: 'y-axis-1',
+                        type: 'linear',
+                        position: 'left',
+                        ticks: {min: 0}
+                    }]
+                }
+            };
+
             // Accounts status
             $scope.labelsStatusChart = [];
             $scope.dataStatusChart = [];
