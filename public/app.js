@@ -4,7 +4,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
     // Config UI-Google-maps angularjs module
     .config(function(uiGmapGoogleMapApiProvider) {
         uiGmapGoogleMapApiProvider.configure({
-            key: 'AIzaSyCzuYo95Y83vG0jLpI97fC8Rfw1pgRuq7U',
+            key: 'Put your API KEY of Google Maps here',
             v: '3', //defaults to latest 3.X anyhow
             libraries: 'geometry,visualization'
         });

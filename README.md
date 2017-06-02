@@ -14,11 +14,23 @@ In order to run this project you have to have installed
   3. Run the command `npm install`. This must be done the first time only, in order to
   install the dependencies of the project.
   4. Use the following command to start mongod: `sudo service mongod start`
+  5. Get the necessary API keys in <a href="#apiKeys">this section</a>.
   5. To add an administrator user, please run the following command: `node initialize.js`. You will be able to
   log-in with this user with the email 'master@admin.com' and the password 'pass'.
   6. Run `npm start` in order to launch two instances of the server on port 8080 (HTTP) and 8443 (HTTPS).
   Alternatively, you can also use `node server.js`.
   7. Open a web browser (Preferably Mozilla Firefox or Chrome >55.X) and type http://localhost:8080 for the HTTP page, or https://localhost:8443 for the HTTPS equivalent.
+  
+## API keys
+<a name="apiKeys">
+
+To ensure a correct operation of the application you have to get the following API keys:  
+
+**Google Map KEY**
+1. Go to the file `/public/app.js` and put your api key in the 7 line.
+**Google's reCaptcha KEY**
+1. Go to the files `/public/templates/retrievePassword.html` (28 line) and `/public/templates/signUp.html` (39 line), and put your **PUBLIC** api key.
+1. Go to the files `/routes/user/user.js` (105 line) and `/routes/user/user.js` (506 line), and put your **PRIVATE** api key.
   
 ## API DOC
 In order to have a look at the project's API you have to follow these steps:
