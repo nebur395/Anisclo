@@ -32,6 +32,10 @@ To ensure a correct operation of the application you have to get the following A
 1. Go to the files `/public/templates/retrievePassword.html` (28 line) and `/public/templates/signUp.html` (39 line), and put your **PUBLIC** api key.
 1. Go to the files `/routes/user/user.js` (105 line) and `/routes/user/user.js` (506 line), and put your **PRIVATE** api key.
   
+**Google Login KEY**
+1.Go to the file and `/public/app.js` and place your Google client api key in line 37.
+2. Go to the file `routes/user/user.js` and place your **secret** client api key in line 211.
+
 ## API DOC
 In order to have a look at the project's API you have to follow these steps:
 1. Run `npm start` in order to launch the application.
