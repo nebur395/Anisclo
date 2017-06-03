@@ -42,13 +42,13 @@ To ensure a correct operation of the application you have to get the following A
 
 In order to be able to send emails when a user signs up, confirms it's registration or wants to retrieve a password, follow these steps:
 
-1. Go to the file `routes/user/user.js` and follow the comments on the line 1251, 1253 and 1254 to set up the SMTP service.
-1. In that same file, go to line 344 and change the email on that line with the one you used on the SMTP service setup.
+1. Go to the file `routes/user/user.js` and follow the comments on the lines 1251, 1253 and 1254 to set up the SMTP service.
+1. In that same file, go to lines 158, 553 and 628 and change the email on that lines with the one you used on the SMTP service setup.
 
 In order to be able to send emails with a created route:
 
-1. Go to the file `routes/poi/route.js` and follow the comments on the line 491, 493 and 494 to set up the SMTP service.
-1. In that same file, go to lines 158, 553 and 628 and change the email on that lines with the one you used on the SMTP service setup.
+1. Go to the file `routes/poi/route.js` and follow the comments on the lines 491, 493 and 494 to set up the SMTP service.
+1. In that same file, go to line 344 and change the email on that line with the one you used on the SMTP service setup.
 
 ## API DOC
 In order to have a look at the project's API you have to follow these steps:
