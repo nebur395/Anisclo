@@ -82,7 +82,7 @@ describe('User', function(){
         var signUpBlankFieldMessage = "Nombre, apellido o email incorrectos";
 
 
-        it('should sign up a new user making a POST request to /users', function(done){
+        it.skip('should sign up a new user making a POST request to /users', function(done){
 
             chai.request(server)
                 .post('/users/')
@@ -323,7 +323,7 @@ describe('User', function(){
             });
         });
 
-        it('should send an email to the user with it\'s new password making a PUT request to /users/retrievePass', function(done){
+        it.skip('should send an email to the user with it\'s new password making a PUT request to /users/retrievePass', function(done){
 
             chai.request(server)
                 .put('/users/retrievePass')
@@ -413,7 +413,7 @@ describe('User', function(){
             });
         });
 
-        it('should send an email to the user with it\'s new password making a GET request to /users/confirm/:email', function(done){
+        it.skip('should send an email to the user with it\'s new password making a GET request to /users/confirm/:email', function(done){
 
             chai.request(server)
                 .get('/users/confirm/'+email2)

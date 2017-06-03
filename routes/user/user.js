@@ -1257,6 +1257,10 @@ module.exports = function (app) {
         smtpTransport.sendMail(mailOptions,function(error,response){
             if(error){
                 console.log(error);
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error al enviar el email de confirmación"
+                });
             }
             else{
                 res.status(200).send({
