@@ -31,11 +31,24 @@ To ensure a correct operation of the application you have to get the following A
 
 **Google's reCaptcha KEY**
 1. Go to the files `/public/templates/retrievePassword.html` (28 line) and `/public/templates/signUp.html` (39 line), and put your **PUBLIC** api key.
-1. Go to the files `/routes/user/user.js` (105 line) and `/routes/user/user.js` (506 line), and put your **PRIVATE** api key.
+1. Go to the files `/routes/user/user.js` (107 line) and `/routes/user/user.js` (515 line), and put your **PRIVATE** api key.
 
 **Google Login KEY**
-1. Go to the file and `/public/app.js` and place your Google client api key in line 37.
-1. Go to the file `routes/user/user.js` and place your **secret** client api key in line 211.
+1. Go to the file `/public/app.js` and place your Google client api key in line 37.
+1. Go to the file `routes/user/user.js` and place your **secret** client api key in line 218.
+
+## Send emails with Nodemailer
+<a name="emails">
+
+In order to be able to send emails when a user signs up, confirms it's registration or wants to retrieve a password, follow these steps:
+
+1. Go to the file `routes/user/user.js` and follow the comments on the lines 1251, 1253 and 1254 to set up the SMTP service.
+1. In that same file, go to lines 158, 553 and 628 and change the email on that lines with the one you used on the SMTP service setup.
+
+In order to be able to send emails with a created route:
+
+1. Go to the file `routes/poi/route.js` and follow the comments on the lines 491, 493 and 494 to set up the SMTP service.
+1. In that same file, go to line 344 and change the email on that line with the one you used on the SMTP service setup.
 
 ## API DOC
 In order to have a look at the project's API you have to follow these steps:

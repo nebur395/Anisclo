@@ -341,7 +341,7 @@ module.exports = function (app) {
                         var urlLogin = "http://"+ipAddr+":8080";
                         var urlSignUp = "http://"+ipAddr+":8080/#/signUp";
                         var mailOptions = {
-                            from: 'No-Reply <verif.anisclo@gmail.com>',
+                            from: 'No-Reply <someEmail@gmail.com>', //Change "someEmail@gmail" for the selectec one in the sendMail config bellow.
                             to: receiverEmail,
                             subject: '[Pirineo\'s POI] Someone has sent you a route!',
                             html: 'Hello there!</p>' +
@@ -488,15 +488,19 @@ module.exports = function (app) {
     function sendEmail(mailOptions, res){
 
         var smtpTransport = nodemailer.createTransport({
-            service: "Gmail",
+            service: "", //Set here the email service to use. E.g.: Gmail
             auth: {
-                user: "verif.anisclo@gmail.com",
-                pass: "AniscloPOI"
+                user: "", //Set here the email account of the selected service above. E.g.: A Gmail email address.
+                pass: "" //Set here the password for the selected user account
             }
         });
         smtpTransport.sendMail(mailOptions,function(error,response){
             if(error){
                 console.log(error);
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error al enviar el email de confirmación"
+                });
             }
             else{
                 res.status(200).send({

@@ -98,19 +98,26 @@ module.exports = function (app) {
         ////////////////////////////////////////////////////////////
         // Esta sección comentada pertenece al captcha de Google.//
         // Se encuentra comentada para evitar problemas con la ///
-        // ejecución de los tests.                           ////
-        ////////////////////////////////////////////////////////
-
-        /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
+        // ejecución de los tests.                            ///
+        // Si se quiere activar, introducir el código no     ///
+        // comentado de abajo dentro del if.                ///
+        //////////////////////////////////////////////////////
+        /*
+        request.post({url:'https://www.google.com/recaptcha/api/siteverify',
                 form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
                 function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
-                        console.log(body)
+                    console.log(body);
+                    body = JSON.parse(body);
+                    if (!error && response.statusCode == 200 && body.success) {
+                    }
+                    else{
+                        res.status(400).send({
+                            "success": false,
+                            "message": "Captcha erróneo"
+                        });
                     }
                 }
         );*/
-
-
         User.findOne({email: req.body.email}, function(err, result){
 
             if(err){
@@ -148,7 +155,7 @@ module.exports = function (app) {
                         var url = "http://"+ip.address()+":8080/users/confirm/"+req.body.email;
                         var message = "Usuario creado correctamente. Comprueba tu correo para confirmar tu cuenta.";
                         var mailOptions = {
-                            from: 'No-Reply <verif.anisclo@gmail.com>',
+                            from: 'No-Reply <someEmail@gmail.com>', //Change "someEmail@gmail" for the selectec one in the sendMail config bellow.
                             to: req.body.email,
                             subject: 'Pirineo\'s POI account confirmation',
                             html: 'Hello there! Wellcome to Pirineo\'s POI.</p>' +
@@ -499,18 +506,27 @@ module.exports = function (app) {
         ////////////////////////////////////////////////////////////
         // Esta sección comentada pertenece al captcha de Google.//
         // Se encuentra comentada para evitar problemas con la ///
-        // ejecución de los tests.                           ////
-        ////////////////////////////////////////////////////////
+        // ejecución de los tests.                            ///
+        // Si se quiere activar, introducir el código no     ///
+        // comentado de abajo dentro del if.                ///
+        //////////////////////////////////////////////////////
 
         /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
                 form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
             function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    console.log(body)
+                console.log(body);
+                body = JSON.parse(body);
+                if (!error && response.statusCode == 200 && body.success) {
+
+                }
+                else{
+                    res.status(400).send({
+                        "success": false,
+                        "message": "Captcha erróneo"
+                    });
                 }
             }
         );*/
-
         var randomPass = randomstring.generate(8);
         var hashPass = require('crypto')
             .createHash('sha1')
@@ -534,7 +550,7 @@ module.exports = function (app) {
             else{
                 var message = "Nueva contraseña generada. Comprueba tu correo para inciar sesión con ella.";
                 var mailOptions = {
-                    from: 'No-Reply <verif.anisclo@gmail.com>',
+                    from: 'No-Reply <someEmail@gmail.com>', //Change "someEmail@gmail" for the selectec one in the sendMail config bellow.
                     to: req.body.email,
                     subject: 'Pirineo\'s POI password retrieving',
                     html: 'Whoops! It seems you have lost your password.</p>' +
@@ -545,6 +561,7 @@ module.exports = function (app) {
                 sendEmail(mailOptions, res, message);
             }
         });
+
     });
 
 
@@ -608,7 +625,7 @@ module.exports = function (app) {
             else{
                 var message = "Confirmación completada. Comprueba tu correo para iniciar sesión con tu contraseña.";
                 var mailOptions = {
-                    from: 'No-Reply <verif.anisclo@gmail.com>',
+                    from: 'No-Reply <someEmail@gmail.com>', //Change "someEmail@gmail" for the selectec one in the sendMail config bellow.
                     to: req.params.email,
                     subject: 'Pirineo\'s POI account password',
                     html: 'Hello there!</p>' +
@@ -1231,15 +1248,19 @@ module.exports = function (app) {
     function sendEmail(mailOptions, res, message){
 
         var smtpTransport = nodemailer.createTransport({
-            service: "Gmail",
+            service: "", //Set here the email service to use. E.g.: Gmail
             auth: {
-                user: "verif.anisclo@gmail.com",
-                pass: "AniscloPOI"
+                user: "", //Set here the email account of the selected service above. E.g.: A Gmail email address.
+                pass: "" //Set here the password for the selected user account
             }
         });
         smtpTransport.sendMail(mailOptions,function(error,response){
             if(error){
                 console.log(error);
+                res.status(500).send({
+                    "success": false,
+                    "message": "Error al enviar el email de confirmación"
+                });
             }
             else{
                 res.status(200).send({
