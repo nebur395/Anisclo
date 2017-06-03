@@ -34,7 +34,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
         $authProvider.tokenType = 'Bearer';
         $authProvider.storageType = 'localStorage';
         $authProvider.google({
-            clientId: '455009480567-lhd272hs4et03dj9g4vmltt9rurhcrtg.apps.googleusercontent.com',
+            clientId: 'CLIENT API KEY HERE',
             url: 'users/google',
             authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
             redirectUri: window.location.origin,
