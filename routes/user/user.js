@@ -104,7 +104,7 @@ module.exports = function (app) {
         //////////////////////////////////////////////////////
         /*
         request.post({url:'https://www.google.com/recaptcha/api/siteverify',
-                form: {secret:'6Lf6JBoUAAAAAHO3BBxIPc0v3BYwSeOS0X0NjDjW', response:req.body.captcha}},
+                form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
                 function (error, response, body) {
                     console.log(body);
                     body = JSON.parse(body);
@@ -512,7 +512,7 @@ module.exports = function (app) {
         //////////////////////////////////////////////////////
 
         /*request.post({url:'https://www.google.com/recaptcha/api/siteverify',
-                form: {secret:'6Lf6JBoUAAAAAHO3BBxIPc0v3BYwSeOS0X0NjDjW', response:req.body.captcha}},
+                form: {secret:'<PRIVATE KEY>', response:req.body.captcha}},
             function (error, response, body) {
                 console.log(body);
                 body = JSON.parse(body);
