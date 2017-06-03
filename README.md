@@ -28,6 +28,7 @@ To ensure a correct operation of the application you have to get the following A
 
 **Google Map KEY**
 1. Go to the file `/public/app.js` and put your api key in the 7 line.
+
 **Google's reCaptcha KEY**
 1. Go to the files `/public/templates/retrievePassword.html` (28 line) and `/public/templates/signUp.html` (39 line), and put your **PUBLIC** api key.
 1. Go to the files `/routes/user/user.js` (105 line) and `/routes/user/user.js` (506 line), and put your **PRIVATE** api key.
