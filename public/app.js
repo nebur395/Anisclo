@@ -4,7 +4,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
     // Config UI-Google-maps angularjs module
     .config(function(uiGmapGoogleMapApiProvider) {
         uiGmapGoogleMapApiProvider.configure({
-            key: 'AIzaSyCzuYo95Y83vG0jLpI97fC8Rfw1pgRuq7U',
+            key: 'Put your API KEY of Google Maps here',
             v: '3', //defaults to latest 3.X anyhow
             libraries: 'geometry,visualization'
         });
@@ -34,7 +34,7 @@ angular.module('pirineoPOIApp', ['ui.router', 'base64', 'vcRecaptcha', 'uiGmapgo
         $authProvider.tokenType = 'Bearer';
         $authProvider.storageType = 'localStorage';
         $authProvider.google({
-            clientId: '455009480567-lhd272hs4et03dj9g4vmltt9rurhcrtg.apps.googleusercontent.com',
+            clientId: 'CLIENT API KEY HERE',
             url: 'users/google',
             authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
             redirectUri: window.location.origin,

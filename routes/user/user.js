@@ -215,7 +215,7 @@ module.exports = function (app) {
         var params = {
             code: req.body.code,
             client_id: req.body.clientId,
-            client_secret: 'DO1D2qtBemRa2IpAF8DKIv4A',
+            client_secret: 'GOOGLE API KEY HERE',
             redirect_uri: req.body.redirectUri,
             grant_type: 'authorization_code'
         };
